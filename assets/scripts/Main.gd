@@ -42,7 +42,7 @@ func start_game():
 	using_mouse_time_threshold = 1;
 	score = 0;
 	dropped_purin_count = 0;
-	for i in range(1, len(purin_sizes)):
+	for i in range(1, len(purin_sizes)+1):
 		var image_path = "%spurin%d.png"%[purin_file_path_root, i];
 		purin_images.append(load(image_path));
 		# ensure she is at the top of the bowl
@@ -160,7 +160,6 @@ func _process(delta):
 	if use_mouse_controls:
 		noir.position.x = get_viewport().get_mouse_position().x;
 	
-	var noir_pos:Vector2 = noir.position;
 	var purin_radius = ((purin_sizes[held_purin_level]*0.5)*1.17);
 	var min_x_pos = bowl.position.x + BOWL_THICKNESS + purin_radius;
 	var max_x_pos = bowl.position.x + BOWL_WIDTH - BOWL_THICKNESS - purin_radius;
