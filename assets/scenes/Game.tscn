@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://dsimdukn6dthe"]
+[gd_scene load_steps=26 format=3 uid="uid://dsimdukn6dthe"]
 
 [ext_resource type="Script" path="res://assets/scripts/Main.gd" id="1_m0ynt"]
 [ext_resource type="AudioStream" uid="uid://borrrahqop0te" path="res://assets/audio/sfx/pop.wav" id="2_3jyka"]
@@ -20,6 +20,7 @@
 [ext_resource type="Texture2D" uid="uid://cwcmvy5fu6w86" path="res://assets/images/purin10.png" id="17_2odgw"]
 [ext_resource type="Texture2D" uid="uid://bja3p1ji46rhl" path="res://assets/images/purin11.png" id="18_vu7lp"]
 [ext_resource type="Texture2D" uid="uid://bkidel8xvjsvt" path="res://assets/images/GameOverBackdrop.png" id="19_6g2ub"]
+[ext_resource type="FontFile" uid="uid://cdwb8ivskcjue" path="res://assets/fonts/NotoSansCJK-Regular.ttc" id="20_cm4p7"]
 [ext_resource type="Script" path="res://assets/scripts/RetryButton.gd" id="20_u51w1"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gjlyd"]
@@ -30,13 +31,6 @@ size = Vector2(70, 740)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5dg7v"]
 size = Vector2(69, 740)
-
-[sub_resource type="Theme" id="Theme_ft46b"]
-default_font_size = 72
-
-[sub_resource type="Theme" id="Theme_e5owa"]
-RichTextLabel/font_sizes/normal_font_size = 72
-RichTextLabel/fonts/normal_font = null
 
 [node name="Game" type="Node2D" node_paths=PackedStringArray("bowl", "noir", "next_purin", "score_ui", "sfx_pop_player", "sfx_bonk_player")]
 script = ExtResource("1_m0ynt")
@@ -175,7 +169,8 @@ offset_top = 124.0
 offset_right = 463.0
 offset_bottom = 211.0
 grow_horizontal = 2
-theme = SubResource("Theme_ft46b")
+theme_override_fonts/normal_font = ExtResource("20_cm4p7")
+theme_override_font_sizes/normal_font_size = 60
 bbcode_enabled = true
 text = "[center]ネクスト[/center]"
 scroll_active = false
@@ -210,7 +205,8 @@ offset_right = 212.0
 offset_bottom = 50.5
 grow_horizontal = 2
 grow_vertical = 2
-theme = SubResource("Theme_e5owa")
+theme_override_fonts/normal_font = ExtResource("20_cm4p7")
+theme_override_font_sizes/normal_font_size = 72
 text = " ゲームオーバー"
 language = "JP"
 
@@ -220,6 +216,8 @@ offset_left = -532.0
 offset_top = 181.0
 offset_right = -384.0
 offset_bottom = 241.0
+theme_override_fonts/font = ExtResource("20_cm4p7")
+theme_override_font_sizes/font_size = 32
 action_mode = 0
 text = "リトライ"
 language = "JP"
@@ -261,7 +259,8 @@ offset_top = 48.0
 offset_right = 214.0
 offset_bottom = 135.0
 grow_horizontal = 2
-theme = SubResource("Theme_ft46b")
+theme_override_fonts/normal_font = ExtResource("20_cm4p7")
+theme_override_font_sizes/normal_font_size = 72
 bbcode_enabled = true
 text = "[center]スコア[/center]"
 scroll_active = false
@@ -281,7 +280,8 @@ offset_right = 207.0
 offset_bottom = 57.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = SubResource("Theme_ft46b")
+theme_override_fonts/normal_font = ExtResource("20_cm4p7")
+theme_override_font_sizes/normal_font_size = 72
 bbcode_enabled = true
 text = "[center]99999[/center]"
 scroll_active = false
