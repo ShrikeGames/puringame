@@ -83,7 +83,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"default",
-"speed": 1.5
+"speed": 2.0
 }]
 
 [node name="Game" type="Node2D" node_paths=PackedStringArray("bowl", "noir", "next_purin", "score_ui", "sfx_pop_player", "sfx_bonk_player", "lose_area", "gameover_screen")]
@@ -136,7 +136,7 @@ position = Vector2(50, -136)
 disable_mode = 1
 monitorable = false
 script = ExtResource("6_togvy")
-gameover_count_down = NodePath("../../AnimatedSprite2D")
+gameover_count_down = NodePath("../../GameOverCountDown")
 
 [node name="LoseCollider" type="CollisionPolygon2D" parent="Bowl/LoseArea"]
 position = Vector2(1, 13)
@@ -350,12 +350,21 @@ text = "[center]99999[/center]"
 scroll_active = false
 shortcut_keys_enabled = false
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="GameOverCountDown" type="AnimatedSprite2D" parent="."]
 visible = false
 position = Vector2(937, 72)
 sprite_frames = SubResource("SpriteFrames_2x8ho")
 frame = 2
 frame_progress = 0.220133
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+offset_left = 36.0
+offset_top = 807.0
+offset_right = 195.0
+offset_bottom = 860.0
+theme_override_fonts/normal_font = ExtResource("20_cm4p7")
+text = "Version 1.0.14
+\"Grace Period\""
 
 [connection signal="body_entered" from="Bowl/LoseArea" to="Bowl/LoseArea" method="_on_body_entered"]
 [connection signal="body_exited" from="Bowl/LoseArea" to="Bowl/LoseArea" method="_on_body_exited"]

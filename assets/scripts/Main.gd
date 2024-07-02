@@ -160,11 +160,11 @@ func _process(delta):
 			lose_area.start_countdown();
 			break;
 	if has_purin_in_danger:
-		game_over_timer += delta;
 		if game_over_timer >= game_over_grace_period_seconds:
 			print("Game Over");
 			get_tree().paused = true;
 			gameover_screen.visible = true;
+		game_over_timer += delta;
 	else:
 		lose_area.stop_countdown();
 		game_over_timer = 0;
