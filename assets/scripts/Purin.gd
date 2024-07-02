@@ -4,7 +4,6 @@ signal combine
 signal bonk
 
 var combined:bool = false;
-
 func _on_body_entered(body:Node2D):
 	if (self.has_meta("combined") and self.get_meta("combined")) or (body.has_meta("combined") and body.get_meta("combined")): 
 		return;

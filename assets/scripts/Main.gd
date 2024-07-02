@@ -152,13 +152,21 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	self.score_ui.text = "[center]%d[/center]" %(score)
-	if lose_area.purin_in_danger:
+	var purin_node:Node2D = get_node("PurinObjects");
+	var has_purin_in_danger:bool = false;
+	for purin in purin_node.get_children():
+		if purin.has_meta("purin_in_danger") and purin.get_meta("purin_in_danger"):
+			has_purin_in_danger = true;
+			lose_area.start_countdown();
+			break;
+	if has_purin_in_danger:
 		game_over_timer += delta;
 		if game_over_timer >= game_over_grace_period_seconds:
 			print("Game Over");
 			get_tree().paused = true;
 			gameover_screen.visible = true;
 	else:
+		lose_area.stop_countdown();
 		game_over_timer = 0;
 	
 	if Input.is_action_pressed("move_right"):
