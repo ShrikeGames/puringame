@@ -6,6 +6,9 @@ class_name Game
 @export var score_ui:RichTextLabel;
 @export var sfx_pop_player:AudioStreamPlayer;
 @export var sfx_bonk_player:AudioStreamPlayer;
+@export var lose_area:LoseArea;
+@export var gameover_screen:Node2D;
+
 const BOWL_WIDTH:int = 800;
 const BOWL_THICKNESS:int = 20;
 const BOWL_DROP_DISTANCE:int = 40;
@@ -23,6 +26,8 @@ var holding_purin:Sprite2D;
 var held_purin_level:int;
 var score;
 var dropped_purin_count;
+var game_over_timer:float;
+var game_over_grace_period_seconds:int;
 @export var purin_bag:Array;
 func start_game():
 	remove_all_purin();
@@ -31,6 +36,9 @@ func start_game():
 	purin_sizes = [50, 100, 125, 156, 175, 195, 220, 250, 275, 300, 343];
 	max_purin_size_drop = [0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6]
 	highest_level_reached = 0;
+	game_over_timer = 0;
+	game_over_grace_period_seconds = 3;
+	
 	# tetris bag of purin to drop
 	purin_bag = generate_purin_bag(max_purin_size_drop[highest_level_reached]);
 	
@@ -144,6 +152,14 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	self.score_ui.text = "[center]%d[/center]" %(score)
+	if lose_area.purin_in_danger:
+		game_over_timer += delta;
+		if game_over_timer >= game_over_grace_period_seconds:
+			print("Game Over");
+			get_tree().paused = true;
+			gameover_screen.visible = true;
+	else:
+		game_over_timer = 0;
 	
 	if Input.is_action_pressed("move_right"):
 		noir.translate(Vector2(move_speed*delta,0));

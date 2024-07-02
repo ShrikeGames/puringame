@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://dsimdukn6dthe"]
+[gd_scene load_steps=34 format=3 uid="uid://dsimdukn6dthe"]
 
 [ext_resource type="Script" path="res://assets/scripts/Main.gd" id="1_m0ynt"]
 [ext_resource type="AudioStream" uid="uid://borrrahqop0te" path="res://assets/audio/sfx/pop.wav" id="2_3jyka"]
@@ -22,17 +22,71 @@
 [ext_resource type="Texture2D" uid="uid://bkidel8xvjsvt" path="res://assets/images/GameOverBackdrop.png" id="19_6g2ub"]
 [ext_resource type="FontFile" uid="uid://cdwb8ivskcjue" path="res://assets/fonts/NotoSansCJK-Regular.ttc" id="20_cm4p7"]
 [ext_resource type="Script" path="res://assets/scripts/RetryButton.gd" id="20_u51w1"]
+[ext_resource type="Texture2D" uid="uid://dgdj0nsw86rr0" path="res://assets/images/GameOverCountDownSpriteSheet.png" id="23_vtu0m"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gjlyd"]
 size = Vector2(895, 70)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_tjcpw"]
-size = Vector2(70, 740)
+size = Vector2(70, 890)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5dg7v"]
-size = Vector2(69, 740)
+size = Vector2(69, 890)
 
-[node name="Game" type="Node2D" node_paths=PackedStringArray("bowl", "noir", "next_purin", "score_ui", "sfx_pop_player", "sfx_bonk_player")]
+[sub_resource type="AtlasTexture" id="AtlasTexture_yje56"]
+atlas = ExtResource("23_vtu0m")
+region = Rect2(0, 0, 50, 50)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3ya2q"]
+atlas = ExtResource("23_vtu0m")
+region = Rect2(50, 0, 50, 50)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0tck8"]
+atlas = ExtResource("23_vtu0m")
+region = Rect2(100, 0, 50, 50)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_38y8u"]
+atlas = ExtResource("23_vtu0m")
+region = Rect2(150, 0, 50, 50)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_oyv1h"]
+atlas = ExtResource("23_vtu0m")
+region = Rect2(200, 0, 50, 50)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r847y"]
+atlas = ExtResource("23_vtu0m")
+region = Rect2(250, 0, 50, 50)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_2x8ho"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yje56")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3ya2q")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0tck8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_38y8u")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_oyv1h")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r847y")
+}, {
+"duration": 1.0,
+"texture": null
+}],
+"loop": true,
+"name": &"default",
+"speed": 1.5
+}]
+
+[node name="Game" type="Node2D" node_paths=PackedStringArray("bowl", "noir", "next_purin", "score_ui", "sfx_pop_player", "sfx_bonk_player", "lose_area", "gameover_screen")]
 script = ExtResource("1_m0ynt")
 bowl = NodePath("Bowl")
 noir = NodePath("NoiR")
@@ -40,6 +94,8 @@ next_purin = NodePath("NextIndicator/NextPurin")
 score_ui = NodePath("ScoreInfo/Control/Score")
 sfx_pop_player = NodePath("Pop")
 sfx_bonk_player = NodePath("Bonk")
+lose_area = NodePath("Bowl/LoseArea")
+gameover_screen = NodePath("GameOverScreen")
 
 [node name="Pop" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("2_3jyka")
@@ -63,23 +119,28 @@ texture = ExtResource("5_ena3y")
 position = Vector2(399.5, 775)
 shape = SubResource("RectangleShape2D_gjlyd")
 
+[node name="TopCollider" type="CollisionShape2D" parent="Bowl"]
+position = Vector2(399, -185)
+shape = SubResource("RectangleShape2D_gjlyd")
+
 [node name="LeftCollider" type="CollisionShape2D" parent="Bowl"]
-position = Vector2(-13, 370)
+position = Vector2(-13, 295)
 shape = SubResource("RectangleShape2D_tjcpw")
 
 [node name="RightCollider" type="CollisionShape2D" parent="Bowl"]
-position = Vector2(812.5, 370)
+position = Vector2(812.5, 295)
 shape = SubResource("RectangleShape2D_5dg7v")
 
-[node name="LoseArea" type="Area2D" parent="Bowl" node_paths=PackedStringArray("gameover_screen")]
+[node name="LoseArea" type="Area2D" parent="Bowl" node_paths=PackedStringArray("gameover_count_down")]
 position = Vector2(50, -136)
 disable_mode = 1
 monitorable = false
 script = ExtResource("6_togvy")
-gameover_screen = NodePath("../../GameOverScreen")
+gameover_count_down = NodePath("../../AnimatedSprite2D")
 
 [node name="LoseCollider" type="CollisionPolygon2D" parent="Bowl/LoseArea"]
-polygon = PackedVector2Array(-100, 1, 800, 1, 800, 135, 700, 85, 576, 85, 116, 85, 1, 85, -100, 137)
+position = Vector2(1, 13)
+polygon = PackedVector2Array(-100, -28, 798, -27, 800, 135, 700, 85, 576, 85, 116, 85, 1, 85, -100, 137)
 
 [node name="NoiR" parent="." instance=ExtResource("7_xqomb")]
 position = Vector2(788, 135)
@@ -289,5 +350,13 @@ text = "[center]99999[/center]"
 scroll_active = false
 shortcut_keys_enabled = false
 
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+visible = false
+position = Vector2(937, 72)
+sprite_frames = SubResource("SpriteFrames_2x8ho")
+frame = 2
+frame_progress = 0.220133
+
 [connection signal="body_entered" from="Bowl/LoseArea" to="Bowl/LoseArea" method="_on_body_entered"]
+[connection signal="body_exited" from="Bowl/LoseArea" to="Bowl/LoseArea" method="_on_body_exited"]
 [connection signal="pressed" from="GameOverScreen/RetryButton" to="GameOverScreen/RetryButton" method="_on_pressed"]
