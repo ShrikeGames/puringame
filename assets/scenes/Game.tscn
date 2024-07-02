@@ -199,15 +199,17 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -212.0
-offset_top = -50.5
-offset_right = 212.0
-offset_bottom = 50.5
+offset_left = -379.5
+offset_top = -75.5
+offset_right = 382.5
+offset_bottom = 109.5
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_fonts/normal_font = ExtResource("20_cm4p7")
 theme_override_font_sizes/normal_font_size = 72
-text = " ゲームオーバー"
+bbcode_enabled = true
+text = "[center]ゲームオーバー[/center]"
+scroll_active = false
 language = "JP"
 
 [node name="RetryButton" type="Button" parent="GameOverScreen" node_paths=PackedStringArray("game", "gameover_screen")]
