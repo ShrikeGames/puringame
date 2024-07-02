@@ -1,0 +1,291 @@
+[gd_scene load_steps=27 format=3 uid="uid://dsimdukn6dthe"]
+
+[ext_resource type="Script" path="res://assets/scripts/Main.gd" id="1_m0ynt"]
+[ext_resource type="AudioStream" uid="uid://borrrahqop0te" path="res://assets/audio/sfx/pop.wav" id="2_3jyka"]
+[ext_resource type="AudioStream" uid="uid://cir0gwbyyr3h5" path="res://assets/audio/sfx/bonk.wav" id="3_bowni"]
+[ext_resource type="Texture2D" uid="uid://c3xtdqs3o2uf3" path="res://assets/images/noir_@dqnww.png" id="4_jagme"]
+[ext_resource type="Texture2D" uid="uid://c7vje2fcd4i0o" path="res://assets/images/Bubble.png" id="5_eigob"]
+[ext_resource type="Texture2D" uid="uid://c7q1lcjlkysl4" path="res://assets/images/PlayArea.png" id="5_ena3y"]
+[ext_resource type="Script" path="res://assets/scripts/LoseArea.gd" id="6_togvy"]
+[ext_resource type="PackedScene" uid="uid://d3mm5neerbgqy" path="res://assets/scenes/NoiR.tscn" id="7_xqomb"]
+[ext_resource type="Texture2D" uid="uid://xt87hje080jt" path="res://assets/images/purin1.png" id="8_ysdtw"]
+[ext_resource type="Texture2D" uid="uid://ds7ffculpywfr" path="res://assets/images/purin2.png" id="9_kf7j1"]
+[ext_resource type="Texture2D" uid="uid://d1l07juub21tt" path="res://assets/images/purin3.png" id="10_8mmdr"]
+[ext_resource type="Texture2D" uid="uid://r1wwvaqohtgs" path="res://assets/images/purin4.png" id="11_oy731"]
+[ext_resource type="Texture2D" uid="uid://cc26nt2jn3vxa" path="res://assets/images/purin5.png" id="12_yciu4"]
+[ext_resource type="Texture2D" uid="uid://bsm8qt57ehuah" path="res://assets/images/purin6.png" id="13_5jixj"]
+[ext_resource type="Texture2D" uid="uid://cekg4y1brmpw5" path="res://assets/images/purin7.png" id="14_6yd54"]
+[ext_resource type="Texture2D" uid="uid://djw85tem2f7me" path="res://assets/images/purin8.png" id="15_w5ebm"]
+[ext_resource type="Texture2D" uid="uid://k1hduynp1pgw" path="res://assets/images/purin9.png" id="16_riydc"]
+[ext_resource type="Texture2D" uid="uid://cwcmvy5fu6w86" path="res://assets/images/purin10.png" id="17_2odgw"]
+[ext_resource type="Texture2D" uid="uid://bja3p1ji46rhl" path="res://assets/images/purin11.png" id="18_vu7lp"]
+[ext_resource type="Texture2D" uid="uid://bkidel8xvjsvt" path="res://assets/images/GameOverBackdrop.png" id="19_6g2ub"]
+[ext_resource type="Script" path="res://assets/scripts/RetryButton.gd" id="20_u51w1"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gjlyd"]
+size = Vector2(895, 70)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tjcpw"]
+size = Vector2(70, 740)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5dg7v"]
+size = Vector2(69, 740)
+
+[sub_resource type="Theme" id="Theme_ft46b"]
+default_font_size = 72
+
+[sub_resource type="Theme" id="Theme_e5owa"]
+RichTextLabel/font_sizes/normal_font_size = 72
+RichTextLabel/fonts/normal_font = null
+
+[node name="Game" type="Node2D" node_paths=PackedStringArray("bowl", "noir", "next_purin", "score_ui", "sfx_pop_player", "sfx_bonk_player")]
+script = ExtResource("1_m0ynt")
+bowl = NodePath("Bowl")
+noir = NodePath("NoiR")
+next_purin = NodePath("NextIndicator/NextPurin")
+score_ui = NodePath("ScoreInfo/Control/Score")
+sfx_pop_player = NodePath("Pop")
+sfx_bonk_player = NodePath("Bonk")
+
+[node name="Pop" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_3jyka")
+
+[node name="Bonk" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_bowni")
+
+[node name="Background" type="Sprite2D" parent="."]
+position = Vector2(799.889, 443)
+scale = Vector2(0.203853, 0.203853)
+texture = ExtResource("4_jagme")
+
+[node name="Bowl" type="StaticBody2D" parent="."]
+position = Vector2(391, 136)
+
+[node name="PlayArea" type="Sprite2D" parent="Bowl"]
+position = Vector2(400, 381)
+texture = ExtResource("5_ena3y")
+
+[node name="BottomCollider" type="CollisionShape2D" parent="Bowl"]
+position = Vector2(399.5, 775)
+shape = SubResource("RectangleShape2D_gjlyd")
+
+[node name="LeftCollider" type="CollisionShape2D" parent="Bowl"]
+position = Vector2(-13, 370)
+shape = SubResource("RectangleShape2D_tjcpw")
+
+[node name="RightCollider" type="CollisionShape2D" parent="Bowl"]
+position = Vector2(812.5, 370)
+shape = SubResource("RectangleShape2D_5dg7v")
+
+[node name="LoseArea" type="Area2D" parent="Bowl" node_paths=PackedStringArray("gameover_screen")]
+position = Vector2(50, -136)
+disable_mode = 1
+monitorable = false
+script = ExtResource("6_togvy")
+gameover_screen = NodePath("../../GameOverScreen")
+
+[node name="LoseCollider" type="CollisionPolygon2D" parent="Bowl/LoseArea"]
+polygon = PackedVector2Array(-100, 1, 800, 1, 800, 135, 700, 85, 576, 85, 116, 85, 1, 85, -100, 137)
+
+[node name="NoiR" parent="." instance=ExtResource("7_xqomb")]
+position = Vector2(788, 135)
+
+[node name="PurinObjects" type="Node2D" parent="."]
+
+[node name="ProgressionIndicator" type="Node2D" parent="."]
+position = Vector2(1497, 535)
+scale = Vector2(0.84, 0.84)
+
+[node name="Purin1" type="Sprite2D" parent="ProgressionIndicator"]
+position = Vector2(0.500122, -3)
+scale = Vector2(0.75, 0.75)
+texture = ExtResource("8_ysdtw")
+
+[node name="Purin2" type="Sprite2D" parent="ProgressionIndicator"]
+position = Vector2(40.5001, 13)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("9_kf7j1")
+
+[node name="Purin3" type="Sprite2D" parent="ProgressionIndicator"]
+position = Vector2(73.5001, 59)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("10_8mmdr")
+
+[node name="Purin4" type="Sprite2D" parent="ProgressionIndicator"]
+position = Vector2(78.5001, 129)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("11_oy731")
+
+[node name="Purin5" type="Sprite2D" parent="ProgressionIndicator"]
+position = Vector2(32.5001, 198)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("12_yciu4")
+
+[node name="Purin6" type="Sprite2D" parent="ProgressionIndicator"]
+position = Vector2(-56.4999, 224)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("13_5jixj")
+
+[node name="Purin7" type="Sprite2D" parent="ProgressionIndicator"]
+position = Vector2(-160, 207)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("14_6yd54")
+
+[node name="Purin8" type="Sprite2D" parent="ProgressionIndicator"]
+position = Vector2(-249, 130)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("15_w5ebm")
+
+[node name="Purin9" type="Sprite2D" parent="ProgressionIndicator"]
+position = Vector2(-277, 1)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("16_riydc")
+
+[node name="Purin10" type="Sprite2D" parent="ProgressionIndicator"]
+position = Vector2(-231, -137)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("17_2odgw")
+
+[node name="Purin11" type="Sprite2D" parent="ProgressionIndicator"]
+position = Vector2(-83.0001, -204)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("18_vu7lp")
+
+[node name="NextIndicator" type="Node2D" parent="."]
+position = Vector2(1193, 0)
+scale = Vector2(0.5, 0.5)
+
+[node name="Bubble2" type="Sprite2D" parent="NextIndicator"]
+modulate = Color(1, 1, 1, 0.282353)
+position = Vector2(252.5, 258.5)
+scale = Vector2(2.715, 2.715)
+texture = ExtResource("5_eigob")
+
+[node name="NextPurin" type="Sprite2D" parent="NextIndicator"]
+position = Vector2(250, 261)
+scale = Vector2(2, 2)
+texture = ExtResource("8_ysdtw")
+
+[node name="ScoreLabel2" type="RichTextLabel" parent="NextIndicator"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 34.0
+offset_top = 124.0
+offset_right = 463.0
+offset_bottom = 211.0
+grow_horizontal = 2
+theme = SubResource("Theme_ft46b")
+bbcode_enabled = true
+text = "[center]ネクスト[/center]"
+scroll_active = false
+shortcut_keys_enabled = false
+language = "JP"
+
+[node name="GameOverScreen" type="Node2D" parent="."]
+visible = false
+position = Vector2(800, 450)
+
+[node name="GameOverBackdrop" type="Sprite2D" parent="GameOverScreen"]
+texture = ExtResource("19_6g2ub")
+
+[node name="Control" type="Control" parent="GameOverScreen"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = -796.0
+offset_top = -181.0
+offset_right = 797.0
+offset_bottom = 168.0
+
+[node name="GameOverText" type="RichTextLabel" parent="GameOverScreen/Control"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -212.0
+offset_top = -50.5
+offset_right = 212.0
+offset_bottom = 50.5
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_e5owa")
+text = " ゲームオーバー"
+language = "JP"
+
+[node name="RetryButton" type="Button" parent="GameOverScreen" node_paths=PackedStringArray("game", "gameover_screen")]
+process_mode = 2
+offset_left = -532.0
+offset_top = 181.0
+offset_right = -384.0
+offset_bottom = 241.0
+action_mode = 0
+text = "リトライ"
+language = "JP"
+script = ExtResource("20_u51w1")
+game = NodePath("../..")
+gameover_screen = NodePath("..")
+
+[node name="ScoreInfo" type="Node2D" parent="."]
+
+[node name="Bubble" type="Sprite2D" parent="ScoreInfo"]
+modulate = Color(1, 1, 1, 0.282353)
+position = Vector2(219, 181)
+scale = Vector2(1.9, 1.9)
+texture = ExtResource("5_eigob")
+
+[node name="Control" type="Control" parent="ScoreInfo"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 4.0
+offset_top = 46.0
+offset_right = 434.0
+offset_bottom = 384.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+
+[node name="ScoreLabel" type="RichTextLabel" parent="ScoreInfo/Control"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -215.0
+offset_top = 48.0
+offset_right = 214.0
+offset_bottom = 135.0
+grow_horizontal = 2
+theme = SubResource("Theme_ft46b")
+bbcode_enabled = true
+text = "[center]スコア[/center]"
+scroll_active = false
+shortcut_keys_enabled = false
+language = "JP"
+
+[node name="Score" type="RichTextLabel" parent="ScoreInfo/Control"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -216.0
+offset_top = -50.0
+offset_right = 207.0
+offset_bottom = 57.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_ft46b")
+bbcode_enabled = true
+text = "[center]99999[/center]"
+scroll_active = false
+shortcut_keys_enabled = false
+
+[connection signal="body_entered" from="Bowl/LoseArea" to="Bowl/LoseArea" method="_on_body_entered"]
+[connection signal="pressed" from="GameOverScreen/RetryButton" to="GameOverScreen/RetryButton" method="_on_pressed"]
