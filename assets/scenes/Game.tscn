@@ -312,6 +312,7 @@ text_label = NodePath("RetryText")
 text = "リトライ"
 
 [node name="RetryText" type="RichTextLabel" parent="GameOverScreen/Control2/RetryButton"]
+layout_mode = 0
 offset_left = 28.0
 offset_top = 47.0
 offset_right = 579.0
@@ -404,3 +405,4 @@ text = "Version 1.0.15
 
 [connection signal="body_entered" from="Bowl/LoseArea" to="Bowl/LoseArea" method="_on_body_entered"]
 [connection signal="body_exited" from="Bowl/LoseArea" to="Bowl/LoseArea" method="_on_body_exited"]
+[connection signal="pressed" from="GameOverScreen/Control2/RetryButton" to="GameOverScreen/Control2/RetryButton" method="_on_pressed"]
