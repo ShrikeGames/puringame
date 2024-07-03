@@ -8,6 +8,7 @@ class_name Game
 @export var sfx_bonk_player:AudioStreamPlayer;
 @export var lose_area:LoseArea;
 @export var gameover_screen:Node2D;
+@export var ai_controlled:bool;
 
 const BOWL_WIDTH:int = 800;
 const BOWL_THICKNESS:int = 20;
@@ -32,7 +33,6 @@ var purin_bag:Array;
 
 func start_game():
 	remove_all_purin();
-	
 	# TODO load from config file instead
 	purin_sizes = [50, 100, 125, 156, 175, 195, 220, 250, 275, 300, 343];
 	max_purin_size_drop = [0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6]
@@ -151,7 +151,12 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	self.score_ui.text = "[center]%d[/center]" %(score)
+	self.score_ui.text = "[center]%d[/center]" %(score);
+	if Input.is_action_pressed("retry"):
+		gameover_screen.visible = false;
+		start_game();
+		get_tree().paused = false;
+		
 	var purin_node:Node2D = get_node("PurinObjects");
 	var has_purin_in_danger:bool = false;
 	for purin in purin_node.get_children():
@@ -168,21 +173,23 @@ func _process(delta):
 	else:
 		lose_area.stop_countdown();
 		game_over_timer = 0;
-	
-	if Input.is_action_pressed("move_right"):
-		noir.translate(Vector2(move_speed*delta,0));
-		noir.position.x = get_valid_drop_position().x;
-		use_mouse_controls = false;
-		time_since_keypress = 0;
-		
-	if Input.is_action_pressed("move_left"):
-		noir.translate(Vector2(-move_speed*delta,0));
-		noir.position.x = get_valid_drop_position().x;
-		use_mouse_controls = false;
-		time_since_keypress = 0;
-		
-	if use_mouse_controls:
-		noir.position.x = get_viewport().get_mouse_position().x;
+	if not ai_controlled:
+		if Input.is_action_pressed("move_right"):
+			noir.translate(Vector2(move_speed*delta,0));
+			noir.position.x = get_valid_drop_position().x;
+			use_mouse_controls = false;
+			time_since_keypress = 0;
+			
+		if Input.is_action_pressed("move_left"):
+			noir.translate(Vector2(-move_speed*delta,0));
+			noir.position.x = get_valid_drop_position().x;
+			use_mouse_controls = false;
+			time_since_keypress = 0;
+		if use_mouse_controls:
+			noir.position.x = get_viewport().get_mouse_position().x;
+	else:
+		# TODO AI controlling
+		process_ai_turn(delta, has_purin_in_danger, game_over_timer)
 	
 	var purin_radius = ((purin_sizes[held_purin_level]*0.5)*1.17);
 	var min_x_pos = bowl.position.x + BOWL_THICKNESS + purin_radius;
@@ -202,6 +209,9 @@ func check_to_drop_purin():
 	if purin_bag.is_empty():
 		purin_bag = purin_bag + generate_purin_bag(max_purin_size_drop[highest_level_reached]);
 	next_purin.texture = purin_images[purin_bag[-1]]
+	if ai_controlled:
+		return
+	
 	if Input.is_action_just_pressed("drop_purin"):
 		if use_mouse_controls:
 			var mouse_pos = get_viewport().get_mouse_position();
@@ -215,3 +225,8 @@ func check_to_drop_purin():
 		# generate new purin to hold
 		held_purin_level = purin_bag.pop_back();
 		holding_purin.texture = purin_images[held_purin_level];
+
+func process_ai_turn(delta, has_purin_in_danger, game_over_timer):
+	# prepare inputs
+	
+	pass

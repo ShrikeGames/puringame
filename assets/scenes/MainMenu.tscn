@@ -41,6 +41,7 @@ offset_bottom = 101.0
 grow_horizontal = 2
 grow_vertical = 2
 toggle_mode = true
+action_mode = 0
 button_group = SubResource("ButtonGroup_bhya7")
 texture_normal = ExtResource("1_tn4f0")
 texture_pressed = ExtResource("2_wae5k")
