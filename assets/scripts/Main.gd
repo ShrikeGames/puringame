@@ -28,7 +28,8 @@ var score;
 var dropped_purin_count;
 var game_over_timer:float;
 var game_over_grace_period_seconds:int;
-@export var purin_bag:Array;
+var purin_bag:Array;
+
 func start_game():
 	remove_all_purin();
 	
@@ -57,9 +58,8 @@ func start_game():
 	noir.position.y = bowl.position.y;
 	holding_purin = noir.get_node("Purin");
 	# always start the game holding the smallest purin
-	held_purin_level = 0
-	holding_purin.texture = purin_images[held_purin_level]
-	
+	held_purin_level = 0;
+	holding_purin.texture = purin_images[held_purin_level];
 
 func generate_purin_bag(max_level):
 	var bag = [];
@@ -214,4 +214,4 @@ func check_to_drop_purin():
 		purin_node.add_child(dropped_purin);
 		# generate new purin to hold
 		held_purin_level = purin_bag.pop_back();
-		holding_purin.texture = purin_images[held_purin_level]
+		holding_purin.texture = purin_images[held_purin_level];

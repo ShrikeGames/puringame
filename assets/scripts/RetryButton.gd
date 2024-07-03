@@ -1,8 +1,14 @@
-extends Button
+extends TextureButton
 
 @export var game:Game;
 @export var gameover_screen:Node2D;
+@export var text_label:RichTextLabel;
+@export var text:String;
 
+func _ready():
+	text_label.bbcode_enabled = true;
+	text_label.text = "[center]%s[/center]"%[text];
+	
 func _on_pressed():
 	gameover_screen.visible = false;
 	game.start_game();

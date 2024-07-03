@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=3 uid="uid://dsimdukn6dthe"]
+[gd_scene load_steps=38 format=3 uid="uid://dsimdukn6dthe"]
 
 [ext_resource type="Script" path="res://assets/scripts/Main.gd" id="1_m0ynt"]
 [ext_resource type="AudioStream" uid="uid://borrrahqop0te" path="res://assets/audio/sfx/pop.wav" id="2_3jyka"]
@@ -22,7 +22,10 @@
 [ext_resource type="Texture2D" uid="uid://bkidel8xvjsvt" path="res://assets/images/GameOverBackdrop.png" id="19_6g2ub"]
 [ext_resource type="FontFile" uid="uid://cdwb8ivskcjue" path="res://assets/fonts/NotoSansCJK-Regular.ttc" id="20_cm4p7"]
 [ext_resource type="Script" path="res://assets/scripts/RetryButton.gd" id="20_u51w1"]
+[ext_resource type="Texture2D" uid="uid://dm5w8oq6jw3xp" path="res://assets/images/Button.png" id="22_pxdld"]
+[ext_resource type="Texture2D" uid="uid://dp1trtxl6ekyx" path="res://assets/images/ButtonPress.png" id="23_5wy0u"]
 [ext_resource type="Texture2D" uid="uid://dgdj0nsw86rr0" path="res://assets/images/GameOverCountDownSpriteSheet.png" id="23_vtu0m"]
+[ext_resource type="Texture2D" uid="uid://dyjjf35spvgrk" path="res://assets/images/ButtonHover.png" id="24_kdyyk"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gjlyd"]
 size = Vector2(895, 70)
@@ -32,6 +35,8 @@ size = Vector2(70, 890)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5dg7v"]
 size = Vector2(69, 890)
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_4heqw"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_yje56"]
 atlas = ExtResource("23_vtu0m")
@@ -273,20 +278,51 @@ text = "[center]ゲームオーバー[/center]"
 scroll_active = false
 language = "JP"
 
-[node name="RetryButton" type="Button" parent="GameOverScreen" node_paths=PackedStringArray("game", "gameover_screen")]
-process_mode = 2
-offset_left = -532.0
-offset_top = 181.0
-offset_right = -384.0
-offset_bottom = 241.0
-theme_override_fonts/font = ExtResource("20_cm4p7")
-theme_override_font_sizes/font_size = 32
-action_mode = 0
-text = "リトライ"
-language = "JP"
+[node name="Control2" type="Control" parent="GameOverScreen"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = -799.0
+offset_top = 172.0
+offset_right = -409.0
+offset_bottom = 306.0
+
+[node name="RetryButton" type="TextureButton" parent="GameOverScreen/Control2" node_paths=PackedStringArray("game", "gameover_screen", "text_label")]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -163.0
+offset_top = -64.0
+offset_right = 437.0
+offset_bottom = 136.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.559547, 0.544881)
+toggle_mode = true
+button_group = SubResource("ButtonGroup_4heqw")
+texture_normal = ExtResource("22_pxdld")
+texture_pressed = ExtResource("23_5wy0u")
+texture_hover = ExtResource("24_kdyyk")
 script = ExtResource("20_u51w1")
-game = NodePath("../..")
-gameover_screen = NodePath("..")
+game = NodePath("../../..")
+gameover_screen = NodePath("../..")
+text_label = NodePath("RetryText")
+text = "リトライ"
+
+[node name="RetryText" type="RichTextLabel" parent="GameOverScreen/Control2/RetryButton"]
+offset_left = 28.0
+offset_top = 47.0
+offset_right = 579.0
+offset_bottom = 180.0
+mouse_filter = 1
+theme_override_fonts/normal_font = ExtResource("20_cm4p7")
+theme_override_font_sizes/normal_font_size = 72
+bbcode_enabled = true
+scroll_active = false
+shortcut_keys_enabled = false
+language = "JP"
 
 [node name="ScoreInfo" type="Node2D" parent="."]
 
@@ -363,9 +399,8 @@ offset_top = 807.0
 offset_right = 195.0
 offset_bottom = 860.0
 theme_override_fonts/normal_font = ExtResource("20_cm4p7")
-text = "Version 1.0.14
-\"Grace Period\""
+text = "Version 1.0.15
+\"Buttons\""
 
 [connection signal="body_entered" from="Bowl/LoseArea" to="Bowl/LoseArea" method="_on_body_entered"]
 [connection signal="body_exited" from="Bowl/LoseArea" to="Bowl/LoseArea" method="_on_body_exited"]
-[connection signal="pressed" from="GameOverScreen/RetryButton" to="GameOverScreen/RetryButton" method="_on_pressed"]
