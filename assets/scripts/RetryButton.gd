@@ -1,6 +1,4 @@
 extends TextureButton
-
-@export var game:Game;
 @export var gameover_screen:Node2D;
 @export var text_label:RichTextLabel;
 @export var text:String;
@@ -11,5 +9,6 @@ func _ready():
 	
 func _on_pressed():
 	gameover_screen.visible = false;
-	game.start_game();
+	Input.action_press("retry");
 	get_tree().paused = false;
+	Input.action_release("retry");

@@ -1,0 +1,276 @@
+[gd_scene load_steps=23 format=3 uid="uid://con8stx2et0ea"]
+
+[ext_resource type="Script" path="res://assets/scripts/Main.gd" id="1_xpfpx"]
+[ext_resource type="AudioStream" uid="uid://borrrahqop0te" path="res://assets/audio/sfx/pop.wav" id="2_tn86m"]
+[ext_resource type="Texture2D" uid="uid://c7q1lcjlkysl4" path="res://assets/images/PlayArea.png" id="2_x4cw2"]
+[ext_resource type="Script" path="res://assets/scripts/LoseArea.gd" id="3_f8b76"]
+[ext_resource type="AudioStream" uid="uid://cir0gwbyyr3h5" path="res://assets/audio/sfx/bonk.wav" id="3_wfp2k"]
+[ext_resource type="PackedScene" uid="uid://d3mm5neerbgqy" path="res://assets/scenes/NoiR.tscn" id="4_tleir"]
+[ext_resource type="Texture2D" uid="uid://c7vje2fcd4i0o" path="res://assets/images/Bubble.png" id="5_2jxer"]
+[ext_resource type="Texture2D" uid="uid://xt87hje080jt" path="res://assets/images/purin1.png" id="6_h5ooi"]
+[ext_resource type="FontFile" uid="uid://cdwb8ivskcjue" path="res://assets/fonts/NotoSansCJK-Regular.ttc" id="7_xor5u"]
+[ext_resource type="PackedScene" uid="uid://digt3ya6lodli" path="res://assets/scenes/GameOverScreen.tscn" id="10_vwbcx"]
+[ext_resource type="Texture2D" uid="uid://dgdj0nsw86rr0" path="res://assets/images/GameOverCountDownSpriteSheet.png" id="11_l0lqg"]
+[ext_resource type="FontFile" uid="uid://buytj31trs62" path="res://assets/fonts/NotoSansCJK-Bold.ttc" id="12_dx1lx"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_a48te"]
+size = Vector2(895, 70)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_uedqb"]
+size = Vector2(70, 890)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_u6thl"]
+size = Vector2(69, 890)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yje56"]
+atlas = ExtResource("11_l0lqg")
+region = Rect2(0, 0, 50, 50)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3ya2q"]
+atlas = ExtResource("11_l0lqg")
+region = Rect2(50, 0, 50, 50)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0tck8"]
+atlas = ExtResource("11_l0lqg")
+region = Rect2(100, 0, 50, 50)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_38y8u"]
+atlas = ExtResource("11_l0lqg")
+region = Rect2(150, 0, 50, 50)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_oyv1h"]
+atlas = ExtResource("11_l0lqg")
+region = Rect2(200, 0, 50, 50)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r847y"]
+atlas = ExtResource("11_l0lqg")
+region = Rect2(250, 0, 50, 50)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_enngj"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yje56")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3ya2q")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0tck8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_38y8u")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_oyv1h")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r847y")
+}, {
+"duration": 1.0,
+"texture": null
+}],
+"loop": true,
+"name": &"default",
+"speed": 2.0
+}]
+
+[node name="PlayAreaBowl" type="Node2D" node_paths=PackedStringArray("bowl", "noir", "next_purin", "score_ui", "sfx_pop_player", "sfx_bonk_player", "lose_area", "gameover_screen", "debug_text", "player_name_text")]
+script = ExtResource("1_xpfpx")
+bowl = NodePath("Bowl")
+noir = NodePath("NoiR")
+next_purin = NodePath("NextIndicator/NextPurin")
+score_ui = NodePath("ScoreInfo/Control/Score")
+sfx_pop_player = NodePath("Pop")
+sfx_bonk_player = NodePath("Bonk")
+lose_area = NodePath("Bowl/LoseArea")
+gameover_screen = NodePath("GameOverScreen")
+debug_text = NodePath("DebugText")
+player_name_text = NodePath("Control/Player Label")
+
+[node name="Pop" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_tn86m")
+
+[node name="Bonk" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_wfp2k")
+
+[node name="Bowl" type="StaticBody2D" parent="."]
+position = Vector2(0, 152)
+
+[node name="PlayArea" type="Sprite2D" parent="Bowl"]
+position = Vector2(400, 381)
+texture = ExtResource("2_x4cw2")
+
+[node name="BottomCollider" type="CollisionShape2D" parent="Bowl"]
+position = Vector2(399.5, 775)
+shape = SubResource("RectangleShape2D_a48te")
+
+[node name="TopCollider" type="CollisionShape2D" parent="Bowl"]
+position = Vector2(399, -185)
+shape = SubResource("RectangleShape2D_a48te")
+
+[node name="LeftCollider" type="CollisionShape2D" parent="Bowl"]
+position = Vector2(-13, 295)
+shape = SubResource("RectangleShape2D_uedqb")
+
+[node name="RightCollider" type="CollisionShape2D" parent="Bowl"]
+position = Vector2(812.5, 295)
+shape = SubResource("RectangleShape2D_u6thl")
+
+[node name="LoseArea" type="Area2D" parent="Bowl" node_paths=PackedStringArray("gameover_count_down")]
+position = Vector2(50, -136)
+disable_mode = 1
+monitorable = false
+script = ExtResource("3_f8b76")
+gameover_count_down = NodePath("../../GameOverCountDown")
+
+[node name="LoseCollider" type="CollisionPolygon2D" parent="Bowl/LoseArea"]
+position = Vector2(1, 13)
+polygon = PackedVector2Array(-100, -28, 798, -27, 800, 135, 700, 85, 576, 85, 116, 85, 1, 85, -100, 137)
+
+[node name="PurinObjects" type="Node2D" parent="."]
+
+[node name="ScoreInfo" type="Node2D" parent="."]
+position = Vector2(-2, -115)
+
+[node name="Bubble" type="Sprite2D" parent="ScoreInfo"]
+visible = false
+modulate = Color(1, 1, 1, 0.282353)
+position = Vector2(219, 181)
+scale = Vector2(1.9, 1.9)
+texture = ExtResource("5_2jxer")
+
+[node name="Control" type="Control" parent="ScoreInfo"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 4.0
+offset_top = 975.0
+offset_right = 434.0
+offset_bottom = 1313.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+
+[node name="ScoreLabel" type="RichTextLabel" parent="ScoreInfo/Control"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -215.0
+offset_top = 48.0
+offset_right = 584.0
+offset_bottom = 135.0
+grow_horizontal = 2
+theme_override_fonts/normal_font = ExtResource("7_xor5u")
+theme_override_font_sizes/normal_font_size = 72
+bbcode_enabled = true
+text = "[center]スコア[/center]"
+scroll_active = false
+shortcut_keys_enabled = false
+language = "JP"
+
+[node name="Score" type="RichTextLabel" parent="ScoreInfo/Control"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -216.0
+offset_top = -50.0
+offset_right = 581.0
+offset_bottom = 57.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/normal_font = ExtResource("7_xor5u")
+theme_override_font_sizes/normal_font_size = 72
+bbcode_enabled = true
+text = "[center]99999[/center]"
+scroll_active = false
+shortcut_keys_enabled = false
+
+[node name="NextIndicator" type="Node2D" parent="."]
+position = Vector2(642, -43)
+scale = Vector2(0.5, 0.5)
+
+[node name="Bubble2" type="Sprite2D" parent="NextIndicator"]
+modulate = Color(1, 1, 1, 0.282353)
+position = Vector2(252.5, 258.5)
+scale = Vector2(1.86458, 1.86458)
+texture = ExtResource("5_2jxer")
+
+[node name="NextPurin" type="Sprite2D" parent="NextIndicator"]
+position = Vector2(250, 261)
+scale = Vector2(2, 2)
+texture = ExtResource("6_h5ooi")
+
+[node name="NextLabel" type="RichTextLabel" parent="NextIndicator"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 34.0
+offset_top = 124.0
+offset_right = 463.0
+offset_bottom = 211.0
+grow_horizontal = 2
+theme_override_fonts/normal_font = ExtResource("7_xor5u")
+theme_override_font_sizes/normal_font_size = 60
+bbcode_enabled = true
+text = "[center]ネクスト[/center]"
+scroll_active = false
+shortcut_keys_enabled = false
+language = "JP"
+
+[node name="GameOverScreen" parent="." instance=ExtResource("10_vwbcx")]
+visible = false
+position = Vector2(64, 186)
+scale = Vector2(0.42, 0.482)
+
+[node name="GameOverCountDown" type="AnimatedSprite2D" parent="."]
+visible = false
+sprite_frames = SubResource("SpriteFrames_enngj")
+
+[node name="DebugText" type="RichTextLabel" parent="."]
+offset_left = 6.0
+offset_top = 4.0
+offset_right = 796.0
+offset_bottom = 152.0
+theme_override_fonts/normal_font = ExtResource("7_xor5u")
+theme_override_fonts/bold_font = ExtResource("12_dx1lx")
+theme_override_font_sizes/normal_font_size = 24
+theme_override_font_sizes/bold_font_size = 16
+bbcode_enabled = true
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_top = 965.0
+offset_right = 1824.0
+offset_bottom = 1075.0
+
+[node name="Player Label" type="RichTextLabel" parent="Control"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 7.0
+offset_top = -120.0
+offset_right = 798.0
+offset_bottom = -8.0
+grow_vertical = 2
+theme_override_fonts/normal_font = ExtResource("7_xor5u")
+theme_override_fonts/bold_font = ExtResource("12_dx1lx")
+theme_override_font_sizes/normal_font_size = 72
+theme_override_font_sizes/bold_font_size = 72
+text = "AI1"
+
+[node name="NoiR" parent="." instance=ExtResource("4_tleir")]
+position = Vector2(397, 151)
+
+[connection signal="body_entered" from="Bowl/LoseArea" to="Bowl/LoseArea" method="_on_body_entered"]
+[connection signal="body_exited" from="Bowl/LoseArea" to="Bowl/LoseArea" method="_on_body_exited"]

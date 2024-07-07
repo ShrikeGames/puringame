@@ -1,14 +1,15 @@
 [gd_scene load_steps=4 format=3 uid="uid://d3mm5neerbgqy"]
 
-[ext_resource type="Texture2D" uid="uid://borwp1w2wqb66" path="res://assets/images/DropLine.png" id="1_75ojc"]
 [ext_resource type="Texture2D" uid="uid://bj7tvykj3i11p" path="res://assets/images/Noir.png" id="1_caifl"]
+[ext_resource type="Script" path="res://assets/scripts/NoiR.gd" id="1_kbn2q"]
 [ext_resource type="Texture2D" uid="uid://xt87hje080jt" path="res://assets/images/purin1.png" id="3_sed5s"]
 
-[node name="NoiR" type="Node2D"]
+[node name="NoiR" type="Node2D" node_paths=PackedStringArray("drop_line")]
+script = ExtResource("1_kbn2q")
+drop_line = NodePath("DropLine")
 
-[node name="DropLine" type="Sprite2D" parent="."]
-position = Vector2(0, 500)
-texture = ExtResource("1_75ojc")
+[node name="DropLine" type="Line2D" parent="."]
+position = Vector2(0, -10)
 
 [node name="Noir" type="Sprite2D" parent="."]
 position = Vector2(0, -67)

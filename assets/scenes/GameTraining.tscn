@@ -1,0 +1,102 @@
+[gd_scene load_steps=16 format=3 uid="uid://dsimdukn6dthe"]
+
+[ext_resource type="Script" path="res://assets/scripts/AIManager.gd" id="1_doc3l"]
+[ext_resource type="Texture2D" uid="uid://c3xtdqs3o2uf3" path="res://assets/images/noir_@dqnww.png" id="4_jagme"]
+[ext_resource type="Texture2D" uid="uid://xt87hje080jt" path="res://assets/images/purin1.png" id="8_ysdtw"]
+[ext_resource type="Texture2D" uid="uid://ds7ffculpywfr" path="res://assets/images/purin2.png" id="9_kf7j1"]
+[ext_resource type="Texture2D" uid="uid://d1l07juub21tt" path="res://assets/images/purin3.png" id="10_8mmdr"]
+[ext_resource type="Texture2D" uid="uid://r1wwvaqohtgs" path="res://assets/images/purin4.png" id="11_oy731"]
+[ext_resource type="Texture2D" uid="uid://cc26nt2jn3vxa" path="res://assets/images/purin5.png" id="12_yciu4"]
+[ext_resource type="Texture2D" uid="uid://bsm8qt57ehuah" path="res://assets/images/purin6.png" id="13_5jixj"]
+[ext_resource type="Texture2D" uid="uid://cekg4y1brmpw5" path="res://assets/images/purin7.png" id="14_6yd54"]
+[ext_resource type="Script" path="res://assets/scripts/Camera.gd" id="15_1ghtr"]
+[ext_resource type="PackedScene" uid="uid://dnruobuhnvd7c" path="res://assets/scenes/SoloGameButton.tscn" id="15_3p5kf"]
+[ext_resource type="Texture2D" uid="uid://djw85tem2f7me" path="res://assets/images/purin8.png" id="15_w5ebm"]
+[ext_resource type="Texture2D" uid="uid://k1hduynp1pgw" path="res://assets/images/purin9.png" id="16_riydc"]
+[ext_resource type="Texture2D" uid="uid://cwcmvy5fu6w86" path="res://assets/images/purin10.png" id="17_2odgw"]
+[ext_resource type="Texture2D" uid="uid://bja3p1ji46rhl" path="res://assets/images/purin11.png" id="18_vu7lp"]
+
+[node name="Game" type="Node2D" node_paths=PackedStringArray("camera")]
+script = ExtResource("1_doc3l")
+camera = NodePath("Camera2D")
+best_ratio = 1.0
+time_scale = 3.0
+
+[node name="Background" type="Sprite2D" parent="."]
+position = Vector2(966, 539)
+scale = Vector2(0.243899, 0.243899)
+texture = ExtResource("4_jagme")
+
+[node name="ProgressionIndicator" type="Node2D" parent="."]
+position = Vector2(961, 25)
+scale = Vector2(0.84, 0.84)
+
+[node name="Purin1" type="Sprite2D" parent="ProgressionIndicator"]
+position = Vector2(0.500122, -3)
+scale = Vector2(0.75, 0.75)
+texture = ExtResource("8_ysdtw")
+
+[node name="Purin2" type="Sprite2D" parent="ProgressionIndicator"]
+position = Vector2(0, 50)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("9_kf7j1")
+
+[node name="Purin3" type="Sprite2D" parent="ProgressionIndicator"]
+position = Vector2(0, 120)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("10_8mmdr")
+
+[node name="Purin4" type="Sprite2D" parent="ProgressionIndicator"]
+position = Vector2(0, 200)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("11_oy731")
+
+[node name="Purin5" type="Sprite2D" parent="ProgressionIndicator"]
+position = Vector2(0, 295)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("12_yciu4")
+
+[node name="Purin6" type="Sprite2D" parent="ProgressionIndicator"]
+position = Vector2(0, 400)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("13_5jixj")
+
+[node name="Purin7" type="Sprite2D" parent="ProgressionIndicator"]
+position = Vector2(0, 520)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("14_6yd54")
+
+[node name="Purin8" type="Sprite2D" parent="ProgressionIndicator"]
+position = Vector2(0, 650)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("15_w5ebm")
+
+[node name="Purin9" type="Sprite2D" parent="ProgressionIndicator"]
+position = Vector2(0, 800)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("16_riydc")
+
+[node name="Purin10" type="Sprite2D" parent="ProgressionIndicator"]
+position = Vector2(0, 960)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("17_2odgw")
+
+[node name="Purin11" type="Sprite2D" parent="ProgressionIndicator"]
+position = Vector2(0, 1140)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("18_vu7lp")
+
+[node name="AIGames" type="Node2D" parent="."]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(964.647, 538)
+script = ExtResource("15_1ghtr")
+camera_move_speed = 1500.0
+
+[node name="MenuButton" parent="." instance=ExtResource("15_3p5kf")]
+offset_left = 1643.0
+offset_top = 970.0
+offset_right = 2243.0
+offset_bottom = 1170.0
+scale = Vector2(0.439997, 0.439997)
+text = "メニュー"

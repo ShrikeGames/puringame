@@ -1,409 +1,95 @@
-[gd_scene load_steps=38 format=3 uid="uid://dsimdukn6dthe"]
+[gd_scene load_steps=15 format=3 uid="uid://cwgeb2d5e3a24"]
 
-[ext_resource type="Script" path="res://assets/scripts/Main.gd" id="1_m0ynt"]
-[ext_resource type="AudioStream" uid="uid://borrrahqop0te" path="res://assets/audio/sfx/pop.wav" id="2_3jyka"]
-[ext_resource type="AudioStream" uid="uid://cir0gwbyyr3h5" path="res://assets/audio/sfx/bonk.wav" id="3_bowni"]
-[ext_resource type="Texture2D" uid="uid://c3xtdqs3o2uf3" path="res://assets/images/noir_@dqnww.png" id="4_jagme"]
-[ext_resource type="Texture2D" uid="uid://c7vje2fcd4i0o" path="res://assets/images/Bubble.png" id="5_eigob"]
-[ext_resource type="Texture2D" uid="uid://c7q1lcjlkysl4" path="res://assets/images/PlayArea.png" id="5_ena3y"]
-[ext_resource type="Script" path="res://assets/scripts/LoseArea.gd" id="6_togvy"]
-[ext_resource type="PackedScene" uid="uid://d3mm5neerbgqy" path="res://assets/scenes/NoiR.tscn" id="7_xqomb"]
-[ext_resource type="Texture2D" uid="uid://xt87hje080jt" path="res://assets/images/purin1.png" id="8_ysdtw"]
-[ext_resource type="Texture2D" uid="uid://ds7ffculpywfr" path="res://assets/images/purin2.png" id="9_kf7j1"]
-[ext_resource type="Texture2D" uid="uid://d1l07juub21tt" path="res://assets/images/purin3.png" id="10_8mmdr"]
-[ext_resource type="Texture2D" uid="uid://r1wwvaqohtgs" path="res://assets/images/purin4.png" id="11_oy731"]
-[ext_resource type="Texture2D" uid="uid://cc26nt2jn3vxa" path="res://assets/images/purin5.png" id="12_yciu4"]
-[ext_resource type="Texture2D" uid="uid://bsm8qt57ehuah" path="res://assets/images/purin6.png" id="13_5jixj"]
-[ext_resource type="Texture2D" uid="uid://cekg4y1brmpw5" path="res://assets/images/purin7.png" id="14_6yd54"]
-[ext_resource type="Texture2D" uid="uid://djw85tem2f7me" path="res://assets/images/purin8.png" id="15_w5ebm"]
-[ext_resource type="Texture2D" uid="uid://k1hduynp1pgw" path="res://assets/images/purin9.png" id="16_riydc"]
-[ext_resource type="Texture2D" uid="uid://cwcmvy5fu6w86" path="res://assets/images/purin10.png" id="17_2odgw"]
-[ext_resource type="Texture2D" uid="uid://bja3p1ji46rhl" path="res://assets/images/purin11.png" id="18_vu7lp"]
-[ext_resource type="Texture2D" uid="uid://bkidel8xvjsvt" path="res://assets/images/GameOverBackdrop.png" id="19_6g2ub"]
-[ext_resource type="FontFile" uid="uid://cdwb8ivskcjue" path="res://assets/fonts/NotoSansCJK-Regular.ttc" id="20_cm4p7"]
-[ext_resource type="Script" path="res://assets/scripts/RetryButton.gd" id="20_u51w1"]
-[ext_resource type="Texture2D" uid="uid://dm5w8oq6jw3xp" path="res://assets/images/Button.png" id="22_pxdld"]
-[ext_resource type="Texture2D" uid="uid://dp1trtxl6ekyx" path="res://assets/images/ButtonPress.png" id="23_5wy0u"]
-[ext_resource type="Texture2D" uid="uid://dgdj0nsw86rr0" path="res://assets/images/GameOverCountDownSpriteSheet.png" id="23_vtu0m"]
-[ext_resource type="Texture2D" uid="uid://dyjjf35spvgrk" path="res://assets/images/ButtonHover.png" id="24_kdyyk"]
+[ext_resource type="Texture2D" uid="uid://c3xtdqs3o2uf3" path="res://assets/images/noir_@dqnww.png" id="2_ithij"]
+[ext_resource type="Texture2D" uid="uid://xt87hje080jt" path="res://assets/images/purin1.png" id="3_adfmv"]
+[ext_resource type="Texture2D" uid="uid://ds7ffculpywfr" path="res://assets/images/purin2.png" id="4_rf2y4"]
+[ext_resource type="Texture2D" uid="uid://d1l07juub21tt" path="res://assets/images/purin3.png" id="5_uhu2k"]
+[ext_resource type="Texture2D" uid="uid://r1wwvaqohtgs" path="res://assets/images/purin4.png" id="6_54j7f"]
+[ext_resource type="Texture2D" uid="uid://cc26nt2jn3vxa" path="res://assets/images/purin5.png" id="7_lajcg"]
+[ext_resource type="Texture2D" uid="uid://bsm8qt57ehuah" path="res://assets/images/purin6.png" id="8_yixyw"]
+[ext_resource type="Texture2D" uid="uid://cekg4y1brmpw5" path="res://assets/images/purin7.png" id="9_li31h"]
+[ext_resource type="Texture2D" uid="uid://djw85tem2f7me" path="res://assets/images/purin8.png" id="10_mkw88"]
+[ext_resource type="Texture2D" uid="uid://k1hduynp1pgw" path="res://assets/images/purin9.png" id="11_r4mhx"]
+[ext_resource type="Texture2D" uid="uid://cwcmvy5fu6w86" path="res://assets/images/purin10.png" id="12_a6cpv"]
+[ext_resource type="Texture2D" uid="uid://bja3p1ji46rhl" path="res://assets/images/purin11.png" id="13_bcewv"]
+[ext_resource type="PackedScene" uid="uid://con8stx2et0ea" path="res://assets/scenes/PlayAreaBowl.tscn" id="13_ohdrd"]
+[ext_resource type="PackedScene" uid="uid://dnruobuhnvd7c" path="res://assets/scenes/SoloGameButton.tscn" id="14_4xveu"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_gjlyd"]
-size = Vector2(895, 70)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_tjcpw"]
-size = Vector2(70, 890)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_5dg7v"]
-size = Vector2(69, 890)
-
-[sub_resource type="ButtonGroup" id="ButtonGroup_4heqw"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_yje56"]
-atlas = ExtResource("23_vtu0m")
-region = Rect2(0, 0, 50, 50)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_3ya2q"]
-atlas = ExtResource("23_vtu0m")
-region = Rect2(50, 0, 50, 50)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_0tck8"]
-atlas = ExtResource("23_vtu0m")
-region = Rect2(100, 0, 50, 50)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_38y8u"]
-atlas = ExtResource("23_vtu0m")
-region = Rect2(150, 0, 50, 50)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_oyv1h"]
-atlas = ExtResource("23_vtu0m")
-region = Rect2(200, 0, 50, 50)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_r847y"]
-atlas = ExtResource("23_vtu0m")
-region = Rect2(250, 0, 50, 50)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_2x8ho"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_yje56")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_3ya2q")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_0tck8")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_38y8u")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_oyv1h")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_r847y")
-}, {
-"duration": 1.0,
-"texture": null
-}],
-"loop": true,
-"name": &"default",
-"speed": 2.0
-}]
-
-[node name="Game" type="Node2D" node_paths=PackedStringArray("bowl", "noir", "next_purin", "score_ui", "sfx_pop_player", "sfx_bonk_player", "lose_area", "gameover_screen")]
-script = ExtResource("1_m0ynt")
-bowl = NodePath("Bowl")
-noir = NodePath("NoiR")
-next_purin = NodePath("NextIndicator/NextPurin")
-score_ui = NodePath("ScoreInfo/Control/Score")
-sfx_pop_player = NodePath("Pop")
-sfx_bonk_player = NodePath("Bonk")
-lose_area = NodePath("Bowl/LoseArea")
-gameover_screen = NodePath("GameOverScreen")
-
-[node name="Pop" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("2_3jyka")
-
-[node name="Bonk" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("3_bowni")
+[node name="Game" type="Node2D"]
 
 [node name="Background" type="Sprite2D" parent="."]
-position = Vector2(799.889, 443)
-scale = Vector2(0.203853, 0.203853)
-texture = ExtResource("4_jagme")
-
-[node name="Bowl" type="StaticBody2D" parent="."]
-position = Vector2(391, 136)
-
-[node name="PlayArea" type="Sprite2D" parent="Bowl"]
-position = Vector2(400, 381)
-texture = ExtResource("5_ena3y")
-
-[node name="BottomCollider" type="CollisionShape2D" parent="Bowl"]
-position = Vector2(399.5, 775)
-shape = SubResource("RectangleShape2D_gjlyd")
-
-[node name="TopCollider" type="CollisionShape2D" parent="Bowl"]
-position = Vector2(399, -185)
-shape = SubResource("RectangleShape2D_gjlyd")
-
-[node name="LeftCollider" type="CollisionShape2D" parent="Bowl"]
-position = Vector2(-13, 295)
-shape = SubResource("RectangleShape2D_tjcpw")
-
-[node name="RightCollider" type="CollisionShape2D" parent="Bowl"]
-position = Vector2(812.5, 295)
-shape = SubResource("RectangleShape2D_5dg7v")
-
-[node name="LoseArea" type="Area2D" parent="Bowl" node_paths=PackedStringArray("gameover_count_down")]
-position = Vector2(50, -136)
-disable_mode = 1
-monitorable = false
-script = ExtResource("6_togvy")
-gameover_count_down = NodePath("../../GameOverCountDown")
-
-[node name="LoseCollider" type="CollisionPolygon2D" parent="Bowl/LoseArea"]
-position = Vector2(1, 13)
-polygon = PackedVector2Array(-100, -28, 798, -27, 800, 135, 700, 85, 576, 85, 116, 85, 1, 85, -100, 137)
-
-[node name="NoiR" parent="." instance=ExtResource("7_xqomb")]
-position = Vector2(788, 135)
-
-[node name="PurinObjects" type="Node2D" parent="."]
+position = Vector2(966, 539)
+scale = Vector2(0.243899, 0.243899)
+texture = ExtResource("2_ithij")
 
 [node name="ProgressionIndicator" type="Node2D" parent="."]
-position = Vector2(1497, 535)
+position = Vector2(1503, 22)
 scale = Vector2(0.84, 0.84)
 
 [node name="Purin1" type="Sprite2D" parent="ProgressionIndicator"]
 position = Vector2(0.500122, -3)
 scale = Vector2(0.75, 0.75)
-texture = ExtResource("8_ysdtw")
+texture = ExtResource("3_adfmv")
 
 [node name="Purin2" type="Sprite2D" parent="ProgressionIndicator"]
-position = Vector2(40.5001, 13)
+position = Vector2(0, 50)
 scale = Vector2(0.5, 0.5)
-texture = ExtResource("9_kf7j1")
+texture = ExtResource("4_rf2y4")
 
 [node name="Purin3" type="Sprite2D" parent="ProgressionIndicator"]
-position = Vector2(73.5001, 59)
+position = Vector2(0, 120)
 scale = Vector2(0.5, 0.5)
-texture = ExtResource("10_8mmdr")
+texture = ExtResource("5_uhu2k")
 
 [node name="Purin4" type="Sprite2D" parent="ProgressionIndicator"]
-position = Vector2(78.5001, 129)
+position = Vector2(0, 200)
 scale = Vector2(0.5, 0.5)
-texture = ExtResource("11_oy731")
+texture = ExtResource("6_54j7f")
 
 [node name="Purin5" type="Sprite2D" parent="ProgressionIndicator"]
-position = Vector2(32.5001, 198)
+position = Vector2(0, 295)
 scale = Vector2(0.5, 0.5)
-texture = ExtResource("12_yciu4")
+texture = ExtResource("7_lajcg")
 
 [node name="Purin6" type="Sprite2D" parent="ProgressionIndicator"]
-position = Vector2(-56.4999, 224)
+position = Vector2(0, 400)
 scale = Vector2(0.5, 0.5)
-texture = ExtResource("13_5jixj")
+texture = ExtResource("8_yixyw")
 
 [node name="Purin7" type="Sprite2D" parent="ProgressionIndicator"]
-position = Vector2(-160, 207)
+position = Vector2(0, 520)
 scale = Vector2(0.5, 0.5)
-texture = ExtResource("14_6yd54")
+texture = ExtResource("9_li31h")
 
 [node name="Purin8" type="Sprite2D" parent="ProgressionIndicator"]
-position = Vector2(-249, 130)
+position = Vector2(0, 650)
 scale = Vector2(0.5, 0.5)
-texture = ExtResource("15_w5ebm")
+texture = ExtResource("10_mkw88")
 
 [node name="Purin9" type="Sprite2D" parent="ProgressionIndicator"]
-position = Vector2(-277, 1)
+position = Vector2(0, 800)
 scale = Vector2(0.5, 0.5)
-texture = ExtResource("16_riydc")
+texture = ExtResource("11_r4mhx")
 
 [node name="Purin10" type="Sprite2D" parent="ProgressionIndicator"]
-position = Vector2(-231, -137)
+position = Vector2(0, 960)
 scale = Vector2(0.5, 0.5)
-texture = ExtResource("17_2odgw")
+texture = ExtResource("12_a6cpv")
 
 [node name="Purin11" type="Sprite2D" parent="ProgressionIndicator"]
-position = Vector2(-83.0001, -204)
+position = Vector2(0, 1140)
 scale = Vector2(0.5, 0.5)
-texture = ExtResource("18_vu7lp")
+texture = ExtResource("13_bcewv")
 
-[node name="NextIndicator" type="Node2D" parent="."]
-position = Vector2(1193, 0)
-scale = Vector2(0.5, 0.5)
+[node name="PlayAreaBowl" parent="." instance=ExtResource("13_ohdrd")]
+position = Vector2(550, 0)
+player_name = "Player"
+mute_sound = false
 
-[node name="Bubble2" type="Sprite2D" parent="NextIndicator"]
-modulate = Color(1, 1, 1, 0.282353)
-position = Vector2(252.5, 258.5)
-scale = Vector2(2.715, 2.715)
-texture = ExtResource("5_eigob")
-
-[node name="NextPurin" type="Sprite2D" parent="NextIndicator"]
-position = Vector2(250, 261)
-scale = Vector2(2, 2)
-texture = ExtResource("8_ysdtw")
-
-[node name="ScoreLabel2" type="RichTextLabel" parent="NextIndicator"]
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = 34.0
-offset_top = 124.0
-offset_right = 463.0
-offset_bottom = 211.0
-grow_horizontal = 2
-theme_override_fonts/normal_font = ExtResource("20_cm4p7")
-theme_override_font_sizes/normal_font_size = 60
-bbcode_enabled = true
-text = "[center]ネクスト[/center]"
-scroll_active = false
-shortcut_keys_enabled = false
-language = "JP"
-
-[node name="GameOverScreen" type="Node2D" parent="."]
-visible = false
-position = Vector2(800, 450)
-
-[node name="GameOverBackdrop" type="Sprite2D" parent="GameOverScreen"]
-texture = ExtResource("19_6g2ub")
-
-[node name="Control" type="Control" parent="GameOverScreen"]
-layout_mode = 3
-anchors_preset = 0
-offset_left = -796.0
-offset_top = -181.0
-offset_right = 797.0
-offset_bottom = 168.0
-
-[node name="GameOverText" type="RichTextLabel" parent="GameOverScreen/Control"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -379.5
-offset_top = -75.5
-offset_right = 382.5
-offset_bottom = 109.5
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_fonts/normal_font = ExtResource("20_cm4p7")
-theme_override_font_sizes/normal_font_size = 72
-bbcode_enabled = true
-text = "[center]ゲームオーバー[/center]"
-scroll_active = false
-language = "JP"
-
-[node name="Control2" type="Control" parent="GameOverScreen"]
-layout_mode = 3
-anchors_preset = 0
-offset_left = -799.0
-offset_top = 172.0
-offset_right = -409.0
-offset_bottom = 306.0
-
-[node name="RetryButton" type="TextureButton" parent="GameOverScreen/Control2" node_paths=PackedStringArray("game", "gameover_screen", "text_label")]
-process_mode = 3
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -163.0
-offset_top = -64.0
-offset_right = 437.0
-offset_bottom = 136.0
-grow_horizontal = 2
-grow_vertical = 2
-scale = Vector2(0.559547, 0.544881)
-toggle_mode = true
-button_group = SubResource("ButtonGroup_4heqw")
-texture_normal = ExtResource("22_pxdld")
-texture_pressed = ExtResource("23_5wy0u")
-texture_hover = ExtResource("24_kdyyk")
-script = ExtResource("20_u51w1")
-game = NodePath("../../..")
-gameover_screen = NodePath("../..")
-text_label = NodePath("RetryText")
-text = "リトライ"
-
-[node name="RetryText" type="RichTextLabel" parent="GameOverScreen/Control2/RetryButton"]
-layout_mode = 0
-offset_left = 28.0
-offset_top = 47.0
-offset_right = 579.0
-offset_bottom = 180.0
-mouse_filter = 1
-theme_override_fonts/normal_font = ExtResource("20_cm4p7")
-theme_override_font_sizes/normal_font_size = 72
-bbcode_enabled = true
-scroll_active = false
-shortcut_keys_enabled = false
-language = "JP"
-
-[node name="ScoreInfo" type="Node2D" parent="."]
-
-[node name="Bubble" type="Sprite2D" parent="ScoreInfo"]
-modulate = Color(1, 1, 1, 0.282353)
-position = Vector2(219, 181)
-scale = Vector2(1.9, 1.9)
-texture = ExtResource("5_eigob")
-
-[node name="Control" type="Control" parent="ScoreInfo"]
-layout_mode = 3
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = 4.0
-offset_top = 46.0
-offset_right = 434.0
-offset_bottom = 384.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 6
-size_flags_vertical = 6
-
-[node name="ScoreLabel" type="RichTextLabel" parent="ScoreInfo/Control"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -215.0
-offset_top = 48.0
-offset_right = 214.0
-offset_bottom = 135.0
-grow_horizontal = 2
-theme_override_fonts/normal_font = ExtResource("20_cm4p7")
-theme_override_font_sizes/normal_font_size = 72
-bbcode_enabled = true
-text = "[center]スコア[/center]"
-scroll_active = false
-shortcut_keys_enabled = false
-language = "JP"
-
-[node name="Score" type="RichTextLabel" parent="ScoreInfo/Control"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -216.0
-offset_top = -50.0
-offset_right = 207.0
-offset_bottom = 57.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_fonts/normal_font = ExtResource("20_cm4p7")
-theme_override_font_sizes/normal_font_size = 72
-bbcode_enabled = true
-text = "[center]99999[/center]"
-scroll_active = false
-shortcut_keys_enabled = false
-
-[node name="GameOverCountDown" type="AnimatedSprite2D" parent="."]
-visible = false
-position = Vector2(937, 72)
-sprite_frames = SubResource("SpriteFrames_2x8ho")
-frame = 2
-frame_progress = 0.220133
-
-[node name="RichTextLabel" type="RichTextLabel" parent="."]
-offset_left = 36.0
-offset_top = 807.0
-offset_right = 195.0
-offset_bottom = 860.0
-theme_override_fonts/normal_font = ExtResource("20_cm4p7")
-text = "Version 1.0.18
-\"R to restart\""
-
-[connection signal="body_entered" from="Bowl/LoseArea" to="Bowl/LoseArea" method="_on_body_entered"]
-[connection signal="body_exited" from="Bowl/LoseArea" to="Bowl/LoseArea" method="_on_body_exited"]
-[connection signal="pressed" from="GameOverScreen/Control2/RetryButton" to="GameOverScreen/Control2/RetryButton" method="_on_pressed"]
+[node name="MenuButton" parent="." instance=ExtResource("14_4xveu")]
+offset_left = 1643.0
+offset_top = 970.0
+offset_right = 2243.0
+offset_bottom = 1170.0
+scale = Vector2(0.439997, 0.439997)
+text = "メニュー"

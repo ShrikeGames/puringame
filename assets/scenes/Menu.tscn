@@ -1,0 +1,76 @@
+[gd_scene load_steps=8 format=3 uid="uid://qis1inlxechp"]
+
+[ext_resource type="Texture2D" uid="uid://c3xtdqs3o2uf3" path="res://assets/images/noir_@dqnww.png" id="1_fh7mn"]
+[ext_resource type="PackedScene" uid="uid://con8stx2et0ea" path="res://assets/scenes/PlayAreaBowl.tscn" id="3_cl710"]
+[ext_resource type="PackedScene" uid="uid://dnruobuhnvd7c" path="res://assets/scenes/SoloGameButton.tscn" id="3_llqj5"]
+[ext_resource type="FontFile" uid="uid://cdwb8ivskcjue" path="res://assets/fonts/NotoSansCJK-Regular.ttc" id="8_hm5qy"]
+[ext_resource type="FontFile" uid="uid://buytj31trs62" path="res://assets/fonts/NotoSansCJK-Bold.ttc" id="9_0ahjj"]
+[ext_resource type="Texture2D" uid="uid://b16vuwlym50hl" path="res://assets/images/Banner.png" id="12_6m6hm"]
+[ext_resource type="Texture2D" uid="uid://bghnyyws4jpb8" path="res://assets/images/Shrike_878x878.png" id="13_2373h"]
+
+[node name="Menu" type="Node2D"]
+
+[node name="Background" type="Sprite2D" parent="."]
+position = Vector2(966, 539)
+scale = Vector2(0.243899, 0.243899)
+texture = ExtResource("1_fh7mn")
+
+[node name="PlayAreaBowl" parent="." instance=ExtResource("3_cl710")]
+position = Vector2(1075, 3)
+ai_controlled = true
+player_name = "DEMO"
+mute_sound = false
+difficulty = "demo"
+mutation_rate = 0.0
+ai_use_best_rate = 100.0
+ai_use_personal_rate = 0.0
+
+[node name="Banner" type="Sprite2D" parent="."]
+position = Vector2(510, 89.0001)
+scale = Vector2(0.625, 0.625)
+texture = ExtResource("12_6m6hm")
+
+[node name="Shrike878x878" type="Sprite2D" parent="."]
+position = Vector2(118.25, 966.75)
+scale = Vector2(0.236332, 0.236332)
+texture = ExtResource("13_2373h")
+
+[node name="VersionText" type="RichTextLabel" parent="."]
+offset_left = 47.0
+offset_top = 940.0
+offset_right = 203.0
+offset_bottom = 1020.0
+mouse_filter = 1
+theme_override_fonts/normal_font = ExtResource("8_hm5qy")
+theme_override_fonts/bold_font = ExtResource("9_0ahjj")
+theme_override_font_sizes/normal_font_size = 24
+bbcode_enabled = true
+text = "Version 2.0.0
+\"AI Update\""
+scroll_active = false
+shortcut_keys_enabled = false
+
+[node name="Playbutton1" parent="." instance=ExtResource("3_llqj5")]
+offset_left = 200.0
+offset_top = 189.0
+offset_right = 800.0
+offset_bottom = 389.0
+scene_to_change_to = "res://assets/scenes/Game.tscn"
+text = "一人ゲーム"
+
+[node name="Playbutton2" parent="." instance=ExtResource("3_llqj5")]
+offset_left = 202.0
+offset_top = 429.0
+offset_right = 802.0
+offset_bottom = 629.0
+scene_to_change_to = "res://assets/scenes/GameVSAI.tscn"
+text = "VS AI ゲーム"
+
+[node name="TrainingButton" parent="." instance=ExtResource("3_llqj5")]
+visible = false
+offset_left = 202.0
+offset_top = 667.0
+offset_right = 802.0
+offset_bottom = 867.0
+scene_to_change_to = "res://assets/scenes/GameTraining.tscn"
+text = "AIを鍛える"

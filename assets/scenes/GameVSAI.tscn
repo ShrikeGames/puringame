@@ -1,0 +1,107 @@
+[gd_scene load_steps=15 format=3 uid="uid://cg6rs6yybp3g6"]
+
+[ext_resource type="Texture2D" uid="uid://c3xtdqs3o2uf3" path="res://assets/images/noir_@dqnww.png" id="1_lrphk"]
+[ext_resource type="Texture2D" uid="uid://xt87hje080jt" path="res://assets/images/purin1.png" id="2_fsy0n"]
+[ext_resource type="Texture2D" uid="uid://ds7ffculpywfr" path="res://assets/images/purin2.png" id="3_1t0pr"]
+[ext_resource type="Texture2D" uid="uid://d1l07juub21tt" path="res://assets/images/purin3.png" id="4_gdvjw"]
+[ext_resource type="Texture2D" uid="uid://r1wwvaqohtgs" path="res://assets/images/purin4.png" id="5_mqtht"]
+[ext_resource type="Texture2D" uid="uid://cc26nt2jn3vxa" path="res://assets/images/purin5.png" id="6_txklj"]
+[ext_resource type="Texture2D" uid="uid://bsm8qt57ehuah" path="res://assets/images/purin6.png" id="7_7j80a"]
+[ext_resource type="Texture2D" uid="uid://cekg4y1brmpw5" path="res://assets/images/purin7.png" id="8_h4aak"]
+[ext_resource type="Texture2D" uid="uid://djw85tem2f7me" path="res://assets/images/purin8.png" id="9_qoyht"]
+[ext_resource type="Texture2D" uid="uid://k1hduynp1pgw" path="res://assets/images/purin9.png" id="10_codve"]
+[ext_resource type="Texture2D" uid="uid://cwcmvy5fu6w86" path="res://assets/images/purin10.png" id="11_i2u1v"]
+[ext_resource type="Texture2D" uid="uid://bja3p1ji46rhl" path="res://assets/images/purin11.png" id="12_hc0wc"]
+[ext_resource type="PackedScene" uid="uid://con8stx2et0ea" path="res://assets/scenes/PlayAreaBowl.tscn" id="13_3k2pk"]
+[ext_resource type="PackedScene" uid="uid://dnruobuhnvd7c" path="res://assets/scenes/SoloGameButton.tscn" id="14_d73ay"]
+
+[node name="Game" type="Node2D"]
+
+[node name="Background" type="Sprite2D" parent="."]
+position = Vector2(966, 539)
+scale = Vector2(0.243899, 0.243899)
+texture = ExtResource("1_lrphk")
+
+[node name="ProgressionIndicator" type="Node2D" parent="."]
+position = Vector2(961, 25)
+scale = Vector2(0.84, 0.84)
+
+[node name="Purin1" type="Sprite2D" parent="ProgressionIndicator"]
+position = Vector2(0.500122, -3)
+scale = Vector2(0.75, 0.75)
+texture = ExtResource("2_fsy0n")
+
+[node name="Purin2" type="Sprite2D" parent="ProgressionIndicator"]
+position = Vector2(0, 50)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("3_1t0pr")
+
+[node name="Purin3" type="Sprite2D" parent="ProgressionIndicator"]
+position = Vector2(0, 120)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("4_gdvjw")
+
+[node name="Purin4" type="Sprite2D" parent="ProgressionIndicator"]
+position = Vector2(0, 200)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("5_mqtht")
+
+[node name="Purin5" type="Sprite2D" parent="ProgressionIndicator"]
+position = Vector2(0, 295)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("6_txklj")
+
+[node name="Purin6" type="Sprite2D" parent="ProgressionIndicator"]
+position = Vector2(0, 400)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("7_7j80a")
+
+[node name="Purin7" type="Sprite2D" parent="ProgressionIndicator"]
+position = Vector2(0, 520)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("8_h4aak")
+
+[node name="Purin8" type="Sprite2D" parent="ProgressionIndicator"]
+position = Vector2(0, 650)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("9_qoyht")
+
+[node name="Purin9" type="Sprite2D" parent="ProgressionIndicator"]
+position = Vector2(0, 800)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("10_codve")
+
+[node name="Purin10" type="Sprite2D" parent="ProgressionIndicator"]
+position = Vector2(0, 960)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("11_i2u1v")
+
+[node name="Purin11" type="Sprite2D" parent="ProgressionIndicator"]
+position = Vector2(0, 1140)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("12_hc0wc")
+
+[node name="AIGames" type="Node2D" parent="."]
+position = Vector2(1040, 0)
+
+[node name="PlayAreaBowl" parent="AIGames" instance=ExtResource("13_3k2pk")]
+position = Vector2(45, 0)
+ai_controlled = true
+player_name = "AI"
+difficulty = "vs_ai_normal"
+mutation_rate = 0.0
+ai_use_best_rate = 100.0
+ai_use_personal_rate = 0.0
+
+[node name="PlayAreaBowl" parent="." instance=ExtResource("13_3k2pk")]
+position = Vector2(40, 0)
+player_name = "Player"
+mute_sound = false
+
+[node name="MenuButton" parent="." instance=ExtResource("14_d73ay")]
+offset_left = 1643.0
+offset_top = 970.0
+offset_right = 2243.0
+offset_bottom = 1170.0
+scale = Vector2(0.439997, 0.439997)
+text = "メニュー"
