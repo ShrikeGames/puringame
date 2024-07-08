@@ -13,7 +13,7 @@ var currently_watching_game:Game = null;
 var global_best_score_history = [];
 var global_average_best_score_history = [];
 var gen_best_score_history = [];
-var config_path:String = ProjectSettings.localize_path("res://assets/ML/%s.cfg"%["best"]);
+var config_path:String = ProjectSettings.localize_path("user://assets/ML/%s.cfg"%["best"]);
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	ai_games_node = get_node("AIGames");
@@ -44,9 +44,18 @@ func _process(_delta):
 		print("Generation %s has concluded."%[generation]);
 		var best_config = "best";
 		var config = ConfigFile.new();
-		config.load(config_path);
+		#load from resources
 		
-		var best_score:float = config.get_value(best_config, "highscore");
+		if not ResourceLoader.exists("user://assets/ML/%s.cfg"%["best"]):
+			print("File did not exist so loading from res");
+			config.load("res://assets/ML/%s.cfg"%["best"]);
+			print("saving to user://");
+			config.save("user://assets/ML/%s.cfg"%["best"]);
+			print("loadin from user://");
+			config.load("user://assets/ML/%s.cfg"%["best"]);
+		else:
+			config.load(config_path);
+		var best_score:float = config.get_value(best_config, "highscore", 0);
 		print("The all time best score is: %s"%(best_score));
 		global_best_score_history.append(best_score);
 		
@@ -84,8 +93,9 @@ func _process(_delta):
 		for i in range(0, len(best_of_generation)):
 			var game:Game = play_package.instantiate();
 			var player_configs = best_of_generation[i];
-			best_total_scores += player_configs["previous_highscore"];
+			
 			total_score += config.get_value(player_configs["player_name"], "previous_highscore", 0);
+			best_total_scores += config.get_value(player_configs["player_name"], "previous_highscore", 0);
 			game.ai_controlled = true;
 			game.training = true;
 			game.debug=true;

@@ -20,7 +20,6 @@
 script = ExtResource("1_doc3l")
 camera = NodePath("Camera2D")
 best_ratio = 1.0
-time_scale = 3.0
 
 [node name="Background" type="Sprite2D" parent="."]
 position = Vector2(966, 539)
