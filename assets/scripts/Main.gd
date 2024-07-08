@@ -59,8 +59,10 @@ var best_config:String = "best";
 @export var ai_use_personal_rate:float = 35;
 var drop_bias:float = 0.0;
 var next_purin_weight:float = 0.0;
-var config_path:String = ProjectSettings.localize_path("res://assets/ML/%s.cfg"%[difficulty]);
+var config_path:String = "res://assets/ML/%s.cfg"%[difficulty];
 func start_game():
+	if training:
+		config_path ="user://%s.cfg"%[difficulty];
 	remove_all_purin();
 	# setup a unique seed for the randomizer
 	randomize();
@@ -192,6 +194,8 @@ func spawn_purin(size:int, initial_position:Vector2=get_valid_drop_position()):
 	
 	purin.connect("combine", combine_purin);
 	purin.connect("bonk", bonk_purin);
+	
+	purin.show_debug_info = debug;
 	return purin;
 
 func bonk_purin(_purin1:Purin, _purin2:Purin):
@@ -334,7 +338,7 @@ func save_scores():
 		config.set_value(player_name, "player_name", player_name);
 		config.set_value(player_name, "final_purin_levels", final_purin_levels);
 		config.set_value(player_name, "highest_level_reached", last_highest_level_reached);
-	config.save(config_path)
+	config.save(config_path);
 	
 	if ai_adjusted_highscore > config.get_value(best_config, "ai_adjusted_highscore", 0):
 		print("%s got a new global highscore of %s!"%[player_name, score])
@@ -355,7 +359,7 @@ func save_scores():
 		config.set_value(best_config, "final_purin_levels", final_purin_levels);
 		config.set_value(best_config, "highest_level_reached", last_highest_level_reached);
 		
-		config.save(config_path)
+		config.save(config_path);
 		
 func set_up_ai():
 	config = ConfigFile.new();
