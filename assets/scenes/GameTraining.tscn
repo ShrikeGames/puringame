@@ -94,6 +94,7 @@ script = ExtResource("15_1ghtr")
 camera_move_speed = 1500.0
 
 [node name="MenuButton" parent="." instance=ExtResource("15_3p5kf")]
+process_mode = 3
 offset_left = 1643.0
 offset_top = 970.0
 offset_right = 2243.0

@@ -99,6 +99,7 @@ player_name = "Player"
 mute_sound = false
 
 [node name="MenuButton" parent="." instance=ExtResource("14_d73ay")]
+process_mode = 3
 offset_left = 1643.0
 offset_top = 970.0
 offset_right = 2243.0

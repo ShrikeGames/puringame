@@ -212,12 +212,13 @@ func _process(delta):
 	if ai_controlled and debug:
 		self.score_ui.text = "[center]%d (%d)[/center]" %[score, ai_adjusted_score];
 	last_highest_level_reached = highest_level_reached;
-	if not ai_controlled and Input.is_action_pressed("retry"):
+	if not ai_controlled and Input.is_action_pressed("retry") and game_over_timer > 0:
 		gameover_screen.visible = false;
 		if score > highscore:
 			highscore = score;
 		start_game();
 		get_tree().paused = false;
+		Input.action_release("retry");
 		
 	var purin_node:Node2D = get_node("PurinObjects");
 	has_purin_in_danger = false;
@@ -234,6 +235,7 @@ func _process(delta):
 			if not ai_controlled:
 				get_tree().paused = true;
 				gameover_screen.visible = true;
+				Input.action_release("retry");
 			else:
 				if ai_controlled and ai_adjusted_score > ai_adjusted_highscore:
 					ai_adjusted_highscore = ai_adjusted_score;
@@ -242,7 +244,6 @@ func _process(delta):
 					self.queue_free();
 				else:
 					start_game();
-				
 				return;
 		game_over_timer += delta;
 	else:
