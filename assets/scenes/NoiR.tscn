@@ -9,10 +9,9 @@ script = ExtResource("1_kbn2q")
 drop_line = NodePath("DropLine")
 
 [node name="DropLine" type="Line2D" parent="."]
-position = Vector2(0, -10)
 
 [node name="Noir" type="Sprite2D" parent="."]
-position = Vector2(0, -67)
+position = Vector2(0, -54)
 texture = ExtResource("1_caifl")
 
 [node name="Purin" type="Sprite2D" parent="."]

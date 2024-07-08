@@ -126,7 +126,7 @@ gameover_count_down = NodePath("../../GameOverCountDown")
 
 [node name="LoseCollider" type="CollisionPolygon2D" parent="Bowl/LoseArea"]
 position = Vector2(1, 13)
-polygon = PackedVector2Array(-100, -28, 798, -27, 800, 135, 700, 85, 576, 85, 116, 85, 1, 85, -100, 137)
+polygon = PackedVector2Array(-100, -25, 800, -25, 800, 75, -100, 75)
 
 [node name="PurinObjects" type="Node2D" parent="."]
 
@@ -270,7 +270,7 @@ theme_override_font_sizes/bold_font_size = 72
 text = "AI1"
 
 [node name="NoiR" parent="." instance=ExtResource("4_tleir")]
-position = Vector2(397, 151)
+position = Vector2(397, 138)
 
 [connection signal="body_entered" from="Bowl/LoseArea" to="Bowl/LoseArea" method="_on_body_entered"]
 [connection signal="body_exited" from="Bowl/LoseArea" to="Bowl/LoseArea" method="_on_body_exited"]

@@ -36,17 +36,17 @@ scale = Vector2(0.236332, 0.236332)
 texture = ExtResource("13_2373h")
 
 [node name="VersionText" type="RichTextLabel" parent="."]
-offset_left = 47.0
-offset_top = 940.0
-offset_right = 203.0
-offset_bottom = 1020.0
+offset_left = 250.0
+offset_top = 926.0
+offset_right = 554.0
+offset_bottom = 1011.0
 mouse_filter = 1
 theme_override_fonts/normal_font = ExtResource("8_hm5qy")
 theme_override_fonts/bold_font = ExtResource("9_0ahjj")
 theme_override_font_sizes/normal_font_size = 24
 bbcode_enabled = true
-text = "Version 2.0.0
-\"AI Update\""
+text = "Version 2.1.0
+\"Smarter Faster Stronger\""
 scroll_active = false
 shortcut_keys_enabled = false
 
