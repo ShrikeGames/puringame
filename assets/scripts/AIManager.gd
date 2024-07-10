@@ -2,7 +2,7 @@ extends Node2D
 
 @export var num_ai: int = 2
 var play_package: Resource = load("res://assets/scenes/PlayAreaBowl.tscn")
-var ai_games_node: Node2D
+@export var ai_games_node: Node2D
 var generation: int
 @export var camera: Camera2D
 @export var best_ratio: float = 0.1
@@ -19,7 +19,6 @@ var config_path: String = "user://%s.cfg" % ["best_v3"]
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	ai_games_node = get_node("AIGames")
 	generation = 0
 	Engine.time_scale = time_scale
 
@@ -191,14 +190,6 @@ func _process(_delta):
 				x_pos = 60
 				y_pos += 1100
 		
-#		var games:Array[Game] = []
-#		# get all of the game objects we created
-#		for game in ai_games_node.get_children():
-#			games.append(game)
-#
-#		for game in games:
-#			game.opposing_games = games
-		
 		print("=Global Total Average Adjusted Highscores: %s=" % [total_score / num_ai])
 		print(
 			(
@@ -227,7 +218,7 @@ func _process(_delta):
 		generation += 1
 		print("===Begin generation %s===" % [generation])
 	else:
-		if currently_watching_game == null and num_ai > 2:
+		if not is_instance_valid(currently_watching_game) and num_ai > 2:
 			for game in ai_games_node.get_children():
 				if is_instance_of(game, Game):
 					print("Now watching %s" % [game.player_name])

@@ -16,9 +16,10 @@
 [ext_resource type="Texture2D" uid="uid://cwcmvy5fu6w86" path="res://assets/images/purin10.png" id="17_2odgw"]
 [ext_resource type="Texture2D" uid="uid://bja3p1ji46rhl" path="res://assets/images/purin11.png" id="18_vu7lp"]
 
-[node name="Game" type="Node2D" node_paths=PackedStringArray("camera")]
+[node name="Game" type="Node2D" node_paths=PackedStringArray("ai_games_node", "camera")]
 script = ExtResource("1_doc3l")
 num_ai = 100
+ai_games_node = NodePath("AIGames")
 camera = NodePath("Camera2D")
 
 [node name="Background" type="Sprite2D" parent="."]
