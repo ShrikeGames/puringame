@@ -45,6 +45,7 @@ func _process(_delta):
 
 	# check if all games are done
 	if ai_games_node and ai_games_node.get_child_count() <= 0:
+		
 		print("===Generation %s has concluded.===" % [generation])
 		var best_config = "best"
 		var config = ConfigFile.new()
@@ -62,6 +63,7 @@ func _process(_delta):
 
 		var ranked_players: Array = []
 		var MAX_POSSIBLE_PLAYERS = 300
+		
 		for i in range(0, MAX_POSSIBLE_PLAYERS):
 			var player = "AI%d" % [i]
 			var player_stats = {
@@ -188,7 +190,15 @@ func _process(_delta):
 			if i % 10 == 0:
 				x_pos = 60
 				y_pos += 1100
-
+		
+#		var games:Array[Game] = []
+#		# get all of the game objects we created
+#		for game in ai_games_node.get_children():
+#			games.append(game)
+#
+#		for game in games:
+#			game.opposing_games = games
+		
 		print("=Global Total Average Adjusted Highscores: %s=" % [total_score / num_ai])
 		print(
 			(

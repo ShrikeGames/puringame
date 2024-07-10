@@ -4,21 +4,18 @@
 [ext_resource type="Texture2D" uid="uid://xt87hje080jt" path="res://assets/images/purin1.png" id="2_p0kjq"]
 [ext_resource type="FontFile" uid="uid://cdwb8ivskcjue" path="res://assets/fonts/NotoSansCJK-Regular.ttc" id="3_iu71o"]
 [ext_resource type="FontFile" uid="uid://buytj31trs62" path="res://assets/fonts/NotoSansCJK-Bold.ttc" id="4_6u3s5"]
-
-[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_7fkwd"]
-friction = 0.2
-rough = true
+[ext_resource type="Texture2D" uid="uid://crra4gd3ck4vb" path="res://assets/images/evilge.png" id="5_2sr17"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_mcyn7"]
 radius = 30.5882
 
-[node name="Purin" type="RigidBody2D" node_paths=PackedStringArray("debug_text", "debug_line")]
-physics_material_override = SubResource("PhysicsMaterial_7fkwd")
-max_contacts_reported = 512
+[node name="Purin" type="RigidBody2D" node_paths=PackedStringArray("debug_text", "debug_line", "evil")]
 contact_monitor = true
+max_contacts_reported = 512
 script = ExtResource("1_edqf4")
 debug_text = NodePath("DebugText")
 debug_line = NodePath("DebugLine")
+evil = NodePath("Evil")
 
 [node name="Image" type="Sprite2D" parent="."]
 texture = ExtResource("2_p0kjq")
@@ -40,9 +37,15 @@ shortcut_keys_enabled = false
 points = PackedVector2Array(0, 0, 0, 0)
 
 [node name="Collider" type="CollisionShape2D" parent="."]
-position = Vector2(0, 2)
+position = Vector2(-5.72205e-06, -5.72205e-06)
 scale = Vector2(0.85, 0.85)
 shape = SubResource("CircleShape2D_mcyn7")
+
+[node name="Evil" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(-1, 7)
+scale = Vector2(0.227528, 0.227528)
+texture = ExtResource("5_2sr17")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="ready" from="." to="." method="_on_ready"]

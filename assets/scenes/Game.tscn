@@ -81,16 +81,27 @@ position = Vector2(0, 1140)
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("13_bcewv")
 
-[node name="PlayAreaBowl" parent="." instance=ExtResource("13_ohdrd")]
+[node name="PlayAreaBowl" parent="." node_paths=PackedStringArray("bowl", "noir", "next_purin", "score_ui", "sfx_pop_player", "sfx_bonk_player", "lose_area", "gameover_screen", "debug_text", "player_name_text") instance=ExtResource("13_ohdrd")]
 position = Vector2(550, 0)
+bowl = NodePath("Bowl")
+noir = NodePath("NoiR")
+next_purin = NodePath("NextIndicator/NextPurin")
+score_ui = NodePath("ScoreInfo/Control/Score")
+sfx_pop_player = NodePath("Pop")
+sfx_bonk_player = NodePath("Bonk")
+lose_area = NodePath("Bowl/LoseArea")
+gameover_screen = NodePath("GameOverScreen")
 player_name = "Player"
+debug_text = NodePath("DebugText")
+player_name_text = NodePath("Control/Player Label")
 mute_sound = false
 
-[node name="MenuButton" parent="." instance=ExtResource("14_4xveu")]
+[node name="MenuButton" parent="." node_paths=PackedStringArray("text_label") instance=ExtResource("14_4xveu")]
 process_mode = 3
 offset_left = 1643.0
 offset_top = 970.0
 offset_right = 2243.0
 offset_bottom = 1170.0
 scale = Vector2(0.439997, 0.439997)
+text_label = NodePath("ButtonText")
 text = "メニュー"

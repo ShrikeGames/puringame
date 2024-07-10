@@ -269,8 +269,9 @@ theme_override_font_sizes/normal_font_size = 72
 theme_override_font_sizes/bold_font_size = 72
 text = "AI1"
 
-[node name="NoiR" parent="." instance=ExtResource("4_tleir")]
+[node name="NoiR" parent="." node_paths=PackedStringArray("drop_line") instance=ExtResource("4_tleir")]
 position = Vector2(397, 138)
+drop_line = NodePath("DropLine")
 
 [connection signal="body_entered" from="Bowl/LoseArea" to="Bowl/LoseArea" method="_on_body_entered"]
 [connection signal="body_exited" from="Bowl/LoseArea" to="Bowl/LoseArea" method="_on_body_exited"]

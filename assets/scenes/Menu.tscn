@@ -15,10 +15,20 @@ position = Vector2(966, 539)
 scale = Vector2(0.243899, 0.243899)
 texture = ExtResource("1_fh7mn")
 
-[node name="PlayAreaBowl" parent="." instance=ExtResource("3_cl710")]
+[node name="PlayAreaBowl" parent="." node_paths=PackedStringArray("bowl", "noir", "next_purin", "score_ui", "sfx_pop_player", "sfx_bonk_player", "lose_area", "gameover_screen", "debug_text", "player_name_text") instance=ExtResource("3_cl710")]
 position = Vector2(1085, 0)
+bowl = NodePath("Bowl")
+noir = NodePath("NoiR")
+next_purin = NodePath("NextIndicator/NextPurin")
+score_ui = NodePath("ScoreInfo/Control/Score")
+sfx_pop_player = NodePath("Pop")
+sfx_bonk_player = NodePath("Bonk")
+lose_area = NodePath("Bowl/LoseArea")
+gameover_screen = NodePath("GameOverScreen")
 ai_controlled = true
 player_name = "DEMO"
+debug_text = NodePath("DebugText")
+player_name_text = NodePath("Control/Player Label")
 mute_sound = false
 difficulty = "demo"
 mutation_rate = 0.0
@@ -45,31 +55,48 @@ theme_override_fonts/normal_font = ExtResource("8_hm5qy")
 theme_override_fonts/bold_font = ExtResource("9_0ahjj")
 theme_override_font_sizes/normal_font_size = 24
 bbcode_enabled = true
-text = "Version 2.1.0
-\"Smarter Faster Stronger\""
+text = "Version 2.2.1
+\"New game mode\""
 scroll_active = false
 shortcut_keys_enabled = false
 
-[node name="Playbutton1" parent="." instance=ExtResource("3_llqj5")]
-offset_left = 200.0
-offset_top = 189.0
-offset_right = 800.0
-offset_bottom = 389.0
+[node name="Playbutton1" parent="." node_paths=PackedStringArray("text_label") instance=ExtResource("3_llqj5")]
+offset_left = 50.0
+offset_top = 200.0
+offset_right = 650.0
+offset_bottom = 400.0
+scale = Vector2(0.5, 0.5)
 scene_to_change_to = "res://assets/scenes/Game.tscn"
+text_label = NodePath("ButtonText")
 text = "一人ゲーム"
 
-[node name="Playbutton2" parent="." instance=ExtResource("3_llqj5")]
-offset_left = 202.0
-offset_top = 429.0
-offset_right = 802.0
-offset_bottom = 629.0
+[node name="Playbutton2" parent="." node_paths=PackedStringArray("text_label") instance=ExtResource("3_llqj5")]
+offset_left = 50.0
+offset_top = 320.0
+offset_right = 650.0
+offset_bottom = 520.0
+scale = Vector2(0.5, 0.5)
 scene_to_change_to = "res://assets/scenes/GameVSAI.tscn"
-text = "VS AI ゲーム"
+text_label = NodePath("ButtonText")
+text = "VS 1 AI"
 
-[node name="TrainingButton" parent="." instance=ExtResource("3_llqj5")]
-offset_left = 202.0
-offset_top = 667.0
-offset_right = 802.0
-offset_bottom = 867.0
+[node name="ButtonScene" parent="." node_paths=PackedStringArray("text_label") instance=ExtResource("3_llqj5")]
+offset_left = 50.0
+offset_top = 440.0
+offset_right = 650.0
+offset_bottom = 640.0
+scale = Vector2(0.5, 0.5)
+scene_to_change_to = "res://assets/scenes/Game99.tscn"
+text_label = NodePath("ButtonText")
+text = "VS 9 AI"
+metadata/_edit_use_anchors_ = true
+
+[node name="TrainingButton" parent="." node_paths=PackedStringArray("text_label") instance=ExtResource("3_llqj5")]
+offset_left = 50.0
+offset_top = 560.0
+offset_right = 650.0
+offset_bottom = 760.0
+scale = Vector2(0.5, 0.5)
 scene_to_change_to = "res://assets/scenes/GameTraining.tscn"
+text_label = NodePath("ButtonText")
 text = "AIを鍛える"

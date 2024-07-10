@@ -7,7 +7,7 @@ var combined: bool = false
 var show_debug_info: bool = false
 @export var debug_text: RichTextLabel
 @export var debug_line: Line2D
-
+@export var evil:Sprite2D
 
 func _on_ready():
 	debug_line.add_point(Vector2(0, 0))
@@ -19,8 +19,7 @@ func _on_ready():
 	debug_line.default_color = "333333"
 	debug_line.width = 2
 
-
-func _on_body_entered(body: Node2D):
+func _on_body_entered(body):
 	if (
 		(self.has_meta("combined") and self.get_meta("combined"))
 		or (body.has_meta("combined") and body.get_meta("combined"))
@@ -80,5 +79,5 @@ func number_possible_combines():
 			var level = body.get_meta("level", 0)
 			if level == target_level:
 				count += 1
-
+	
 	return count

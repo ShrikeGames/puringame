@@ -1,0 +1,116 @@
+[gd_scene load_steps=16 format=3 uid="uid://cxb8b37m7qbdl"]
+
+[ext_resource type="Script" path="res://assets/scripts/AI99Manager.gd" id="1_j1h3y"]
+[ext_resource type="Texture2D" uid="uid://c3xtdqs3o2uf3" path="res://assets/images/noir_@dqnww.png" id="1_up2oo"]
+[ext_resource type="Texture2D" uid="uid://xt87hje080jt" path="res://assets/images/purin1.png" id="2_b6mh1"]
+[ext_resource type="Texture2D" uid="uid://ds7ffculpywfr" path="res://assets/images/purin2.png" id="3_3tcjj"]
+[ext_resource type="Texture2D" uid="uid://d1l07juub21tt" path="res://assets/images/purin3.png" id="4_jns0m"]
+[ext_resource type="Texture2D" uid="uid://r1wwvaqohtgs" path="res://assets/images/purin4.png" id="5_ijdhb"]
+[ext_resource type="Texture2D" uid="uid://cc26nt2jn3vxa" path="res://assets/images/purin5.png" id="6_kguis"]
+[ext_resource type="Texture2D" uid="uid://bsm8qt57ehuah" path="res://assets/images/purin6.png" id="7_kxibl"]
+[ext_resource type="Texture2D" uid="uid://cekg4y1brmpw5" path="res://assets/images/purin7.png" id="8_wtwms"]
+[ext_resource type="Texture2D" uid="uid://djw85tem2f7me" path="res://assets/images/purin8.png" id="9_bs53u"]
+[ext_resource type="Texture2D" uid="uid://k1hduynp1pgw" path="res://assets/images/purin9.png" id="10_dfa70"]
+[ext_resource type="Texture2D" uid="uid://cwcmvy5fu6w86" path="res://assets/images/purin10.png" id="11_bhs5c"]
+[ext_resource type="Texture2D" uid="uid://bja3p1ji46rhl" path="res://assets/images/purin11.png" id="12_ch4aq"]
+[ext_resource type="PackedScene" uid="uid://con8stx2et0ea" path="res://assets/scenes/PlayAreaBowl.tscn" id="13_gy0je"]
+[ext_resource type="PackedScene" uid="uid://dnruobuhnvd7c" path="res://assets/scenes/SoloGameButton.tscn" id="14_mm3f8"]
+
+[node name="Game" type="Node2D" node_paths=PackedStringArray("ai_games_node", "players_game")]
+script = ExtResource("1_j1h3y")
+num_ai = 9
+ai_games_node = NodePath("AIGames")
+players_game = NodePath("Player")
+
+[node name="Background" type="Sprite2D" parent="."]
+position = Vector2(966, 539)
+scale = Vector2(0.243899, 0.243899)
+texture = ExtResource("1_up2oo")
+
+[node name="ProgressionIndicator" type="Node2D" parent="."]
+position = Vector2(961, 25)
+scale = Vector2(0.84, 0.84)
+
+[node name="Purin1" type="Sprite2D" parent="ProgressionIndicator"]
+position = Vector2(0.500122, -3)
+scale = Vector2(0.75, 0.75)
+texture = ExtResource("2_b6mh1")
+
+[node name="Purin2" type="Sprite2D" parent="ProgressionIndicator"]
+position = Vector2(0, 50)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("3_3tcjj")
+
+[node name="Purin3" type="Sprite2D" parent="ProgressionIndicator"]
+position = Vector2(0, 120)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("4_jns0m")
+
+[node name="Purin4" type="Sprite2D" parent="ProgressionIndicator"]
+position = Vector2(0, 200)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("5_ijdhb")
+
+[node name="Purin5" type="Sprite2D" parent="ProgressionIndicator"]
+position = Vector2(0, 295)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("6_kguis")
+
+[node name="Purin6" type="Sprite2D" parent="ProgressionIndicator"]
+position = Vector2(0, 400)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("7_kxibl")
+
+[node name="Purin7" type="Sprite2D" parent="ProgressionIndicator"]
+position = Vector2(0, 520)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("8_wtwms")
+
+[node name="Purin8" type="Sprite2D" parent="ProgressionIndicator"]
+position = Vector2(0, 650)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("9_bs53u")
+
+[node name="Purin9" type="Sprite2D" parent="ProgressionIndicator"]
+position = Vector2(0, 800)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("10_dfa70")
+
+[node name="Purin10" type="Sprite2D" parent="ProgressionIndicator"]
+position = Vector2(0, 960)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("11_bhs5c")
+
+[node name="Purin11" type="Sprite2D" parent="ProgressionIndicator"]
+position = Vector2(0, 1140)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("12_ch4aq")
+
+[node name="AIGames" type="Node2D" parent="."]
+position = Vector2(1040, 0)
+
+[node name="Player" parent="." node_paths=PackedStringArray("bowl", "noir", "next_purin", "score_ui", "sfx_pop_player", "sfx_bonk_player", "lose_area", "gameover_screen", "debug_text", "player_name_text", "opposing_games") instance=ExtResource("13_gy0je")]
+position = Vector2(40, 0)
+bowl = NodePath("Bowl")
+noir = NodePath("NoiR")
+next_purin = NodePath("NextIndicator/NextPurin")
+score_ui = NodePath("ScoreInfo/Control/Score")
+sfx_pop_player = NodePath("Pop")
+sfx_bonk_player = NodePath("Bonk")
+lose_area = NodePath("Bowl/LoseArea")
+gameover_screen = NodePath("GameOverScreen")
+player_name = "Player"
+debug_text = NodePath("DebugText")
+player_name_text = NodePath("Control/Player Label")
+mute_sound = false
+opposing_games = [null]
+
+[node name="MenuButton" parent="." node_paths=PackedStringArray("text_label") instance=ExtResource("14_mm3f8")]
+process_mode = 3
+offset_left = 1643.0
+offset_top = 970.0
+offset_right = 2243.0
+offset_bottom = 1170.0
+scale = Vector2(0.439997, 0.439997)
+text_label = NodePath("ButtonText")
+text = "メニュー"

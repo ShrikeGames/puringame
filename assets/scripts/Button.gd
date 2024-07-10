@@ -13,6 +13,7 @@ func _ready():
 
 func _on_button_down():
 	if scene_to_change_to != null:
-		get_tree().change_scene_to_file(scene_to_change_to)
 		get_tree().paused = false
+		get_tree().change_scene_to_file(scene_to_change_to)
+		
 	Engine.time_scale = 1

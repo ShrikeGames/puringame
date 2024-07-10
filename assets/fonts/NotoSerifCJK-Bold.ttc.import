@@ -3,18 +3,19 @@
 importer="font_data_dynamic"
 type="FontFile"
 uid="uid://cwlebo6q0u0w2"
-path="res://.godot/imported/NotoSerifCJK-Bold.ttc-0e191180ed4018dc8bfafe4dc560ccb4.fontdata"
+path="res://.godot/imported/NotoSerifCJK-Bold.ttc-e1fdd4110c02a36e8ec0716f1f6a3f6b.fontdata"
 
 [deps]
 
-source_file="res://assets/NotoSerifCJK-Bold.ttc"
-dest_files=["res://.godot/imported/NotoSerifCJK-Bold.ttc-0e191180ed4018dc8bfafe4dc560ccb4.fontdata"]
+source_file="res://assets/fonts/NotoSerifCJK-Bold.ttc"
+dest_files=["res://.godot/imported/NotoSerifCJK-Bold.ttc-e1fdd4110c02a36e8ec0716f1f6a3f6b.fontdata"]
 
 [params]
 
 Rendering=null
 antialiasing=1
 generate_mipmaps=false
+disable_embedded_bitmaps=true
 multichannel_signed_distance_field=false
 msdf_pixel_range=8
 msdf_size=48

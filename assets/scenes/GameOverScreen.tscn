@@ -43,7 +43,7 @@ text = "[center]ゲームオーバー[/center]"
 scroll_active = false
 language = "JP"
 
-[node name="Control2" type="Control" parent="."]
+[node name="GameOverButtonControl" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 0
 offset_left = 1.0
@@ -51,7 +51,7 @@ offset_top = 622.0
 offset_right = 391.0
 offset_bottom = 756.0
 
-[node name="RetryButton" type="TextureButton" parent="Control2" node_paths=PackedStringArray("gameover_screen", "text_label")]
+[node name="RetryButton" type="TextureButton" parent="GameOverButtonControl" node_paths=PackedStringArray("gameover_screen", "text_label")]
 process_mode = 3
 layout_mode = 1
 anchors_preset = 8
@@ -76,7 +76,7 @@ gameover_screen = NodePath("../..")
 text_label = NodePath("RetryText")
 text = "リトライ"
 
-[node name="RetryText" type="RichTextLabel" parent="Control2/RetryButton"]
+[node name="RetryText" type="RichTextLabel" parent="GameOverButtonControl/RetryButton"]
 layout_mode = 0
 offset_left = 28.0
 offset_top = 47.0
@@ -90,4 +90,4 @@ scroll_active = false
 shortcut_keys_enabled = false
 language = "JP"
 
-[connection signal="pressed" from="Control2/RetryButton" to="Control2/RetryButton" method="_on_pressed"]
+[connection signal="pressed" from="GameOverButtonControl/RetryButton" to="GameOverButtonControl/RetryButton" method="_on_pressed"]

@@ -16,10 +16,12 @@ class_name Game
 @export var debug: bool = false
 @export var training: bool = false
 @export var difficulty: String = "best_v3"
+@export var opposing_games:Array[Game] = [];
 const BOWL_WIDTH: int = 800
 const BOWL_THICKNESS: int = 20
 const BOWL_DROP_DISTANCE: int = 40
 const AI_PURIN_COUNT_PENALTY_WEIGHT: int = 2
+var game_over:bool = false;
 var AI_DROP_DELAY_SECONDS: float = 2
 var AI_DROP_DELAY_PANIC_SECONDS: float = 1
 var AI_X_WEIGHT: float = 0
@@ -134,6 +136,8 @@ func get_valid_drop_position():
 
 
 func combine_purin(purin1: Purin, purin2: Purin):
+	if game_over:
+		return;
 	# if they were already freed then we have nothing to do
 	if not is_instance_valid(purin1) or not is_instance_valid(purin2):
 		return
@@ -141,6 +145,7 @@ func combine_purin(purin1: Purin, purin2: Purin):
 	# average position between the two
 	var spawnX = (purin1.position.x + purin2.position.x) * 0.5
 	var spawnY = (purin1.position.y + purin2.position.y) * 0.5
+	var evil = purin1.evil.visible == true and purin2.evil.visible == true
 	# also average their rotate and velocity
 	var spawn_rotation = (purin1.rotation + purin2.rotation) * 0.5
 	var spawn_angular_velocity = (purin1.angular_velocity + purin2.angular_velocity) * 0.5
@@ -189,14 +194,40 @@ func combine_purin(purin1: Purin, purin2: Purin):
 
 	var new_purin = spawn_purin(level, Vector2(spawnX, spawnY))
 	new_purin.rotation = spawn_rotation
+	new_purin.evil.visible = evil
 	new_purin.angular_velocity = spawn_angular_velocity
 	new_purin.linear_velocity = spawn_linear_velocity
+	
 	purin_node.call_deferred("add_child", new_purin)
 	if not mute_sound:
 		sfx_pop_player.play()
+	
+	# can only attack other players if you're not in danger of losing
+	if not has_purin_in_danger:
+		# if there are other game(s) send a purin to one of them if this one is big enough
+		if not opposing_games.is_empty() and level >= 3:
+			var update_list_games:Array[Game] = []
+			for game in opposing_games:
+				if is_instance_valid(game) and game.player_name != player_name and !game.game_over:
+					update_list_games.append(game)
+			
+			if not update_list_games.is_empty():
+				var opponents_game:Game = update_list_games[randi_range(0, len(update_list_games)-1)]
+				if  is_instance_valid(opponents_game):
+					print(player_name, " sent a purin to ", opponents_game.player_name)
+					opponents_game.spawn_enemy_purin(round(level/2), Vector2(randf_range(0,BOWL_WIDTH), 850))
+			
 
+func spawn_enemy_purin(size: int, initial_position: Vector2 = get_valid_drop_position()):
+	if game_over:
+		return;
+	var purin:Purin = spawn_purin(size, initial_position, true)
+	var purin_node: Node2D = get_node("PurinObjects")
+	purin_node.call_deferred("add_child", purin)
 
-func spawn_purin(size: int, initial_position: Vector2 = get_valid_drop_position()):
+func spawn_purin(size: int, initial_position: Vector2 = get_valid_drop_position(), evil=false):
+	if game_over:
+		return;
 	"""Spawn a purin at the given location or the generic nearest valid drop position
 	"""
 	var level = min(size, len(purin_sizes) - 1)
@@ -205,11 +236,11 @@ func spawn_purin(size: int, initial_position: Vector2 = get_valid_drop_position(
 	purin.mass = pow(1.2, level)
 	var collider: CollisionShape2D = purin.get_node("Collider")
 	var new_shape = CircleShape2D.new()
-	new_shape.radius = (purin_sizes[level] * 0.5) * 1.17
+	new_shape.radius = (purin_sizes[level] * 0.5) * 1.17 * self.scale.x
 	collider.shape = new_shape
 	var image: Sprite2D = purin.get_node("Image")
 	image.texture = purin_images[level]
-
+	image.scale = Vector2(self.scale.x, self.scale.y)
 	purin.set_meta("type", "purin%d" % [level])
 	purin.set_meta("level", level)
 	#purin.debug_text.text = "[center]%s[/center]"%[level];
@@ -217,7 +248,10 @@ func spawn_purin(size: int, initial_position: Vector2 = get_valid_drop_position(
 
 	purin.connect("combine", combine_purin)
 	purin.connect("bonk", bonk_purin)
-
+	purin.scale = Vector2(self.scale.x, self.scale.y)
+	if evil:
+		purin.evil.visible = true
+		
 	purin.show_debug_info = debug
 	return purin
 
@@ -242,17 +276,29 @@ func _process(delta):
 		self.score_ui.text = "[center]%d (%d)[/center]" % [score, ai_adjusted_score]
 	last_highest_level_reached = highest_level_reached
 	if not ai_controlled and Input.is_action_pressed("retry") and game_over_timer > 0:
+		# reset all the ai games as well
+		for game in opposing_games:
+			if is_instance_valid(game) and game.ai_controlled:
+				game.game_over = false
+				game.gameover_screen.visible = false
+				game.start_game()
+		
 		gameover_screen.visible = false
 		if score > highscore:
 			highscore = score
 		start_game()
+		game_over = false
 		get_tree().paused = false
 		Input.action_release("retry")
-
+		
+	if game_over:
+		return;
+		
 	var purin_node: Node2D = get_node("PurinObjects")
 	has_purin_in_danger = false
 	for purin in purin_node.get_children():
-		if purin.has_meta("purin_in_danger") and purin.get_meta("purin_in_danger"):
+		if (purin.position.y < noir.position.y) or (purin.has_meta("purin_in_danger") and purin.get_meta("purin_in_danger")):
+			purin.set_meta("purin_in_danger", true)
 			has_purin_in_danger = true
 			lose_area.start_countdown()
 			break
@@ -274,7 +320,10 @@ func _process(delta):
 					save_scores()
 					self.queue_free()
 				else:
-					start_game()
+					game_over = true
+					if ai_controlled:
+						gameover_screen.get_node("GameOverButtonControl").get_node("RetryButton").visible = false
+					gameover_screen.visible = true
 				return
 		game_over_timer += delta
 	else:
@@ -338,7 +387,7 @@ func check_to_drop_purin(_delta):
 		var purin_node: Node2D = get_node("PurinObjects")
 		# create a new purin that is the same type as the held one
 		var dropped_purin: Purin = spawn_purin(held_purin_level)
-		purin_node.add_child(dropped_purin)
+		purin_node.call_deferred("add_child", dropped_purin)
 		# generate new purin to hold
 		held_purin_level = purin_bag.pop_back()
 		holding_purin.texture = purin_images[held_purin_level]
@@ -665,7 +714,7 @@ func process_ai_turn(delta):
 		dropped_purin_count += 1
 		# create a new purin that is the same type as the held one
 		var dropped_purin: Purin = spawn_purin(held_purin_level)
-		purin_node.add_child(dropped_purin)
+		purin_node.call_deferred("add_child", dropped_purin)
 		# generate new purin to hold
 		held_purin_level = purin_bag.pop_back()
 		holding_purin.texture = purin_images[held_purin_level]
