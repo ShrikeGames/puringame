@@ -5,6 +5,7 @@ class_name PlayerController
 @export var config_path:String = "user://Player.cfg"
 var default_config_path:String = "res://configs/default.cfg"
 @export var ai_controlled:bool = false
+var ai_controller:AIController
 @export var noir: NoiR
 @export var next_purin_indicator:Sprite2D
 @export var top_edge:Node2D
@@ -68,6 +69,51 @@ func load_configs():
 	evil_purin_spawn_level_divider = get_config_value_or_default("evil_purin_spawn_level_divider")
 	highscore = get_config_value_or_default("highscore")
 
+func get_config_value_or_default(key):
+	return config.get_value(player_name, key, default_config.get_value(player_name, key))
+
+func load_purin():
+	purin_object = load("res://assets/scenes/Purin.tscn")
+	purin_textures = []
+	for i in range(1, len(purin_sizes) + 1):
+		var image_path = "%spurin%d.png" % [purin_file_path_root, i]
+		purin_textures.append(load(image_path))
+	
+	
+func set_up_game():
+	# setup a unique seed for the randomizer
+	randomize()
+	# clear the game of any dropped purin
+	remove_all_purin()
+	# reset progress
+	score = 0
+	dropped_purin_count = 0
+	time_since_last_dropped_purin_sec = drop_purin_cooldown_sec
+	highest_tier_purin_dropped = 0
+	# Generate a new bag of purin (what you get next to drop)
+	purin_bag = PurinBag.new()
+	purin_bag.generate_purin_bag(highest_tier_purin_dropped)
+	
+	# if this is an AI player then create an AIController for it
+	if ai_controlled:
+		ai_controller = AIController.new()
+		ai_controller.init(self)
+	
+	player_label.text = player_name
+	update_score_label()
+	# for testing
+	#spawn_purin(Vector2(400,400),10)
+	#spawn_purin(Vector2(400,400),9)
+	#spawn_purin(Vector2(400,400),8)
+	
+func remove_all_purin():
+	for purin in purin_node.get_children():
+		if is_instance_of(purin, Purin):
+			purin.queue_free()
+	
+func update_score_label():
+	score_label.text = "[center]%s[/center]"%[score]
+
 func get_board_state():
 	var state:String = ""
 	for purin in purin_node.get_children():
@@ -88,54 +134,70 @@ func save_results():
 		config.set_value(player_name, "highscore_board_state", board_state)
 	
 	config.save(config_path)
-
-func get_config_value_or_default(key):
-	return config.get_value(player_name, key, default_config.get_value(player_name, key))
 	
-func set_up_game():
-	# setup a unique seed for the randomizer
-	randomize()
-	# clear the game of any dropped purin
-	remove_all_purin()
-	# reset progress
-	score = 0
-	dropped_purin_count = 0
-	time_since_last_dropped_purin_sec = drop_purin_cooldown_sec
-	highest_tier_purin_dropped = 0
-	# Generate a new bag of purin (what you get next to drop)
-	purin_bag = PurinBag.new()
-	purin_bag.generate_purin_bag(highest_tier_purin_dropped)
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	if check_game_over(delta):
+		return
+		
+	time_since_last_dropped_purin_sec += delta
+	if ai_controlled:
+		ai_controller.process_ai(delta)
+	else:
+		process_player(delta)
+
+func check_game_over(delta):
+	if gameover_screen.visible:
+		if Input.is_action_pressed("retry"):
+			save_results()
+			Input.action_release("retry")
+			gameover_screen.visible = false
+			get_tree().paused = false
+			set_up_game()
+			return false
+		return true
 	
-	player_label.text = player_name
-	update_score_label()
-	# for testing
-	#spawn_purin(Vector2(400,400),10)
-	#spawn_purin(Vector2(400,400),9)
-	#spawn_purin(Vector2(400,400),8)
-
-func update_score_label():
-	score_label.text = "[center]%s[/center]"%[score]
-
-func remove_all_purin():
 	for purin in purin_node.get_children():
-		if is_instance_of(purin, Purin):
-			purin.queue_free()
+		# if the purin's game over time reaches the threshold you lose
+		if purin.game_over_timer_sec >= game_over_threshold_sec:
+			print("%s Game Over"%[player_name])
+			gameover_screen.visible = true
+			get_tree().paused = true
+			return true
+		# if the purin is above the height threshold start increasing its conter
+		if purin.position.y - purin.get_meta("radius") < top_edge.position.y:
+			purin.game_over_timer_sec += delta
+			# if the counter is under 4 sec then start the 3sec countdown animation too
+			# allows longer count downs even though the animation only counts down from 3
+			if purin.game_over_timer_sec < 4:
+				purin.game_over_countdown.visible = true
+				if not purin.game_over_countdown.is_playing():
+					purin.game_over_countdown.play()
+		else:
+			# otherwise it's safe, so reset its counter if needed and hide the animation
+			purin.game_over_timer_sec = 0
+			purin.game_over_countdown.visible = false
 	
-func load_purin():
-	purin_object = load("res://assets/scenes/Purin.tscn")
-	purin_textures = []
-	for i in range(1, len(purin_sizes) + 1):
-		var image_path = "%spurin%d.png" % [purin_file_path_root, i]
-		purin_textures.append(load(image_path))
-	
-func valid_x_pos(x_pos:float):
-	return max(left_edge.position.x, min(x_pos, right_edge.position.x))
+	return false
+
+func process_player(_delta):
+	# reposition the player
+	update_noir_position()
+	# check inputs
+	if Input.is_action_just_pressed("drop_purin") and time_since_last_dropped_purin_sec >= drop_purin_cooldown_sec:
+		spawn_purin()
+		noir.change_held_purin(purin_textures[purin_bag.get_current_purin_level(highest_tier_purin_dropped)])
+		next_purin_indicator.texture = purin_textures[purin_bag.get_next_purin_level(highest_tier_purin_dropped)]
+		time_since_last_dropped_purin_sec = 0
 	
 func update_noir_position():
 	# get mouse position in local coords instead of global
 	var mouse_pos = to_local(get_viewport().get_mouse_position())
 	noir.position.x = valid_x_pos(mouse_pos.x)
 	
+func valid_x_pos(x_pos:float):
+	return max(left_edge.position.x, min(x_pos, right_edge.position.x))
+
 func spawn_purin(initial_position:Vector2 = noir.position, level = purin_bag.drop_purin(highest_tier_purin_dropped), evil:bool = false):
 	# level is 0-indexed
 	var purin: Purin = purin_object.instantiate()
@@ -234,62 +296,3 @@ func bonk_purin(_purin1: Purin, _purin2: Purin):
 	# for now just play audio file
 	if not mute_sound:
 		sfx_bonk_player.play()
-	
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	if check_game_over(delta):
-		return
-		
-	time_since_last_dropped_purin_sec += delta
-	if ai_controlled:
-		process_ai(delta)
-	else:
-		process_player(delta)
-
-func process_ai(_delta):
-	pass
-
-func check_game_over(delta):
-	if gameover_screen.visible:
-		if Input.is_action_pressed("retry"):
-			save_results()
-			Input.action_release("retry")
-			gameover_screen.visible = false
-			get_tree().paused = false
-			set_up_game()
-			return false
-		return true
-	
-	for purin in purin_node.get_children():
-		# if the purin's game over time reaches the threshold you lose
-		if purin.game_over_timer_sec >= game_over_threshold_sec:
-			print("%s Game Over"%[player_name])
-			gameover_screen.visible = true
-			get_tree().paused = true
-			return true
-		# if the purin is above the height threshold start increasing its conter
-		if purin.position.y - purin.get_meta("radius") < top_edge.position.y:
-			purin.game_over_timer_sec += delta
-			# if the counter is under 4 sec then start the 3sec countdown animation too
-			# allows longer count downs even though the animation only counts down from 3
-			if purin.game_over_timer_sec < 4:
-				purin.game_over_countdown.visible = true
-				if not purin.game_over_countdown.is_playing():
-					purin.game_over_countdown.play()
-		else:
-			# otherwise it's safe, so reset its counter if needed and hide the animation
-			purin.game_over_timer_sec = 0
-			purin.game_over_countdown.visible = false
-	
-	return false
-	
-func process_player(_delta):
-	# reposition the player
-	update_noir_position()
-	# check inputs
-	if Input.is_action_just_pressed("drop_purin") and time_since_last_dropped_purin_sec >= drop_purin_cooldown_sec:
-		spawn_purin()
-		noir.change_held_purin(purin_textures[purin_bag.get_current_purin_level(highest_tier_purin_dropped)])
-		next_purin_indicator.texture = purin_textures[purin_bag.get_next_purin_level(highest_tier_purin_dropped)]
-		time_since_last_dropped_purin_sec = 0
-	
