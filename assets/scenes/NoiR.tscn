@@ -4,9 +4,10 @@
 [ext_resource type="Script" path="res://assets/scripts/NoiR.gd" id="1_kbn2q"]
 [ext_resource type="Texture2D" uid="uid://xt87hje080jt" path="res://assets/images/purin1.png" id="3_sed5s"]
 
-[node name="NoiR" type="Node2D" node_paths=PackedStringArray("drop_line")]
+[node name="NoiR" type="Node2D" node_paths=PackedStringArray("drop_line", "held_purin")]
 script = ExtResource("1_kbn2q")
 drop_line = NodePath("DropLine")
+held_purin = NodePath("Purin")
 
 [node name="DropLine" type="Line2D" parent="."]
 

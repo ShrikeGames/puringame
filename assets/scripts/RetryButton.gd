@@ -10,6 +10,5 @@ func _ready():
 
 
 func _on_pressed():
-	gameover_screen.visible = false
 	Input.action_press("retry")
 	get_tree().paused = false

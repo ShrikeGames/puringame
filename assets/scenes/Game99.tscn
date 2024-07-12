@@ -16,11 +16,10 @@
 [ext_resource type="PackedScene" uid="uid://con8stx2et0ea" path="res://assets/scenes/PlayAreaBowl.tscn" id="13_gy0je"]
 [ext_resource type="PackedScene" uid="uid://dnruobuhnvd7c" path="res://assets/scenes/SoloGameButton.tscn" id="14_mm3f8"]
 
-[node name="Game" type="Node2D" node_paths=PackedStringArray("ai_games_node", "players_game")]
+[node name="Game" type="Node2D" node_paths=PackedStringArray("ai_games_node")]
 script = ExtResource("1_j1h3y")
 num_ai = 9
 ai_games_node = NodePath("AIGames")
-players_game = NodePath("Player")
 
 [node name="Background" type="Sprite2D" parent="."]
 position = Vector2(966, 539)
@@ -89,21 +88,21 @@ texture = ExtResource("12_ch4aq")
 [node name="AIGames" type="Node2D" parent="."]
 position = Vector2(1040, 0)
 
-[node name="Player" parent="." node_paths=PackedStringArray("bowl", "noir", "next_purin", "score_ui", "sfx_pop_player", "sfx_bonk_player", "lose_area", "gameover_screen", "debug_text", "player_name_text", "opposing_games") instance=ExtResource("13_gy0je")]
+[node name="Player" parent="." node_paths=PackedStringArray("noir", "next_purin_indicator", "top_edge", "left_edge", "right_edge", "bottom_edge", "purin_node", "sfx_pop_player", "sfx_bonk_player", "gameover_screen", "player_label", "debug_label", "score_label") instance=ExtResource("13_gy0je")]
 position = Vector2(40, 0)
-bowl = NodePath("Bowl")
 noir = NodePath("NoiR")
-next_purin = NodePath("NextIndicator/NextPurin")
-score_ui = NodePath("ScoreInfo/Control/Score")
+next_purin_indicator = NodePath("NextIndicator/NextPurin")
+top_edge = NodePath("TopEdge")
+left_edge = NodePath("Bowl/LeftEdge")
+right_edge = NodePath("Bowl/RightEdge")
+bottom_edge = NodePath("Bowl/BottomEdge")
+purin_node = NodePath("PurinObjects")
 sfx_pop_player = NodePath("Pop")
 sfx_bonk_player = NodePath("Bonk")
-lose_area = NodePath("Bowl/LoseArea")
 gameover_screen = NodePath("GameOverScreen")
-player_name = "Player"
-debug_text = NodePath("DebugText")
-player_name_text = NodePath("Control/Player Label")
-mute_sound = false
-opposing_games = [null]
+player_label = NodePath("Control/Player Label")
+debug_label = NodePath("DebugText")
+score_label = NodePath("ScoreInfo/Control/Score")
 
 [node name="MenuButton" parent="." node_paths=PackedStringArray("text_label") instance=ExtResource("14_mm3f8")]
 process_mode = 3

@@ -1,16 +1,14 @@
-[gd_scene load_steps=23 format=3 uid="uid://con8stx2et0ea"]
+[gd_scene load_steps=14 format=3 uid="uid://con8stx2et0ea"]
 
-[ext_resource type="Script" path="res://assets/scripts/Main.gd" id="1_xpfpx"]
+[ext_resource type="Script" path="res://assets/scripts/PlayerController.gd" id="1_anyjf"]
 [ext_resource type="AudioStream" uid="uid://borrrahqop0te" path="res://assets/audio/sfx/pop.wav" id="2_tn86m"]
 [ext_resource type="Texture2D" uid="uid://c7q1lcjlkysl4" path="res://assets/images/PlayArea.png" id="2_x4cw2"]
-[ext_resource type="Script" path="res://assets/scripts/LoseArea.gd" id="3_f8b76"]
 [ext_resource type="AudioStream" uid="uid://cir0gwbyyr3h5" path="res://assets/audio/sfx/bonk.wav" id="3_wfp2k"]
 [ext_resource type="PackedScene" uid="uid://d3mm5neerbgqy" path="res://assets/scenes/NoiR.tscn" id="4_tleir"]
 [ext_resource type="Texture2D" uid="uid://c7vje2fcd4i0o" path="res://assets/images/Bubble.png" id="5_2jxer"]
 [ext_resource type="Texture2D" uid="uid://xt87hje080jt" path="res://assets/images/purin1.png" id="6_h5ooi"]
 [ext_resource type="FontFile" uid="uid://cdwb8ivskcjue" path="res://assets/fonts/NotoSansCJK-Regular.ttc" id="7_xor5u"]
 [ext_resource type="PackedScene" uid="uid://digt3ya6lodli" path="res://assets/scenes/GameOverScreen.tscn" id="10_vwbcx"]
-[ext_resource type="Texture2D" uid="uid://dgdj0nsw86rr0" path="res://assets/images/GameOverCountDownSpriteSheet.png" id="11_l0lqg"]
 [ext_resource type="FontFile" uid="uid://buytj31trs62" path="res://assets/fonts/NotoSansCJK-Bold.ttc" id="12_dx1lx"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_a48te"]
@@ -22,71 +20,21 @@ size = Vector2(70, 890)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_u6thl"]
 size = Vector2(69, 890)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_yje56"]
-atlas = ExtResource("11_l0lqg")
-region = Rect2(0, 0, 50, 50)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_3ya2q"]
-atlas = ExtResource("11_l0lqg")
-region = Rect2(50, 0, 50, 50)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_0tck8"]
-atlas = ExtResource("11_l0lqg")
-region = Rect2(100, 0, 50, 50)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_38y8u"]
-atlas = ExtResource("11_l0lqg")
-region = Rect2(150, 0, 50, 50)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_oyv1h"]
-atlas = ExtResource("11_l0lqg")
-region = Rect2(200, 0, 50, 50)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_r847y"]
-atlas = ExtResource("11_l0lqg")
-region = Rect2(250, 0, 50, 50)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_enngj"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_yje56")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_3ya2q")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_0tck8")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_38y8u")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_oyv1h")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_r847y")
-}, {
-"duration": 1.0,
-"texture": null
-}],
-"loop": true,
-"name": &"default",
-"speed": 2.0
-}]
-
-[node name="PlayAreaBowl" type="Node2D" node_paths=PackedStringArray("bowl", "noir", "next_purin", "score_ui", "sfx_pop_player", "sfx_bonk_player", "lose_area", "gameover_screen", "debug_text", "player_name_text")]
-script = ExtResource("1_xpfpx")
-bowl = NodePath("Bowl")
+[node name="PlayAreaBowl" type="Node2D" node_paths=PackedStringArray("noir", "next_purin_indicator", "top_edge", "left_edge", "right_edge", "bottom_edge", "purin_node", "sfx_pop_player", "sfx_bonk_player", "gameover_screen", "player_label", "debug_label", "score_label")]
+script = ExtResource("1_anyjf")
 noir = NodePath("NoiR")
-next_purin = NodePath("NextIndicator/NextPurin")
-score_ui = NodePath("ScoreInfo/Control/Score")
+next_purin_indicator = NodePath("NextIndicator/NextPurin")
+top_edge = NodePath("TopEdge")
+left_edge = NodePath("Bowl/LeftEdge")
+right_edge = NodePath("Bowl/RightEdge")
+bottom_edge = NodePath("Bowl/BottomEdge")
+purin_node = NodePath("PurinObjects")
 sfx_pop_player = NodePath("Pop")
 sfx_bonk_player = NodePath("Bonk")
-lose_area = NodePath("Bowl/LoseArea")
 gameover_screen = NodePath("GameOverScreen")
-debug_text = NodePath("DebugText")
-player_name_text = NodePath("Control/Player Label")
+player_label = NodePath("Control/Player Label")
+debug_label = NodePath("DebugText")
+score_label = NodePath("ScoreInfo/Control/Score")
 
 [node name="Pop" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("2_tn86m")
@@ -117,18 +65,22 @@ shape = SubResource("RectangleShape2D_uedqb")
 position = Vector2(812.5, 295)
 shape = SubResource("RectangleShape2D_u6thl")
 
-[node name="LoseArea" type="Area2D" parent="Bowl" node_paths=PackedStringArray("gameover_count_down")]
-position = Vector2(50, -136)
-disable_mode = 1
-monitorable = false
-script = ExtResource("3_f8b76")
-gameover_count_down = NodePath("../../GameOverCountDown")
+[node name="LeftEdge" type="Node2D" parent="Bowl"]
+position = Vector2(25, 0)
 
-[node name="LoseCollider" type="CollisionPolygon2D" parent="Bowl/LoseArea"]
-position = Vector2(1, 13)
-polygon = PackedVector2Array(-100, -25, 800, -25, 800, 75, -100, 75)
+[node name="RightEdge" type="Node2D" parent="Bowl"]
+position = Vector2(775, 0)
 
-[node name="PurinObjects" type="Node2D" parent="."]
+[node name="BottomEdge" type="Node2D" parent="Bowl"]
+position = Vector2(400, 738)
+
+[node name="TopEdge" type="Node2D" parent="."]
+position = Vector2(386, 82)
+
+[node name="Line2D" type="Line2D" parent="TopEdge"]
+points = PackedVector2Array(-400, 0, 400, 0)
+width = 2.0
+default_color = Color(1, 0, 0, 0.470588)
 
 [node name="ScoreInfo" type="Node2D" parent="."]
 position = Vector2(-2, -115)
@@ -226,15 +178,6 @@ scroll_active = false
 shortcut_keys_enabled = false
 language = "JP"
 
-[node name="GameOverScreen" parent="." instance=ExtResource("10_vwbcx")]
-visible = false
-position = Vector2(64, 186)
-scale = Vector2(0.42, 0.482)
-
-[node name="GameOverCountDown" type="AnimatedSprite2D" parent="."]
-visible = false
-sprite_frames = SubResource("SpriteFrames_enngj")
-
 [node name="DebugText" type="RichTextLabel" parent="."]
 offset_left = 6.0
 offset_top = 4.0
@@ -269,9 +212,16 @@ theme_override_font_sizes/normal_font_size = 72
 theme_override_font_sizes/bold_font_size = 72
 text = "AI1"
 
-[node name="NoiR" parent="." node_paths=PackedStringArray("drop_line") instance=ExtResource("4_tleir")]
-position = Vector2(397, 138)
+[node name="NoiR" parent="." node_paths=PackedStringArray("drop_line", "held_purin") instance=ExtResource("4_tleir")]
+position = Vector2(0, 138)
 drop_line = NodePath("DropLine")
+held_purin = NodePath("Purin")
 
-[connection signal="body_entered" from="Bowl/LoseArea" to="Bowl/LoseArea" method="_on_body_entered"]
-[connection signal="body_exited" from="Bowl/LoseArea" to="Bowl/LoseArea" method="_on_body_exited"]
+[node name="PurinObjects" type="Node2D" parent="."]
+
+[node name="GameOverScreen" parent="." instance=ExtResource("10_vwbcx")]
+visible = false
+position = Vector2(64, 186)
+scale = Vector2(0.42, 0.482)
+
+[connection signal="ready" from="." to="." method="_on_ready"]
