@@ -1,0 +1,51 @@
+[gd_scene load_steps=8 format=3 uid="uid://3v4ufqm3rch8"]
+
+[ext_resource type="Texture2D" uid="uid://d38nuxxf34e3s" path="res://assets/images/Menu/SettingsBackground.png" id="1_ldjxl"]
+[ext_resource type="Texture2D" uid="uid://cgqabgljc88nk" path="res://assets/images/Menu/Settings_Switch_On.png" id="1_sg4pc"]
+[ext_resource type="Texture2D" uid="uid://dxgcekxjdah5m" path="res://assets/images/Menu/Settings_Switch_Off.png" id="2_o4w0o"]
+[ext_resource type="Script" path="res://assets/scripts/P5Menu/P5TextureButtonToggle.gd" id="4_h3csw"]
+[ext_resource type="AudioStream" uid="uid://cir0gwbyyr3h5" path="res://assets/audio/sfx/bonk.wav" id="5_p3mm5"]
+[ext_resource type="FontFile" uid="uid://cdwb8ivskcjue" path="res://assets/fonts/NotoSansCJK-Regular.ttc" id="6_eifai"]
+[ext_resource type="FontFile" uid="uid://buytj31trs62" path="res://assets/fonts/NotoSansCJK-Bold.ttc" id="7_geety"]
+
+[node name="P5SettingsToggle" type="Node2D"]
+
+[node name="SettingsBackground" type="Sprite2D" parent="."]
+position = Vector2(-118, -2)
+scale = Vector2(0.837587, 0.844982)
+texture = ExtResource("1_ldjxl")
+
+[node name="Button" type="TextureButton" parent="." node_paths=PackedStringArray("audio_player", "settings_label")]
+offset_left = -91.0
+offset_top = -43.0
+offset_right = 90.0
+offset_bottom = 46.0
+toggle_mode = true
+texture_normal = ExtResource("1_sg4pc")
+texture_pressed = ExtResource("2_o4w0o")
+script = ExtResource("4_h3csw")
+audio_player = NodePath("../AudioStreamPlayer")
+settings_label = NodePath("../SettingsLabel")
+settings_title = "Title here"
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_p3mm5")
+
+[node name="SettingsLabel" type="RichTextLabel" parent="."]
+offset_left = -450.0
+offset_top = -29.0
+offset_right = -94.0
+offset_bottom = 19.0
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_fonts/normal_font = ExtResource("6_eifai")
+theme_override_fonts/bold_font = ExtResource("7_geety")
+theme_override_font_sizes/normal_font_size = 32
+theme_override_font_sizes/bold_font_size = 32
+bbcode_enabled = true
+text = "[right]Settings Label[/right]"
+
+[connection signal="button_down" from="Button" to="Button" method="_on_button_down"]
+[connection signal="button_up" from="Button" to="Button" method="_on_button_up"]
+[connection signal="mouse_entered" from="Button" to="Button" method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="Button" to="Button" method="_on_mouse_exited"]
+[connection signal="ready" from="Button" to="Button" method="_on_ready"]

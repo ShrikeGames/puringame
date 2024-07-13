@@ -248,8 +248,6 @@ func check_game_over(delta):
 		# if the purin's game over time reaches the threshold you lose
 		if ( 
 			purin.game_over_timer_sec >= game_over_threshold_sec
-			or purin.position.x < left_edge.position.x
-			or purin.position.x > right_edge.position.x
 		):
 			print("%s Game Over with a score of %s" % [player_name, score])
 			gameover_screen.visible = true
@@ -258,7 +256,10 @@ func check_game_over(delta):
 				get_tree().paused = true
 			return true
 		# if the purin is above the height threshold start increasing its conter
-		if purin.position.y - purin.get_meta("radius") < top_edge.position.y:
+		if (purin.position.y - purin.get_meta("radius") < top_edge.position.y 
+			or purin.position.x < left_edge.position.x
+			or purin.position.x > right_edge.position.x
+			):
 			purin.game_over_timer_sec += delta
 			# if the counter is under 3 sec then start the 3sec countdown animation too
 			# allows longer count downs even though the animation only counts down from 3

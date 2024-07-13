@@ -1,5 +1,6 @@
 extends TextureButton
 
+@export var audio_player: AudioStreamPlayer
 var normal_bitmap
 var hover_bitmap
 var pressed_bitmap
@@ -27,6 +28,8 @@ func _on_ready():
 
 func _on_mouse_entered():
 	texture_click_mask = hover_bitmap
+	if audio_player:
+		audio_player.play()
 
 func _on_mouse_exited():
 	texture_click_mask = normal_bitmap

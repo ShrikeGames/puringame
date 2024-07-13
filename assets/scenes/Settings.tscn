@@ -1,6 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://ccx5plx0mqy8i"]
+[gd_scene load_steps=5 format=3 uid="uid://ccx5plx0mqy8i"]
 
 [ext_resource type="Texture2D" uid="uid://b11n40aw5nnif" path="res://assets/images/Background.jpg" id="1_qygx5"]
+[ext_resource type="Texture2D" uid="uid://cf5fkfgbr854j" path="res://assets/images/Menu/Title_Settings.png" id="3_1qjot"]
+[ext_resource type="PackedScene" uid="uid://3v4ufqm3rch8" path="res://assets/scenes/P5Menu/P5SettingsToggle.tscn" id="4_361dx"]
 [ext_resource type="PackedScene" uid="uid://debe6w31cqgfn" path="res://assets/scenes/P5Menu/P5MenuItem_Menu.tscn" id="13_8qqyn"]
 
 [node name="Settings" type="Node2D"]
@@ -11,3 +13,27 @@ texture = ExtResource("1_qygx5")
 
 [node name="P5MenuItem" parent="." instance=ExtResource("13_8qqyn")]
 position = Vector2(1710, 1010)
+
+[node name="Title" type="Sprite2D" parent="."]
+position = Vector2(308, 99)
+texture = ExtResource("3_1qjot")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = -37.0
+offset_top = -47.0
+offset_right = 3.0
+offset_bottom = -7.0
+
+[node name="P5SettingsToggle" parent="Control" instance=ExtResource("4_361dx")]
+position = Vector2(1000, 315)
+
+[node name="P5SettingsToggle2" parent="Control" instance=ExtResource("4_361dx")]
+position = Vector2(980, 380)
+
+[node name="P5SettingsToggle3" parent="Control" instance=ExtResource("4_361dx")]
+position = Vector2(960, 445)
+
+[node name="P5SettingsToggle4" parent="Control" instance=ExtResource("4_361dx")]
+position = Vector2(940, 510)

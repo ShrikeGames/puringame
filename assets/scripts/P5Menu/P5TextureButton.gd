@@ -1,7 +1,7 @@
 extends TextureButton
 
 @export var scene_to_change_to: String = "res://assets/scenes/Game.tscn"
-
+@export var audio_player: AudioStreamPlayer
 var normal_bitmap
 var hover_bitmap
 var pressed_bitmap
@@ -30,6 +30,8 @@ func _on_ready():
 func _on_mouse_entered():
 	texture_click_mask = hover_bitmap
 	z_index = 99
+	if audio_player:
+		audio_player.play()
 
 func _on_mouse_exited():
 	texture_click_mask = normal_bitmap
@@ -37,10 +39,12 @@ func _on_mouse_exited():
 	
 func _on_button_down():
 	texture_click_mask = pressed_bitmap
+	return
 
 func _on_button_up():
 	texture_click_mask = normal_bitmap
 	Engine.time_scale = 1
+	
 	if scene_to_change_to != null:
 		get_tree().paused = false
 		get_tree().change_scene_to_file(scene_to_change_to)

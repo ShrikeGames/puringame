@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=3 uid="uid://b3u3o6600wbsd"]
+
+[ext_resource type="Texture2D" uid="uid://b16vuwlym50hl" path="res://assets/images/Banner.png" id="1_p7mfe"]
+
+[node name="Logo" type="RigidBody2D"]
+mass = 1000.0
+lock_rotation = true
+freeze = true
+
+[node name="Banner" type="Sprite2D" parent="."]
+position = Vector2(34, 112)
+scale = Vector2(0.676482, 0.676482)
+texture = ExtResource("1_p7mfe")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+position = Vector2(-8, 4)
+scale = Vector2(2.72955, 2.72955)
+polygon = PackedVector2Array(0, -46, 5, -46, 11, -45, 18, -43, 24, -40, 30, -35, 36, -29, 40, -22, 43, -13, 44, -4, 43, 4, 46, 5, 52, 4, 59, 5, 64, 8, 67, 14, 67, 25, 67, 35, 67, 38, 71, 43, 73, 48, 73, 63, 70, 67, 65, 69, -61, 70, -65, 67, -68, 62, -68, 36, -65, 32, -62, 29, -62, -1, -60, -5, -40, -5, -39, -9, -38, -15, -36, -20, -33, -26, -28, -33, -23, -38, -15, -42, -8, -45)

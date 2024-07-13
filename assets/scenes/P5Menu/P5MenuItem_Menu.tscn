@@ -1,9 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://debe6w31cqgfn"]
+[gd_scene load_steps=7 format=3 uid="uid://debe6w31cqgfn"]
 
 [ext_resource type="Texture2D" uid="uid://b5jgmjlra41pv" path="res://assets/images/Menu/MM_Menu_Normal.png" id="1_qnjpn"]
 [ext_resource type="Texture2D" uid="uid://4opag8tv07lh" path="res://assets/images/Menu/MM_Menu_Clicked.png" id="2_hjh6f"]
 [ext_resource type="Texture2D" uid="uid://ccl6hdg8bv62n" path="res://assets/images/Menu/MM_Menu_Selected.png" id="3_p8e6h"]
 [ext_resource type="Script" path="res://assets/scripts/P5Menu/P5TextureButton.gd" id="4_xau4u"]
+[ext_resource type="AudioStream" uid="uid://l3anfuf7pqc4" path="res://assets/audio/sfx/A-1.wav" id="5_7y6wo"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_6gsb7"]
 rough = true
@@ -15,7 +16,7 @@ max_contacts_reported = 20
 contact_monitor = true
 freeze = true
 
-[node name="Button" type="TextureButton" parent="."]
+[node name="Button" type="TextureButton" parent="." node_paths=PackedStringArray("audio_player")]
 offset_left = -543.0
 offset_top = -154.0
 offset_right = 537.0
@@ -25,11 +26,17 @@ texture_pressed = ExtResource("2_hjh6f")
 texture_hover = ExtResource("3_p8e6h")
 script = ExtResource("4_xau4u")
 scene_to_change_to = "res://assets/scenes/Main.tscn"
+audio_player = NodePath("../AudioStreamPlayer")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
 polygon = PackedVector2Array(-173, -61, -165, -69, -137, -67, -119, -29, -100, -65, -93, -70, -69, -68, -66, -60, -66, -37, -46, -48, -16, -47, 6, -36, 13, -47, 39, -44, 58, -45, 78, -40, 84, -34, 88, -46, 115, -48, 122, -37, 129, -38, 137, -45, 163, -45, 169, -32, 168, 29, 165, 37, 140, 39, 114, 37, 92, 30, 84, 38, 53, 36, 50, 30, 42, 33, 36, 37, 15, 38, 7, 31, -10, 35, -36, 39, -54, 33, -66, 26, -67, 35, -78, 40, -98, 38, -104, 24, -134, 25, -134, 33, -141, 39, -166, 39, -173, 31)
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_7y6wo")
+bus = &"Menu"
 
 [connection signal="button_down" from="Button" to="Button" method="_on_button_down"]
 [connection signal="button_up" from="Button" to="Button" method="_on_button_up"]
 [connection signal="mouse_entered" from="Button" to="Button" method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="Button" to="Button" method="_on_mouse_exited"]
+[connection signal="ready" from="Button" to="Button" method="_on_ready"]

@@ -39,9 +39,11 @@ ai_inputs_object = NodePath("AIInputs")
 
 [node name="Pop" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("2_tn86m")
+bus = &"Game"
 
 [node name="Bonk" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("3_wfp2k")
+bus = &"Game"
 
 [node name="Bowl" type="StaticBody2D" parent="."]
 position = Vector2(0, 152)
