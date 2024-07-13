@@ -3,7 +3,7 @@ class_name PlayerController
 
 @export var player_name: String = "player"
 @export var config_path: String = "user://player.json"
-var default_config_path: String = "res://default.json"
+@export var default_config_path: String = "res://default.json"
 @export var ai_controlled: bool = false
 @export var auto_retry: bool = false
 var ai_controller: AIController
@@ -329,7 +329,7 @@ func spawn_purin(
 	new_shape.radius = new_radius
 	purin.set_meta("radius", new_radius)
 	purin.collider.shape = new_shape
-	purin.particle_system.scale = Vector2(5+level, 5+level)
+	purin.particle_system.scale = Vector2(2+level, 2+level)
 	purin.particle_system.process_material.emission_sphere_radius = new_radius * 0.5
 	
 	# if it's an evil purin then make that visible

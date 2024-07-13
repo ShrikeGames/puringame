@@ -84,6 +84,7 @@ position = Vector2(1040, 0)
 
 [node name="Player" parent="." instance=ExtResource("13_gy0je")]
 position = Vector2(40, 0)
+default_config_path = "res://player.json"
 
 [node name="MenuButton" parent="." instance=ExtResource("14_mm3f8")]
 process_mode = 3

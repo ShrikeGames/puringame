@@ -78,12 +78,14 @@ texture = ExtResource("12_hc0wc")
 [node name="AI" parent="." node_paths=PackedStringArray("opponents") instance=ExtResource("13_3k2pk")]
 position = Vector2(1040, 0)
 player_name = "ai"
-config_path = "res://ai.json"
+config_path = "user://ai.json"
+default_config_path = "res://ai.json"
 ai_controlled = true
 opponents = [NodePath("../Player")]
 
 [node name="Player" parent="." node_paths=PackedStringArray("opponents") instance=ExtResource("13_3k2pk")]
 position = Vector2(40, 0)
+default_config_path = "res://player.json"
 opponents = [NodePath("../AI")]
 
 [node name="MenuButton" parent="." instance=ExtResource("14_d73ay")]
