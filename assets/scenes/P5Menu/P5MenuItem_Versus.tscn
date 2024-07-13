@@ -1,0 +1,36 @@
+[gd_scene load_steps=6 format=3 uid="uid://c0itbpuugsmrn"]
+
+[ext_resource type="Texture2D" uid="uid://c2h54t1o20yh3" path="res://assets/images/Menu/MM_Versus_Normal.png" id="2_oeux8"]
+[ext_resource type="Texture2D" uid="uid://bd1ye0qhiunsk" path="res://assets/images/Menu/MM_Versus_Clicked.png" id="3_6y3v3"]
+[ext_resource type="Texture2D" uid="uid://dae8k3g7ae2ex" path="res://assets/images/Menu/MM_Versus_Selected.png" id="4_jo0uo"]
+[ext_resource type="Script" path="res://assets/scripts/P5Menu/P5TextureButton.gd" id="5_tg6ro"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_6gsb7"]
+rough = true
+
+[node name="P5MenuItem" type="RigidBody2D"]
+mass = 2.0
+physics_material_override = SubResource("PhysicsMaterial_6gsb7")
+max_contacts_reported = 20
+contact_monitor = true
+
+[node name="Button" type="TextureButton" parent="."]
+offset_left = -543.0
+offset_top = -154.0
+offset_right = 537.0
+offset_bottom = 174.0
+texture_normal = ExtResource("2_oeux8")
+texture_pressed = ExtResource("3_6y3v3")
+texture_hover = ExtResource("4_jo0uo")
+script = ExtResource("5_tg6ro")
+scene_to_change_to = "res://assets/scenes/GameVSAI.tscn"
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+rotation = 1.5509
+polygon = PackedVector2Array(-71.4631, 223.622, -71.9655, 198.608, -32.6152, 181.387, -67.3695, 168.693, -71.2692, 163.614, -69.772, 138.639, -61.6344, 131.8, -31.8194, 141.395, -44.5581, 128.139, -49.1791, 109.043, -45.7619, 88.107, -42.484, 74.1695, -33.3465, 67.3499, -42.2851, 64.1714, -46.0455, 52.0942, -45.6874, 34.0978, -45.4288, 21.1004, -39.1713, 8.22231, -44.8518, -7.89389, -44.3346, -33.8887, -39.9971, -50.8058, -30.8199, -59.625, -38.8183, -59.7841, -41.7182, -64.8428, -42.2405, -88.858, -38.1021, -95.777, -29.064, -97.5975, -29.9644, -102.616, -37.923, -104.775, -42.8026, -110.874, -42.3451, -133.869, -37.2267, -139.768, -33.2076, -140.689, -39.9475, -153.825, -41.4697, -177.86, -40.0521, -198.836, -33.7946, -211.714, -19.5984, -221.434, -5.6808, -217.156, 10.3956, -220.837, 27.3326, -217.499, 39.1113, -206.263, 42.8519, -193.186, 41.1558, -158.213, 29.7999, -140.435, 36.7388, -137.296, 40.539, -127.219, 39.0618, -103.243, 37.5447, -77.2683, 24.209, -60.5303, 31.0684, -53.3925, 38.7087, -35.2369, 39.1315, -6.22271, 30.7949, 10.6148, 21.6574, 17.4343, 21.4187, 29.4319, 30.3771, 31.6106, 38.1965, 40.768, 35.7791, 61.724, 25.6617, 67.5239, 32.3818, 81.6604, 35.043, 98.7167, 34.6451, 118.713, 28.3279, 134.59, 12.1321, 144.27, 10.8339, 159.247, 30.6907, 166.644, 32.5709, 172.682, 32.1929, 191.678, 28.9946, 201.617, -61.6044, 230.82)
+
+[connection signal="button_down" from="Button" to="Button" method="_on_button_down"]
+[connection signal="button_up" from="Button" to="Button" method="_on_button_up"]
+[connection signal="mouse_entered" from="Button" to="Button" method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="Button" to="Button" method="_on_mouse_exited"]
+[connection signal="ready" from="Button" to="Button" method="_on_ready"]

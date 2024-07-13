@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://b6rr2t10c874m"]
+
+[ext_resource type="PackedScene" uid="uid://debe6w31cqgfn" path="res://assets/scenes/P5Menu/P5MenuItem_Menu.tscn" id="1_pq1n6"]
+
+[node name="Credits" type="Node2D"]
+
+[node name="P5MenuItem" parent="." instance=ExtResource("1_pq1n6")]
+position = Vector2(1710, 1010)

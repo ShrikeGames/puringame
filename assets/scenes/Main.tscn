@@ -1,7 +1,19 @@
-[gd_scene load_steps=2 format=3 uid="uid://bluist7lqnuec"]
+[gd_scene load_steps=4 format=3 uid="uid://bluist7lqnuec"]
 
-[ext_resource type="PackedScene" uid="uid://qis1inlxechp" path="res://assets/scenes/Menu.tscn" id="1_isp6d"]
+[ext_resource type="Texture2D" uid="uid://b11n40aw5nnif" path="res://assets/images/Background.jpg" id="1_85gj0"]
+[ext_resource type="PackedScene" uid="uid://di6f5367c0hfj" path="res://assets/scenes/P5Menu/P5Menu.tscn" id="1_wthg8"]
+[ext_resource type="Texture2D" uid="uid://b16vuwlym50hl" path="res://assets/images/Banner.png" id="3_h3db1"]
 
 [node name="Main" type="Node2D"]
 
-[node name="Menu" parent="." instance=ExtResource("1_isp6d")]
+[node name="Background" type="Sprite2D" parent="."]
+position = Vector2(960, 540)
+texture = ExtResource("1_85gj0")
+
+[node name="P5Menu" parent="." instance=ExtResource("1_wthg8")]
+position = Vector2(34, 56)
+
+[node name="Banner" type="Sprite2D" parent="."]
+position = Vector2(264, 264)
+scale = Vector2(0.642229, 0.642229)
+texture = ExtResource("3_h3db1")

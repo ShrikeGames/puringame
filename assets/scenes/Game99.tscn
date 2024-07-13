@@ -13,7 +13,7 @@
 [ext_resource type="Texture2D" uid="uid://cwcmvy5fu6w86" path="res://assets/images/purin10.png" id="11_bhs5c"]
 [ext_resource type="Texture2D" uid="uid://bja3p1ji46rhl" path="res://assets/images/purin11.png" id="12_ch4aq"]
 [ext_resource type="PackedScene" uid="uid://con8stx2et0ea" path="res://assets/scenes/PlayAreaBowl.tscn" id="13_gy0je"]
-[ext_resource type="PackedScene" uid="uid://dnruobuhnvd7c" path="res://assets/scenes/SoloGameButton.tscn" id="14_mm3f8"]
+[ext_resource type="PackedScene" uid="uid://debe6w31cqgfn" path="res://assets/scenes/P5Menu/P5MenuItem_Menu.tscn" id="14_vkqg3"]
 
 [node name="Game" type="Node2D" node_paths=PackedStringArray("player_game", "ai_games_node")]
 script = ExtResource("1_j1h3y")
@@ -86,13 +86,7 @@ position = Vector2(1040, 0)
 position = Vector2(40, 0)
 default_config_path = "res://player.json"
 
-[node name="MenuButton" parent="." instance=ExtResource("14_mm3f8")]
-process_mode = 3
-offset_left = 1643.0
-offset_top = 970.0
-offset_right = 2243.0
-offset_bottom = 1170.0
-scale = Vector2(0.439997, 0.439997)
-text = "メニュー"
+[node name="P5MenuItem" parent="." instance=ExtResource("14_vkqg3")]
+position = Vector2(1710, 1010)
 
 [connection signal="ready" from="." to="." method="_on_ready"]

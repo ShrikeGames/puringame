@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://ccx5plx0mqy8i"]
+
+[ext_resource type="Texture2D" uid="uid://b11n40aw5nnif" path="res://assets/images/Background.jpg" id="1_qygx5"]
+[ext_resource type="PackedScene" uid="uid://debe6w31cqgfn" path="res://assets/scenes/P5Menu/P5MenuItem_Menu.tscn" id="13_8qqyn"]
+
+[node name="Settings" type="Node2D"]
+
+[node name="Background" type="Sprite2D" parent="."]
+position = Vector2(960, 540)
+texture = ExtResource("1_qygx5")
+
+[node name="P5MenuItem" parent="." instance=ExtResource("13_8qqyn")]
+position = Vector2(1710, 1010)

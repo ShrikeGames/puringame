@@ -1,0 +1,36 @@
+[gd_scene load_steps=6 format=3 uid="uid://dvgaw226y7204"]
+
+[ext_resource type="Texture2D" uid="uid://koksrnp1qgc8" path="res://assets/images/Menu/MM_Leaderboard_Normal.png" id="2_pj87q"]
+[ext_resource type="Texture2D" uid="uid://bwhebb2sgfjdq" path="res://assets/images/Menu/MM_Leaderboard_Clicked.png" id="3_pgrw6"]
+[ext_resource type="Texture2D" uid="uid://cltmtxgvj46vj" path="res://assets/images/Menu/MM_Leaderboard_Selected.png" id="4_ub7yw"]
+[ext_resource type="Script" path="res://assets/scripts/P5Menu/P5TextureButton.gd" id="5_g7ytn"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_6gsb7"]
+rough = true
+
+[node name="P5MenuItem" type="RigidBody2D"]
+mass = 5.0
+physics_material_override = SubResource("PhysicsMaterial_6gsb7")
+max_contacts_reported = 20
+contact_monitor = true
+
+[node name="Button" type="TextureButton" parent="."]
+offset_left = -543.0
+offset_top = -154.0
+offset_right = 537.0
+offset_bottom = 174.0
+texture_normal = ExtResource("2_pj87q")
+texture_pressed = ExtResource("3_pgrw6")
+texture_hover = ExtResource("4_ub7yw")
+script = ExtResource("5_g7ytn")
+scene_to_change_to = "res://assets/scenes/Leaderboard.tscn"
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+rotation = 1.5509
+polygon = PackedVector2Array(-67.9063, 396.728, -75.7456, 388.57, -75.3079, 366.574, -66.1505, 358.755, -1.18329, 361.048, 1.53253, 325.095, -28.4814, 325.498, -42.3792, 320.22, -50.9596, 299.045, -51.3427, 268.032, -44.0456, 253.174, -31.9087, 246.414, -45.6672, 234.138, -49.2884, 215.062, -47.831, 192.086, -40.5141, 176.229, -35.4156, 171.329, -44.1154, 156.153, -46.5379, 127.099, -59.4955, 124.841, -66.3946, 119.703, -65.8575, 92.7081, -56.7598, 87.8882, -37.7635, 88.2662, -47.3438, 67.0714, -44.7473, 37.1171, -33.3317, 16.3401, -42.2702, 13.1616, -44.9314, -3.89468, -45.3543, -32.9088, -56.3322, -34.1275, -61.1919, -41.2256, -61.754, -63.2411, -54.6559, -68.1009, -41.6187, -69.8418, -41.2606, -87.8383, -31.8844, -106.655, -42.3252, -134.869, -42.6684, -167.882, -28.2932, -186.6, -37.8933, -206.795, -40.2163, -240.848, -31.82, -260.685, -38.6196, -270.822, -37.8039, -311.814, -29.6066, -321.653, -37.2867, -337.809, -36.9683, -353.805, -53.8854, -358.143, -56.4471, -380.198, -52.249, -390.117, 33.7738, -390.405, 41.7125, -387.247, 47.3333, -368.131, 41.459, -324.239, 28.2228, -312.5, 22.9452, -298.603, 38.9421, -298.284, 45.6622, -284.148, 40.2454, -263.251, 42.9662, -249.195, 41.0314, -202.224, 23.6965, -185.565, 37.5545, -178.288, 42.8371, -142.176, 35.4406, -122.319, 26.2434, -112.5, 36.903, -95.2847, 38.1864, -59.252, 37.689, -34.257, 26.5917, -29.4768, 27.4522, -22.4583, 38.3506, -17.2404, 35.7342, 13.7136, 27.6165, 19.5533, 34.2967, 35.6894, 35.6, 70.7223, 24.1645, 92.4991, 34.1028, 95.6974, 36.2866, 136.749, 30.7902, 161.645, 22.6724, 167.484, 32.5112, 175.682, 33.9538, 203.716, 31.3175, 235.67, 18.0416, 249.408, 23.8812, 257.526, 30.2631, 288.659, 25.7665, 313.575, 18.5889, 322.434, 27.5871, 322.613, 31.5515, 374.702, 27.1544, 394.618)
+
+[connection signal="button_down" from="Button" to="Button" method="_on_button_down"]
+[connection signal="button_up" from="Button" to="Button" method="_on_button_up"]
+[connection signal="mouse_entered" from="Button" to="Button" method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="Button" to="Button" method="_on_mouse_exited"]
+[connection signal="ready" from="Button" to="Button" method="_on_ready"]

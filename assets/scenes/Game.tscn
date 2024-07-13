@@ -12,12 +12,12 @@
 [ext_resource type="Texture2D" uid="uid://cwcmvy5fu6w86" path="res://assets/images/purin10.png" id="12_a6cpv"]
 [ext_resource type="Texture2D" uid="uid://bja3p1ji46rhl" path="res://assets/images/purin11.png" id="13_bcewv"]
 [ext_resource type="PackedScene" uid="uid://con8stx2et0ea" path="res://assets/scenes/PlayAreaBowl.tscn" id="13_ohdrd"]
-[ext_resource type="PackedScene" uid="uid://dnruobuhnvd7c" path="res://assets/scenes/SoloGameButton.tscn" id="14_4xveu"]
+[ext_resource type="PackedScene" uid="uid://debe6w31cqgfn" path="res://assets/scenes/P5Menu/P5MenuItem_Menu.tscn" id="13_yh0lk"]
 
 [node name="Game" type="Node2D"]
 
 [node name="ProgressionIndicator" type="Node2D" parent="."]
-position = Vector2(1503, 22)
+position = Vector2(420, 22)
 scale = Vector2(0.84, 0.84)
 
 [node name="Purin1" type="Sprite2D" parent="ProgressionIndicator"]
@@ -79,11 +79,5 @@ texture = ExtResource("13_bcewv")
 position = Vector2(550, 0)
 default_config_path = "res://player.json"
 
-[node name="MenuButton" parent="." instance=ExtResource("14_4xveu")]
-process_mode = 3
-offset_left = 1643.0
-offset_top = 970.0
-offset_right = 2243.0
-offset_bottom = 1170.0
-scale = Vector2(0.439997, 0.439997)
-text = "メニュー"
+[node name="P5MenuItem" parent="." instance=ExtResource("13_yh0lk")]
+position = Vector2(1710, 1010)
