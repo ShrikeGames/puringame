@@ -1,6 +1,5 @@
-[gd_scene load_steps=8 format=3 uid="uid://qis1inlxechp"]
+[gd_scene load_steps=7 format=3 uid="uid://qis1inlxechp"]
 
-[ext_resource type="Texture2D" uid="uid://c3xtdqs3o2uf3" path="res://assets/images/noir_@dqnww.png" id="1_fh7mn"]
 [ext_resource type="PackedScene" uid="uid://con8stx2et0ea" path="res://assets/scenes/PlayAreaBowl.tscn" id="3_cl710"]
 [ext_resource type="PackedScene" uid="uid://dnruobuhnvd7c" path="res://assets/scenes/SoloGameButton.tscn" id="3_llqj5"]
 [ext_resource type="FontFile" uid="uid://cdwb8ivskcjue" path="res://assets/fonts/NotoSansCJK-Regular.ttc" id="8_hm5qy"]
@@ -10,16 +9,10 @@
 
 [node name="Menu" type="Node2D"]
 
-[node name="Background" type="Sprite2D" parent="."]
-position = Vector2(966, 539)
-scale = Vector2(0.243899, 0.243899)
-texture = ExtResource("1_fh7mn")
-
 [node name="PlayAreaBowl" parent="." instance=ExtResource("3_cl710")]
 position = Vector2(1085, 0)
 player_name = "demo"
-player_config_name = "demo"
-config_path = "res://default.cfg"
+config_path = "res://demo.json"
 ai_controlled = true
 auto_retry = true
 
@@ -43,8 +36,8 @@ theme_override_fonts/normal_font = ExtResource("8_hm5qy")
 theme_override_fonts/bold_font = ExtResource("9_0ahjj")
 theme_override_font_sizes/normal_font_size = 24
 bbcode_enabled = true
-text = "Version 2.5.0
-\"Complete refactor\""
+text = "Version 2.5.12
+\"Save/Load Fixes\""
 scroll_active = false
 shortcut_keys_enabled = false
 

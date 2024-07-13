@@ -92,12 +92,14 @@ func process_ai(_delta):
 			cool_down_sec *= 0.25
 			break
 	if game.time_since_last_dropped_purin_sec >= cool_down_sec:
-		# reposition the player
-		update_noir_position()
-		game.drop_purin()
 		var space_state = game.get_world_2d().direct_space_state
 		for input in inputs:
 			input.update(space_state)
+		# reposition the player
+		update_noir_position()
+		game.drop_purin()
+		
+		
 
 func cost_function(value1:Value, value2:Value):
 	if value1.cost < value2.cost:

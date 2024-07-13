@@ -31,8 +31,11 @@ func init_ai_players():
 		game.training = true
 		var player_name = "ai%s"%(i)
 		game.player_name = player_name
-		game.player_config_name = player_name
-		game.config_path = "user://ai.cfg"
+		# for now all save to the same file instead of individual
+		# working to improve just one result
+		# TODO change later
+		game.config_path = "user://ai.json"
+		game.default_config_path = "res://ai.json"
 		game.position = Vector2(40 + (x_pos*1020), y_pos)
 		game.init()
 		x_pos += 1
@@ -49,13 +52,9 @@ func init_ai_players():
 		if rank < num_ai * 0.25:
 			game.ai_mutation_rate = 0.05
 		elif rank < num_ai * 0.5:
-			var better_game:PlayerController = games[rank/4]
 			game.ai_mutation_rate = 0.1
-			game.player_config_name = better_game.player_config_name
 		else:
-			var better_game:PlayerController = games[rank/2]
 			game.ai_mutation_rate = 0.2
-			game.player_config_name = better_game.player_config_name
 		games.append(game)
 		
 	games.sort_custom(rank_ai_players)
@@ -71,7 +70,7 @@ func init_ai_players():
 	camera.position.y = 535
 	
 func rank_ai_players(player1:PlayerController, player2:PlayerController):
-	if player1.player_name == player1.player_config_name and player1.highscore > player2.highscore:
+	if player1.highscore > player2.highscore:
 		return true
 	if player1.highscore > player2.highscore:
 		return true

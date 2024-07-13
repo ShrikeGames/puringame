@@ -1,6 +1,5 @@
-[gd_scene load_steps=15 format=3 uid="uid://cg6rs6yybp3g6"]
+[gd_scene load_steps=14 format=3 uid="uid://cg6rs6yybp3g6"]
 
-[ext_resource type="Texture2D" uid="uid://c3xtdqs3o2uf3" path="res://assets/images/noir_@dqnww.png" id="1_lrphk"]
 [ext_resource type="Texture2D" uid="uid://xt87hje080jt" path="res://assets/images/purin1.png" id="2_fsy0n"]
 [ext_resource type="Texture2D" uid="uid://ds7ffculpywfr" path="res://assets/images/purin2.png" id="3_1t0pr"]
 [ext_resource type="Texture2D" uid="uid://d1l07juub21tt" path="res://assets/images/purin3.png" id="4_gdvjw"]
@@ -16,11 +15,6 @@
 [ext_resource type="PackedScene" uid="uid://dnruobuhnvd7c" path="res://assets/scenes/SoloGameButton.tscn" id="14_d73ay"]
 
 [node name="Game" type="Node2D"]
-
-[node name="Background" type="Sprite2D" parent="."]
-position = Vector2(966, 539)
-scale = Vector2(0.243899, 0.243899)
-texture = ExtResource("1_lrphk")
 
 [node name="ProgressionIndicator" type="Node2D" parent="."]
 position = Vector2(961, 25)
@@ -84,8 +78,7 @@ texture = ExtResource("12_hc0wc")
 [node name="AI" parent="." node_paths=PackedStringArray("opponents") instance=ExtResource("13_3k2pk")]
 position = Vector2(1040, 0)
 player_name = "ai"
-player_config_name = "ai"
-config_path = "res://default.cfg"
+config_path = "res://ai.json"
 ai_controlled = true
 opponents = [NodePath("../Player")]
 

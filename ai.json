@@ -1,0 +1,16 @@
+{
+	"purin_sizes": [50, 100, 125, 156, 175, 195, 220, 250, 275, 300, 343],
+	"highest_possible_purin_level": 10,
+	"game_over_threshold_sec":6,
+	"drop_purin_cooldown_sec":1.25,
+	"evil_purin_spawn_level_threshold":3,
+	"evil_purin_spawn_level_divider":4,
+	"highscore":0,
+	"last_board_state":"",
+	"last_score":0,
+	"weights":[1, 1, 1, 1, 1, 1],
+	"biases":[0, 0, 0, 0, 0, 0],
+	"highscore_board_state":"",
+	"highscore_weights":[1, 1, 1, 1, 1.27339, 1.25569],
+	"highscore_biases":[0, 0, 0, 0.1, 0, 0],
+}

@@ -1,7 +1,6 @@
-[gd_scene load_steps=16 format=3 uid="uid://dsimdukn6dthe"]
+[gd_scene load_steps=15 format=3 uid="uid://dsimdukn6dthe"]
 
 [ext_resource type="Script" path="res://assets/scripts/AI/AIManager.gd" id="1_doc3l"]
-[ext_resource type="Texture2D" uid="uid://c3xtdqs3o2uf3" path="res://assets/images/noir_@dqnww.png" id="4_jagme"]
 [ext_resource type="Texture2D" uid="uid://xt87hje080jt" path="res://assets/images/purin1.png" id="8_ysdtw"]
 [ext_resource type="Texture2D" uid="uid://ds7ffculpywfr" path="res://assets/images/purin2.png" id="9_kf7j1"]
 [ext_resource type="Texture2D" uid="uid://d1l07juub21tt" path="res://assets/images/purin3.png" id="10_8mmdr"]
@@ -21,11 +20,6 @@ script = ExtResource("1_doc3l")
 ai_games_node = NodePath("AIGames")
 time_scale = 3.0
 camera = NodePath("Camera2D")
-
-[node name="Background" type="Sprite2D" parent="."]
-position = Vector2(966, 539)
-scale = Vector2(0.243899, 0.243899)
-texture = ExtResource("4_jagme")
 
 [node name="ProgressionIndicator" type="Node2D" parent="."]
 position = Vector2(949, 25)

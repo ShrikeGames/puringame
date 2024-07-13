@@ -2,9 +2,8 @@ extends Node2D
 class_name PlayerController
 
 @export var player_name: String = "player"
-@export var player_config_name: String = "player"
-@export var config_path: String = "user://player.cfg"
-var default_config_path: String = "res://default.cfg"
+@export var config_path: String = "user://player.json"
+var default_config_path: String = "res://default.json"
 @export var ai_controlled: bool = false
 @export var auto_retry: bool = false
 var ai_controller: AIController
@@ -28,8 +27,8 @@ var ai_controller: AIController
 @export var training: bool = false
 var rank: int = 0
 
-var config: ConfigFile
-var default_config: ConfigFile
+var config_json
+var default_config_json
 
 var score: int = 0
 var highscore: int = 0
@@ -67,15 +66,21 @@ func init():
 		# set up the game, can be called to restart at anytime
 		set_up_game()
 
+func read_json(path:String):
+	if not FileAccess.file_exists(path):
+		return null
+	var json_string = FileAccess.get_file_as_string(path)
+	var json_dict = JSON.parse_string(json_string)
 
+	return json_dict
+	
 func load_configs():
 	print("load configs from ", config_path)
-	config = ConfigFile.new()
-	config.load(config_path)
-	print("load default_config from ", default_config_path)
-	default_config = ConfigFile.new()
-	default_config.load(default_config_path)
-
+	config_json = read_json(config_path)
+	print("config_json:", config_json)
+	default_config_json = read_json(default_config_path)
+	if config_json == null:
+		config_json = default_config_json
 	# get values from config file (player's save, or from default config)
 	#purin_sizes = get_config_value_or_default("purin_sizes")
 	print("purin_sizes:", purin_sizes)
@@ -99,12 +104,15 @@ func load_configs():
 	#default_config.save(default_config_path)
 
 func get_config_value_or_default(key: String, mutation_rate: float = 0.0, default_default_value = 0):
-	var backup_default_config_name = player_config_name
-	if training:
-		backup_default_config_name = "ai"
-	var config_value = config.get_value(
-		player_config_name, key, default_config.get_value(backup_default_config_name, key, default_default_value)
-	)
+	var config_value = 0
+	var default_value = default_default_value
+	
+	if default_config_json.has(key):
+		default_value = default_config_json.get(key)
+	if config_json != null and config_json.has(key):
+		config_value = config_json.get(key, default_value)
+	else:
+		config_value = default_value
 	if mutation_rate != 0.0:
 		# should be an array so loop through each weight/bias
 		for i in range(0, len(config_value)):
@@ -113,7 +121,7 @@ func get_config_value_or_default(key: String, mutation_rate: float = 0.0, defaul
 				config_value[i] += randf_range(-1.0, 1.0)
 				config_value[i] = min(config_value[i], 8.0)
 				config_value[i] = max(0.1, config_value[i])
-
+	
 	return config_value
 
 
@@ -171,34 +179,40 @@ func get_board_state():
 
 
 func save_results():
-	if not training and ai_controlled:
+	# cannot save to read-only res:// location
+	if config_path.contains("res://"):
 		return
-	config = ConfigFile.new()
-	config.load(config_path)
-	var actual_player_config_name = player_config_name
-	if training:
-		actual_player_config_name = player_name
-	# save the board-state
-	var board_state: String = get_board_state()
-	config.set_value(actual_player_config_name, "last_board_state", board_state)
-
-	# save their last score and their new highscore if they have one
-	config.set_value(actual_player_config_name, "last_score", score)
+	# get latest copies of the configs before updating them
+	config_json = read_json(config_path)
+	default_config_json = read_json(default_config_path)
+	if config_json == null:
+		config_json = default_config_json
+	if config_json == null:
+		print("No config_json was loaded? ", config_path)
+		return
+	# update config
+	config_json["last_score"] = score
 	if ai_controlled:
-		config.set_value(actual_player_config_name, "weights", ai_controller.weights)
-		config.set_value(actual_player_config_name, "biases", ai_controller.biases)
-
+		config_json["weights"] = ai_controller.weights
+		config_json["biases"] = ai_controller.biases
 	if score > highscore:
 		print(player_name, " got a new personal highscore of ", score)
 		highscore = score
-		config.set_value(actual_player_config_name, "highscore", highscore)
-		config.set_value(actual_player_config_name, "highscore_board_state", board_state)
+		config_json["highscore"] = highscore
 		if ai_controlled:
-			config.set_value(actual_player_config_name, "highscore_weights", ai_controller.weights)
-			config.set_value(actual_player_config_name, "highscore_biases", ai_controller.biases)
-
-	config.save(config_path)
-
+			config_json["highscore_weights"] = ai_controller.weights
+			config_json["highscore_biases"] = ai_controller.biases
+	# save the results
+	var json_string := JSON.stringify(config_json)
+	# We will need to open/create a new file for this data string
+	var file_access := FileAccess.open(config_path, FileAccess.WRITE)
+	if not file_access:
+		print("An error happened while saving data: ", FileAccess.get_open_error())
+		return
+		
+	file_access.store_line(json_string)
+	file_access.close()
+	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
