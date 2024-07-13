@@ -89,7 +89,7 @@ func process_ai(_delta):
 	var cool_down_sec = game.drop_purin_cooldown_sec
 	for purin in game.purin_node.get_children():
 		if purin.position.y - purin.get_meta("radius") < game.top_edge.position.y:
-			cool_down_sec *= 0.25
+			cool_down_sec = game.drop_purin_cooldown_sec * 0.75
 			break
 	if game.time_since_last_dropped_purin_sec >= cool_down_sec:
 		var space_state = game.get_world_2d().direct_space_state

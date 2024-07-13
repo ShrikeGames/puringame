@@ -11,6 +11,7 @@ var generation_timer:float = 0.0
 
 var games:Array[PlayerController]
 var generation:int = 0
+var following_game:PlayerController
 func _on_ready() -> void:
 	Engine.time_scale = time_scale
 	init_ai_players();
@@ -67,6 +68,7 @@ func init_ai_players():
 		game.set_up_game()
 		print("%s. %s (%s) %s %s"%[game.rank, game.player_name, game.highscore, game.ai_controller.weights, game.ai_controller.biases])
 	
+	following_game = games[0]
 	camera.position.y = 535
 	
 func rank_ai_players(player1:PlayerController, player2:PlayerController):
@@ -89,9 +91,10 @@ func _process(delta):
 	if ai_games_node.get_child_count() <= 0:
 		init_ai_players();
 	
-	if camera != null and not games.is_empty():
+	if camera != null and not games.is_empty() and not is_instance_valid(following_game):
 		for game in games:
-			if is_instance_valid(game) and game.score > 20000:
+			if is_instance_valid(game):
 				camera.position.y = game.position.y + 535
+				following_game = game
 				break
 	
