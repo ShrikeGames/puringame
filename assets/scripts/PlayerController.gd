@@ -38,7 +38,7 @@ var highscore:int
 
 var purin_object: Resource
 var purin_textures:Array[Texture2D]
-var purin_sizes:Array 
+var purin_sizes:Array = [50, 100, 125, 156, 175, 195, 220, 250, 275, 300, 343]
 var highest_possible_purin_level:int
 const purin_file_path_root = "res://assets/images/"
 var purin_bag:PurinBag
@@ -54,13 +54,13 @@ var drop_purin_cooldown_sec:float
 var game_over_threshold_sec:float
 
 func _on_ready() -> void:
+	# first time load the purin images/textures
+	load_purin()
 	if not training:
 		init()
 	
 func init():
 	load_configs()
-	# first time load the purin images/textures
-	load_purin()
 	if not training:
 		# set up the game, can be called to restart at anytime
 		set_up_game()

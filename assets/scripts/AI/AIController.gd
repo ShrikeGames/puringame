@@ -48,11 +48,12 @@ func update_inputs():
 		input.update(space_state)
 	
 func remove_all_inputs():
-	for input:AIInput in game.ai_inputs_object.get_children():
+	for input in game.ai_inputs_object.get_children():
 		#input.queue_free()
 		input.disabled = true
 		input.drop_line.visible = false
 		
+	
 func best_x_pos():
 	# start at a random x_pos
 	var x_pos:float = 0#game.valid_x_pos(randf_range(game.left_edge.position.x+50, game.right_edge.position.x-50))
@@ -60,15 +61,17 @@ func best_x_pos():
 	# maybe: ray cast down in set intervals (equal to the smallest purin size)
 	held_purin_level = game.purin_bag.get_current_purin_level(game.highest_tier_purin_dropped)
 	var values:Array[Value] = []
-	for input in inputs:
-		update_inputs()
-		var value:Value = input.value
-		if value.purin != null and is_instance_valid(value.purin):
-			var next_purin_cost = value.evaluate(game, self, game.purin_bag.get_current_purin_level(game.highest_tier_purin_dropped))
-			value.cost = value.evaluate(game, self, held_purin_level, next_purin_cost)
-		else:
-			value.cost = 99
-		values.append(value)
+	if not inputs.is_empty():
+		for input in inputs:
+			update_inputs()
+			var value:Value = input.value
+			if is_instance_valid(value):
+				if value.purin != null and is_instance_valid(value.purin):
+					var next_purin_cost = value.evaluate(game, self, game.purin_bag.get_current_purin_level(game.highest_tier_purin_dropped))
+					value.cost = value.evaluate(game, self, held_purin_level, next_purin_cost)
+				else:
+					value.cost = 99
+				values.append(value)
 		
 	values.sort_custom(cost_function)
 	

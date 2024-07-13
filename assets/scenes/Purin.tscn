@@ -64,8 +64,8 @@ animations = [{
 }]
 
 [node name="Purin" type="RigidBody2D" node_paths=PackedStringArray("image", "collider", "debug_text", "debug_line", "evil", "game_over_countdown")]
-contact_monitor = true
 max_contacts_reported = 512
+contact_monitor = true
 script = ExtResource("1_edqf4")
 image = NodePath("Image")
 collider = NodePath("Collider")

@@ -8,3 +8,5 @@ drop_line = NodePath("DropLine")
 
 [node name="DropLine" type="Line2D" parent="."]
 width = 5.0
+
+[connection signal="ready" from="." to="." method="_on_ready"]

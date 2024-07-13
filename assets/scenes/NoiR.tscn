@@ -19,3 +19,5 @@ texture = ExtResource("1_caifl")
 self_modulate = Color(1, 1, 1, 0.792157)
 position = Vector2(0, 17)
 texture = ExtResource("3_sed5s")
+
+[connection signal="ready" from="." to="." method="_on_ready"]

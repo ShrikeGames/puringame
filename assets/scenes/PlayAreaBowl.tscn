@@ -22,6 +22,8 @@ size = Vector2(69, 890)
 
 [node name="PlayAreaBowl" type="Node2D" node_paths=PackedStringArray("noir", "next_purin_indicator", "top_edge", "left_edge", "right_edge", "bottom_edge", "purin_node", "sfx_pop_player", "sfx_bonk_player", "gameover_screen", "player_label", "debug_label", "score_label", "ai_inputs_object")]
 script = ExtResource("1_anyjf")
+ai_controlled = null
+auto_retry = null
 noir = NodePath("NoiR")
 next_purin_indicator = NodePath("NextIndicator/NextPurin")
 top_edge = NodePath("TopEdge")
@@ -31,11 +33,14 @@ bottom_edge = NodePath("Bowl/BottomEdge")
 purin_node = NodePath("PurinObjects")
 sfx_pop_player = NodePath("Pop")
 sfx_bonk_player = NodePath("Bonk")
+mute_sound = null
 gameover_screen = NodePath("GameOverScreen")
 player_label = NodePath("Control/Player Label")
 debug_label = NodePath("DebugText")
 score_label = NodePath("ScoreInfo/Control/Score")
 ai_inputs_object = NodePath("AIInputs")
+ai_mutation_rate = null
+training = null
 
 [node name="Pop" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("2_tn86m")
@@ -213,10 +218,8 @@ theme_override_font_sizes/normal_font_size = 72
 theme_override_font_sizes/bold_font_size = 72
 text = "AI1"
 
-[node name="NoiR" parent="." node_paths=PackedStringArray("drop_line", "held_purin") instance=ExtResource("4_tleir")]
+[node name="NoiR" parent="." instance=ExtResource("4_tleir")]
 position = Vector2(0, 138)
-drop_line = NodePath("DropLine")
-held_purin = NodePath("Purin")
 
 [node name="PurinObjects" type="Node2D" parent="."]
 

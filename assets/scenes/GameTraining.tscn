@@ -18,10 +18,9 @@
 
 [node name="Game" type="Node2D" node_paths=PackedStringArray("ai_games_node", "camera")]
 script = ExtResource("1_doc3l")
-num_ai = 50
 ai_games_node = NodePath("AIGames")
+time_scale = 3.0
 camera = NodePath("Camera2D")
-generation_length_sec = 400.0
 
 [node name="Background" type="Sprite2D" parent="."]
 position = Vector2(966, 539)
@@ -94,14 +93,13 @@ position = Vector2(964.647, 538)
 script = ExtResource("15_1ghtr")
 camera_move_speed = 1500.0
 
-[node name="MenuButton" parent="." node_paths=PackedStringArray("text_label") instance=ExtResource("15_3p5kf")]
+[node name="MenuButton" parent="." instance=ExtResource("15_3p5kf")]
 process_mode = 3
 offset_left = 1643.0
 offset_top = 970.0
 offset_right = 2243.0
 offset_bottom = 1170.0
 scale = Vector2(0.439997, 0.439997)
-text_label = NodePath("ButtonText")
 text = "メニュー"
 
 [connection signal="ready" from="." to="." method="_on_ready"]

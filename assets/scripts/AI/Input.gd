@@ -4,13 +4,14 @@ class_name AIInput
 @export var drop_line: Line2D
 var value:Value
 var disabled:bool = false
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
+
+func _on_ready():
 	drop_line.add_point(to_local(global_position))
 	drop_line.add_point(to_local(global_position))
 	init()
-	
+
 func init():
+	
 	drop_line.default_color = "000000"
 	drop_line.width = 1
 	drop_line.visible = true

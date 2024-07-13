@@ -1,7 +1,7 @@
 extends Node2D
 
 @export var player_game:PlayerController;
-@export var num_ai: int = 12
+@export var num_ai: int = 9
 var play_package: Resource = load("res://assets/scenes/PlayAreaBowl.tscn")
 @export var ai_games_node: Node2D
 @export var time_scale: float = 1.0
@@ -32,7 +32,6 @@ func init_ai_players():
 		game.scale.y = 0.3
 		game.position = Vector2(x_pos, y_pos)
 		
-		print(game.position)
 		x_pos += 310
 		if i >0 and (i+1) % 3 == 0:
 			x_pos = 0
@@ -43,7 +42,6 @@ func init_ai_players():
 	#player_game.opponents = games
 	games.append(player_game)
 	
-	for game:PlayerController in games:
-		print("update ", game.player_name, " to have opponents ",games)
+	for game in games:
 		game.opponents = games
 	

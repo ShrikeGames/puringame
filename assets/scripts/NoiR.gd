@@ -6,7 +6,7 @@ var space_state
 
 
 # Called when the node enters the scene tree for the first time.
-func _ready():
+func _on_ready():
 	drop_line.add_point(Vector2(0, 0))
 	drop_line.add_point(Vector2(0, 0))
 	drop_line.default_color = "FF0000"
@@ -26,3 +26,5 @@ func _process(_delta):
 
 func change_held_purin(new_purin_texture:Texture2D):
 	held_purin.texture = new_purin_texture
+
+

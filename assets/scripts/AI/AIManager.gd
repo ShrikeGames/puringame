@@ -6,7 +6,7 @@ var play_package: Resource = load("res://assets/scenes/PlayAreaBowl.tscn")
 @export var time_scale: float = 1.0
 @export var debug: bool = false
 @export var camera:Camera2D
-@export var generation_length_sec:float = 1200
+@export var generation_length_sec:float = 400
 var generation_timer:float = 0.0
 
 var games:Array[PlayerController]
@@ -43,7 +43,7 @@ func init_ai_players():
 	original_population.sort_custom(rank_ai_players)
 	games = []
 	var rank:int = 0
-	for game:PlayerController in original_population:
+	for game in original_population:
 		rank += 1
 		game.rank = rank
 		if rank < num_ai * 0.25:
@@ -62,7 +62,7 @@ func init_ai_players():
 	for game in ai_games_node.get_children():
 		ai_games_node.queue_free()
 	
-	for game:PlayerController in games:
+	for game in games:
 		ai_games_node.add_child(game)
 		game.init()
 		game.set_up_game()
