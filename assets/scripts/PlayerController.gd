@@ -329,7 +329,9 @@ func spawn_purin(
 	new_shape.radius = new_radius
 	purin.set_meta("radius", new_radius)
 	purin.collider.shape = new_shape
-
+	purin.particle_system.scale = Vector2(5+level, 5+level)
+	purin.particle_system.process_material.emission_sphere_radius = new_radius * 0.5
+	
 	# if it's an evil purin then make that visible
 	if evil:
 		purin.evil.visible = true
@@ -355,7 +357,7 @@ func spawn_purin(
 
 	# add it to the stage
 	purin_node.call_deferred("add_child", purin)
-
+	
 	# keep track of how many total were spawned for scoring purposes
 	dropped_purin_count += 1
 
@@ -401,7 +403,8 @@ func combine_purin(purin1: Purin, purin2: Purin):
 	new_purin.evil.visible = evil
 	new_purin.angular_velocity = spawn_angular_velocity
 	new_purin.linear_velocity = spawn_linear_velocity
-
+	
+	new_purin.particle_system.emitting = true
 	# play sfx if not muted
 	if not mute_sound:
 		sfx_pop_player.play()
