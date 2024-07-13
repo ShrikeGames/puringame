@@ -5,13 +5,14 @@ signal bonk
 
 var combined: bool = false
 var show_debug_info: bool = false
-@export var image:Sprite2D
-@export var collider:CollisionShape2D
+@export var image: Sprite2D
+@export var collider: CollisionShape2D
 @export var debug_text: RichTextLabel
 @export var debug_line: Line2D
-@export var evil:Sprite2D
-@export var game_over_countdown:AnimatedSprite2D
-var game_over_timer_sec:float
+@export var evil: Sprite2D
+@export var game_over_countdown: AnimatedSprite2D
+var game_over_timer_sec: float
+
 
 func _on_ready():
 	debug_line.add_point(Vector2(0, 0))
@@ -29,10 +30,12 @@ func _on_ready():
 	debug_line.default_color = "333333"
 	debug_line.width = 2
 	game_over_timer_sec = 0
-	
+
+
 func reset_lines():
 	for i in range(0, debug_line.get_point_count()):
-		debug_line.set_point_position(i, Vector2(0,0))
+		debug_line.set_point_position(i, Vector2(0, 0))
+
 
 func _on_body_entered(body):
 	if (
@@ -53,7 +56,7 @@ func _on_body_entered(body):
 		self.set_meta("bonked", true)
 
 
-func ray_cast(direction: Vector2, index: int, target_level:int=-1, show_lines:bool=false):
+func ray_cast(direction: Vector2, index: int, target_level: int = -1, show_lines: bool = false):
 	var space_state = get_world_2d().direct_space_state
 
 	var query = PhysicsRayQueryParameters2D.create(global_position, global_position + direction)
@@ -82,22 +85,12 @@ func ray_cast(direction: Vector2, index: int, target_level:int=-1, show_lines:bo
 	return 0
 
 
-func num_above_purin():
-	var search_radius: int = get_meta("radius", 200) * 1.25
-	var count: int = (
-		ray_cast(Vector2(0, -400), 0)
-		+ ray_cast(Vector2(-search_radius, -search_radius*0.5), 2)
-		+ ray_cast(Vector2(search_radius, -search_radius*0.5), 4)
-	)
-	return count
-
-
 func number_possible_combines():
 	reset_lines()
 	var target_level = self.get_meta("level", 0)
 	var search_radius: int = get_meta("radius", 200) * 1.25
 	var count: int = (
-		+ ray_cast(Vector2(search_radius, 0), 6, target_level, true)
+		ray_cast(Vector2(search_radius, 0), 6, target_level, true)
 		+ ray_cast(Vector2(-search_radius, 0), 8, target_level, true)
 		+ ray_cast(Vector2(search_radius, search_radius), 10, target_level, true)
 		+ ray_cast(Vector2(-search_radius, search_radius), 12, target_level, true)

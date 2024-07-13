@@ -11,7 +11,6 @@ func _on_ready():
 	init()
 
 func init():
-	
 	drop_line.default_color = "000000"
 	drop_line.width = 1
 	drop_line.visible = true

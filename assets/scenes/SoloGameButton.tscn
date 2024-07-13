@@ -31,3 +31,4 @@ scroll_active = false
 shortcut_keys_enabled = false
 
 [connection signal="button_down" from="." to="." method="_on_button_down"]
+[connection signal="ready" from="." to="." method="_on_ready"]

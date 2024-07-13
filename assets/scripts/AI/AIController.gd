@@ -15,8 +15,8 @@ func init(player_controller:PlayerController):
 	self.next_purin_to_drop_level = 0
 	self.inputs = []
 	# take the best results it has had
-	self.weights = game.get_config_value_or_default("highscore_weights", self.game.ai_mutation_rate)
-	self.biases = game.get_config_value_or_default("highscore_biases", self.game.ai_mutation_rate)
+	self.weights = game.get_config_value_or_default("highscore_weights", self.game.ai_mutation_rate, [1, 1, 1, 1, 1.27339, 1.25569])
+	self.biases = game.get_config_value_or_default("highscore_biases", self.game.ai_mutation_rate, [0, 0, 0, 0, 0, 0])
 	self.game.debug_label.text = "weights: %s. biases: %s. HS: %s"%[self.weights, self.biases, self.game.highscore]
 	
 	input_object = load("res://assets/scenes/AI/AIInput.tscn")

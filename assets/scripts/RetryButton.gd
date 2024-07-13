@@ -4,7 +4,7 @@ extends TextureButton
 @export var text: String
 
 
-func _ready():
+func _on_ready():
 	text_label.bbcode_enabled = true
 	text_label.text = "[center]%s[/center]" % [text]
 

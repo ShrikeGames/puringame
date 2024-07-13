@@ -81,25 +81,14 @@ position = Vector2(0, 1140)
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("13_bcewv")
 
-[node name="PlayAreaBowl" parent="." node_paths=PackedStringArray("noir", "next_purin_indicator", "top_edge", "left_edge", "right_edge", "bottom_edge", "purin_node", "sfx_pop_player", "sfx_bonk_player", "gameover_screen") instance=ExtResource("13_ohdrd")]
+[node name="PlayAreaBowl" parent="." instance=ExtResource("13_ohdrd")]
 position = Vector2(550, 0)
-noir = NodePath("NoiR")
-next_purin_indicator = NodePath("NextIndicator/NextPurin")
-top_edge = NodePath("TopEdge")
-left_edge = NodePath("Bowl/LeftEdge")
-right_edge = NodePath("Bowl/RightEdge")
-bottom_edge = NodePath("Bowl/BottomEdge")
-purin_node = NodePath("PurinObjects")
-sfx_pop_player = NodePath("Pop")
-sfx_bonk_player = NodePath("Bonk")
-gameover_screen = NodePath("GameOverScreen")
 
-[node name="MenuButton" parent="." node_paths=PackedStringArray("text_label") instance=ExtResource("14_4xveu")]
+[node name="MenuButton" parent="." instance=ExtResource("14_4xveu")]
 process_mode = 3
 offset_left = 1643.0
 offset_top = 970.0
 offset_right = 2243.0
 offset_bottom = 1170.0
 scale = Vector2(0.439997, 0.439997)
-text_label = NodePath("ButtonText")
 text = "メニュー"

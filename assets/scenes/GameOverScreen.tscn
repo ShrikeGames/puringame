@@ -91,3 +91,4 @@ shortcut_keys_enabled = false
 language = "JP"
 
 [connection signal="pressed" from="GameOverButtonControl/RetryButton" to="GameOverButtonControl/RetryButton" method="_on_pressed"]
+[connection signal="ready" from="GameOverButtonControl/RetryButton" to="GameOverButtonControl/RetryButton" method="_on_ready"]

@@ -21,10 +21,13 @@ func _process(_delta):
 	)
 	query.exclude = [self]
 	var result = space_state.intersect_ray(query)
-	if result and is_instance_valid(result.collider) and result.collider.get_instance_id() != self.get_instance_id():
+	if (
+		result
+		and is_instance_valid(result.collider)
+		and result.collider.get_instance_id() != self.get_instance_id()
+	):
 		drop_line.set_point_position(1, to_local(result.position))
 
-func change_held_purin(new_purin_texture:Texture2D):
+
+func change_held_purin(new_purin_texture: Texture2D):
 	held_purin.texture = new_purin_texture
-
-

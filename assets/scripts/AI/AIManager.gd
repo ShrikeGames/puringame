@@ -29,10 +29,10 @@ func init_ai_players():
 		game.auto_retry = true
 		game.ai_mutation_rate = 0
 		game.training = true
-		var player_name = "AI%s"%(i)
+		var player_name = "ai%s"%(i)
 		game.player_name = player_name
 		game.player_config_name = player_name
-		game.config_path = "user://AI.cfg"
+		game.config_path = "user://ai.cfg"
 		game.position = Vector2(40 + (x_pos*1020), y_pos)
 		game.init()
 		x_pos += 1

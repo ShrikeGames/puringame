@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://cvukodgckovgx"]
+[gd_scene load_steps=16 format=3 uid="uid://cvukodgckovgx"]
 
 [ext_resource type="Script" path="res://assets/scripts/Purin.gd" id="1_edqf4"]
 [ext_resource type="Texture2D" uid="uid://xt87hje080jt" path="res://assets/images/purin1.png" id="2_p0kjq"]
@@ -6,6 +6,10 @@
 [ext_resource type="FontFile" uid="uid://buytj31trs62" path="res://assets/fonts/NotoSansCJK-Bold.ttc" id="4_6u3s5"]
 [ext_resource type="Texture2D" uid="uid://crra4gd3ck4vb" path="res://assets/images/evilge.png" id="5_2sr17"]
 [ext_resource type="Texture2D" uid="uid://dgdj0nsw86rr0" path="res://assets/images/GameOverCountDownSpriteSheet.png" id="6_7do40"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_7y5xc"]
+friction = 0.2
+rough = true
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_mcyn7"]
 radius = 30.5882
@@ -64,6 +68,7 @@ animations = [{
 }]
 
 [node name="Purin" type="RigidBody2D" node_paths=PackedStringArray("image", "collider", "debug_text", "debug_line", "evil", "game_over_countdown")]
+physics_material_override = SubResource("PhysicsMaterial_7y5xc")
 max_contacts_reported = 512
 contact_monitor = true
 script = ExtResource("1_edqf4")
