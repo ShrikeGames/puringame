@@ -15,15 +15,27 @@ position = Vector2(966, 539)
 scale = Vector2(0.243899, 0.243899)
 texture = ExtResource("1_fh7mn")
 
-[node name="PlayAreaBowl" parent="." node_paths=PackedStringArray("noir", "left_edge", "right_edge", "purin_node", "sfx_pop_player", "sfx_bonk_player") instance=ExtResource("3_cl710")]
+[node name="PlayAreaBowl" parent="." node_paths=PackedStringArray("noir", "next_purin_indicator", "top_edge", "left_edge", "right_edge", "bottom_edge", "purin_node", "sfx_pop_player", "sfx_bonk_player", "gameover_screen", "player_label", "debug_label", "score_label", "ai_inputs_object") instance=ExtResource("3_cl710")]
 position = Vector2(1085, 0)
+player_name = "DEMO"
+player_config_name = "DEMO"
+config_path = "user://demo.cfg"
 ai_controlled = true
+auto_retry = true
 noir = NodePath("NoiR")
+next_purin_indicator = NodePath("NextIndicator/NextPurin")
+top_edge = NodePath("TopEdge")
 left_edge = NodePath("Bowl/LeftEdge")
-right_edge = NodePath("Bowl/RightCollider")
+right_edge = NodePath("Bowl/RightEdge")
+bottom_edge = NodePath("Bowl/BottomEdge")
 purin_node = NodePath("PurinObjects")
 sfx_pop_player = NodePath("Pop")
 sfx_bonk_player = NodePath("Bonk")
+gameover_screen = NodePath("GameOverScreen")
+player_label = NodePath("Control/Player Label")
+debug_label = NodePath("DebugText")
+score_label = NodePath("ScoreInfo/Control/Score")
+ai_inputs_object = NodePath("AIInputs")
 
 [node name="Banner" type="Sprite2D" parent="."]
 position = Vector2(510, 89.0001)
@@ -45,8 +57,8 @@ theme_override_fonts/normal_font = ExtResource("8_hm5qy")
 theme_override_fonts/bold_font = ExtResource("9_0ahjj")
 theme_override_font_sizes/normal_font_size = 24
 bbcode_enabled = true
-text = "Version 2.2.1
-\"New game mode\""
+text = "Version 2.5.0
+\"Complete refactor\""
 scroll_active = false
 shortcut_keys_enabled = false
 

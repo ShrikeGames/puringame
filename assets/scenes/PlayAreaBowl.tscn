@@ -20,7 +20,7 @@ size = Vector2(70, 890)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_u6thl"]
 size = Vector2(69, 890)
 
-[node name="PlayAreaBowl" type="Node2D" node_paths=PackedStringArray("noir", "next_purin_indicator", "top_edge", "left_edge", "right_edge", "bottom_edge", "purin_node", "sfx_pop_player", "sfx_bonk_player", "gameover_screen", "player_label", "debug_label", "score_label")]
+[node name="PlayAreaBowl" type="Node2D" node_paths=PackedStringArray("noir", "next_purin_indicator", "top_edge", "left_edge", "right_edge", "bottom_edge", "purin_node", "sfx_pop_player", "sfx_bonk_player", "gameover_screen", "player_label", "debug_label", "score_label", "ai_inputs_object")]
 script = ExtResource("1_anyjf")
 noir = NodePath("NoiR")
 next_purin_indicator = NodePath("NextIndicator/NextPurin")
@@ -35,6 +35,7 @@ gameover_screen = NodePath("GameOverScreen")
 player_label = NodePath("Control/Player Label")
 debug_label = NodePath("DebugText")
 score_label = NodePath("ScoreInfo/Control/Score")
+ai_inputs_object = NodePath("AIInputs")
 
 [node name="Pop" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("2_tn86m")
@@ -72,7 +73,7 @@ position = Vector2(25, 0)
 position = Vector2(775, 0)
 
 [node name="BottomEdge" type="Node2D" parent="Bowl"]
-position = Vector2(400, 738)
+position = Vector2(400, 742)
 
 [node name="TopEdge" type="Node2D" parent="."]
 position = Vector2(386, 82)
@@ -218,6 +219,9 @@ drop_line = NodePath("DropLine")
 held_purin = NodePath("Purin")
 
 [node name="PurinObjects" type="Node2D" parent="."]
+
+[node name="AIInputs" type="Node2D" parent="."]
+position = Vector2(0, -68)
 
 [node name="GameOverScreen" parent="." instance=ExtResource("10_vwbcx")]
 visible = false

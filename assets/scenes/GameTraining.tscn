@@ -1,6 +1,6 @@
 [gd_scene load_steps=16 format=3 uid="uid://dsimdukn6dthe"]
 
-[ext_resource type="Script" path="res://assets/scripts/AIManager.gd" id="1_doc3l"]
+[ext_resource type="Script" path="res://assets/scripts/AI/AIManager.gd" id="1_doc3l"]
 [ext_resource type="Texture2D" uid="uid://c3xtdqs3o2uf3" path="res://assets/images/noir_@dqnww.png" id="4_jagme"]
 [ext_resource type="Texture2D" uid="uid://xt87hje080jt" path="res://assets/images/purin1.png" id="8_ysdtw"]
 [ext_resource type="Texture2D" uid="uid://ds7ffculpywfr" path="res://assets/images/purin2.png" id="9_kf7j1"]
@@ -21,7 +21,7 @@ script = ExtResource("1_doc3l")
 num_ai = 50
 ai_games_node = NodePath("AIGames")
 camera = NodePath("Camera2D")
-time_scale = 3.0
+generation_length_sec = 400.0
 
 [node name="Background" type="Sprite2D" parent="."]
 position = Vector2(966, 539)
@@ -29,7 +29,7 @@ scale = Vector2(0.243899, 0.243899)
 texture = ExtResource("4_jagme")
 
 [node name="ProgressionIndicator" type="Node2D" parent="."]
-position = Vector2(961, 25)
+position = Vector2(949, 25)
 scale = Vector2(0.84, 0.84)
 
 [node name="Purin1" type="Sprite2D" parent="ProgressionIndicator"]
@@ -103,3 +103,5 @@ offset_bottom = 1170.0
 scale = Vector2(0.439997, 0.439997)
 text_label = NodePath("ButtonText")
 text = "メニュー"
+
+[connection signal="ready" from="." to="." method="_on_ready"]

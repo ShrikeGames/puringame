@@ -84,24 +84,35 @@ texture = ExtResource("12_hc0wc")
 [node name="AIGames" type="Node2D" parent="."]
 position = Vector2(1040, 0)
 
-[node name="AI" parent="AIGames" node_paths=PackedStringArray("noir", "next_purin_indicator", "left_edge", "right_edge", "bottom_edge", "purin_node", "sfx_pop_player", "sfx_bonk_player", "opponents", "gameover_screen") instance=ExtResource("13_3k2pk")]
+[node name="AI" parent="AIGames" node_paths=PackedStringArray("noir", "next_purin_indicator", "top_edge", "left_edge", "right_edge", "bottom_edge", "purin_node", "sfx_pop_player", "sfx_bonk_player", "opponents", "gameover_screen", "player_label", "debug_label", "score_label", "ai_inputs_object") instance=ExtResource("13_3k2pk")]
 position = Vector2(45, 0)
+player_name = "AI"
+player_config_name = "AI"
+config_path = "user://AI.cfg"
 ai_controlled = true
+auto_retry = true
 noir = NodePath("NoiR")
 next_purin_indicator = NodePath("NextIndicator/NextPurin")
+top_edge = NodePath("TopEdge")
 left_edge = NodePath("Bowl/LeftEdge")
 right_edge = NodePath("Bowl/RightEdge")
 bottom_edge = NodePath("Bowl/BottomEdge")
 purin_node = NodePath("PurinObjects")
 sfx_pop_player = NodePath("Pop")
 sfx_bonk_player = NodePath("Bonk")
+mute_sound = true
 opponents = [NodePath("../../Player")]
 gameover_screen = NodePath("GameOverScreen")
+player_label = NodePath("Control/Player Label")
+debug_label = NodePath("DebugText")
+score_label = NodePath("ScoreInfo/Control/Score")
+ai_inputs_object = NodePath("AIInputs")
 
-[node name="Player" parent="." node_paths=PackedStringArray("noir", "next_purin_indicator", "left_edge", "right_edge", "bottom_edge", "purin_node", "sfx_pop_player", "sfx_bonk_player", "opponents", "gameover_screen") instance=ExtResource("13_3k2pk")]
+[node name="Player" parent="." node_paths=PackedStringArray("noir", "next_purin_indicator", "top_edge", "left_edge", "right_edge", "bottom_edge", "purin_node", "sfx_pop_player", "sfx_bonk_player", "opponents", "gameover_screen", "player_label", "debug_label", "score_label", "ai_inputs_object") instance=ExtResource("13_3k2pk")]
 position = Vector2(40, 0)
 noir = NodePath("NoiR")
 next_purin_indicator = NodePath("NextIndicator/NextPurin")
+top_edge = NodePath("TopEdge")
 left_edge = NodePath("Bowl/LeftEdge")
 right_edge = NodePath("Bowl/RightEdge")
 bottom_edge = NodePath("Bowl/BottomEdge")
@@ -110,6 +121,10 @@ sfx_pop_player = NodePath("Pop")
 sfx_bonk_player = NodePath("Bonk")
 opponents = [NodePath("../AIGames/AI")]
 gameover_screen = NodePath("GameOverScreen")
+player_label = NodePath("Control/Player Label")
+debug_label = NodePath("DebugText")
+score_label = NodePath("ScoreInfo/Control/Score")
+ai_inputs_object = NodePath("AIInputs")
 
 [node name="MenuButton" parent="." node_paths=PackedStringArray("text_label") instance=ExtResource("14_d73ay")]
 process_mode = 3

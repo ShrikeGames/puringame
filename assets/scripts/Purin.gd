@@ -29,6 +29,7 @@ func _on_ready():
 	debug_line.default_color = "333333"
 	debug_line.width = 2
 	game_over_timer_sec = 0
+	
 func reset_lines():
 	for i in range(0, debug_line.get_point_count()):
 		debug_line.set_point_position(i, Vector2(0,0))
@@ -93,17 +94,12 @@ func num_above_purin():
 
 func number_possible_combines():
 	reset_lines()
-	var target_level = self.get_meta("level", 0) + 1
+	var target_level = self.get_meta("level", 0)
 	var search_radius: int = get_meta("radius", 200) * 1.25
 	var count: int = (
-		ray_cast(Vector2(0, -search_radius), 0, target_level, true)
-		+ ray_cast(Vector2(-search_radius, -search_radius), 2, target_level, true)
-		+ ray_cast(Vector2(search_radius, -search_radius), 4, target_level, true)
 		+ ray_cast(Vector2(search_radius, 0), 6, target_level, true)
 		+ ray_cast(Vector2(-search_radius, 0), 8, target_level, true)
 		+ ray_cast(Vector2(search_radius, search_radius), 10, target_level, true)
 		+ ray_cast(Vector2(-search_radius, search_radius), 12, target_level, true)
 	)
-	#if count > 0:
-		#print(self.get_meta("level", 0), " ", target_level)
 	return count

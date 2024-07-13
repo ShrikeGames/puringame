@@ -1,6 +1,6 @@
 [gd_scene load_steps=16 format=3 uid="uid://cxb8b37m7qbdl"]
 
-[ext_resource type="Script" path="res://assets/scripts/AI99Manager.gd" id="1_j1h3y"]
+[ext_resource type="Script" path="res://assets/scripts/AI/AI99Manager.gd" id="1_j1h3y"]
 [ext_resource type="Texture2D" uid="uid://c3xtdqs3o2uf3" path="res://assets/images/noir_@dqnww.png" id="1_up2oo"]
 [ext_resource type="Texture2D" uid="uid://xt87hje080jt" path="res://assets/images/purin1.png" id="2_b6mh1"]
 [ext_resource type="Texture2D" uid="uid://ds7ffculpywfr" path="res://assets/images/purin2.png" id="3_3tcjj"]
@@ -16,8 +16,9 @@
 [ext_resource type="PackedScene" uid="uid://con8stx2et0ea" path="res://assets/scenes/PlayAreaBowl.tscn" id="13_gy0je"]
 [ext_resource type="PackedScene" uid="uid://dnruobuhnvd7c" path="res://assets/scenes/SoloGameButton.tscn" id="14_mm3f8"]
 
-[node name="Game" type="Node2D" node_paths=PackedStringArray("ai_games_node")]
+[node name="Game" type="Node2D" node_paths=PackedStringArray("player_game", "ai_games_node")]
 script = ExtResource("1_j1h3y")
+player_game = NodePath("Player")
 num_ai = 9
 ai_games_node = NodePath("AIGames")
 
@@ -88,7 +89,7 @@ texture = ExtResource("12_ch4aq")
 [node name="AIGames" type="Node2D" parent="."]
 position = Vector2(1040, 0)
 
-[node name="Player" parent="." node_paths=PackedStringArray("noir", "next_purin_indicator", "top_edge", "left_edge", "right_edge", "bottom_edge", "purin_node", "sfx_pop_player", "sfx_bonk_player", "gameover_screen", "player_label", "debug_label", "score_label") instance=ExtResource("13_gy0je")]
+[node name="Player" parent="." node_paths=PackedStringArray("noir", "next_purin_indicator", "top_edge", "left_edge", "right_edge", "bottom_edge", "purin_node", "sfx_pop_player", "sfx_bonk_player", "gameover_screen", "player_label", "debug_label", "score_label", "ai_inputs_object") instance=ExtResource("13_gy0je")]
 position = Vector2(40, 0)
 noir = NodePath("NoiR")
 next_purin_indicator = NodePath("NextIndicator/NextPurin")
@@ -103,6 +104,7 @@ gameover_screen = NodePath("GameOverScreen")
 player_label = NodePath("Control/Player Label")
 debug_label = NodePath("DebugText")
 score_label = NodePath("ScoreInfo/Control/Score")
+ai_inputs_object = NodePath("AIInputs")
 
 [node name="MenuButton" parent="." node_paths=PackedStringArray("text_label") instance=ExtResource("14_mm3f8")]
 process_mode = 3
@@ -113,3 +115,5 @@ offset_bottom = 1170.0
 scale = Vector2(0.439997, 0.439997)
 text_label = NodePath("ButtonText")
 text = "メニュー"
+
+[connection signal="ready" from="." to="." method="_on_ready"]

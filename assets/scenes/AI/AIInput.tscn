@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://3hmhpqcwiump"]
+
+[ext_resource type="Script" path="res://assets/scripts/AI/Input.gd" id="1_b6seg"]
+
+[node name="AIInput" type="Node2D" node_paths=PackedStringArray("drop_line")]
+script = ExtResource("1_b6seg")
+drop_line = NodePath("DropLine")
+
+[node name="DropLine" type="Line2D" parent="."]
+width = 5.0
