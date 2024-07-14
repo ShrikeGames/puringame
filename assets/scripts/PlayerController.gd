@@ -155,11 +155,10 @@ func set_up_game():
 	update_score_label()
 
 	gameover_screen.visible = false
-	Input.action_release("retry")
 	# for testing
-	#spawn_purin(Vector2(350,400),0)
-	#spawn_purin(Vector2(300,400),1)
-	#spawn_purin(Vector2(200,400),2)
+	#spawn_purin(Vector2(350,400),8)
+	#spawn_purin(Vector2(300,400),9)
+	#spawn_purin(Vector2(200,400),10)
 
 
 func remove_all_purin():
@@ -217,7 +216,6 @@ func save_results():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	if check_game_over(delta):
-		print("Game is over for ", player_name)
 		return
 
 	time_since_last_dropped_purin_sec += delta
@@ -229,9 +227,9 @@ func _process(delta: float) -> void:
 
 func check_game_over(delta):
 	if gameover_screen.visible == true:
-		if Input.is_action_pressed("retry") or auto_retry:
-			print("retry action pressed? ", Input.is_action_pressed("retry"))
-			print("auto_retry? ", auto_retry)
+		if Input.is_action_pressed("retry") or (ai_controlled and auto_retry):
+			#print("retry action pressed? ", Input.is_action_pressed("retry"))
+			#print("auto_retry? ", auto_retry)
 			save_results()
 			get_tree().paused = false
 			set_up_game()

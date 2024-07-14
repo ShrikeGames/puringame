@@ -17,6 +17,7 @@ contact_monitor = true
 freeze = true
 
 [node name="Button" type="TextureButton" parent="." node_paths=PackedStringArray("audio_player")]
+process_mode = 3
 offset_left = -543.0
 offset_top = -154.0
 offset_right = 537.0

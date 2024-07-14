@@ -1,13 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://digt3ya6lodli"]
+[gd_scene load_steps=4 format=3 uid="uid://digt3ya6lodli"]
 
 [ext_resource type="Texture2D" uid="uid://bkidel8xvjsvt" path="res://assets/images/GameOverBackdrop.png" id="1_yrhqy"]
 [ext_resource type="FontFile" uid="uid://cdwb8ivskcjue" path="res://assets/fonts/NotoSansCJK-Regular.ttc" id="2_mdvjf"]
-[ext_resource type="Texture2D" uid="uid://dm5w8oq6jw3xp" path="res://assets/images/Button.png" id="3_7bmx8"]
-[ext_resource type="Texture2D" uid="uid://dp1trtxl6ekyx" path="res://assets/images/ButtonPress.png" id="4_y8bl8"]
-[ext_resource type="Texture2D" uid="uid://dyjjf35spvgrk" path="res://assets/images/ButtonHover.png" id="5_1roge"]
-[ext_resource type="Script" path="res://assets/scripts/RetryButton.gd" id="6_qvxod"]
-
-[sub_resource type="ButtonGroup" id="ButtonGroup_53a0d"]
+[ext_resource type="PackedScene" uid="uid://bv0hug7esyx87" path="res://assets/scenes/P5Menu/P5MenuItem_Retry.tscn" id="3_78npu"]
 
 [node name="GameOverScreen" type="Node2D"]
 
@@ -30,10 +25,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -379.5
-offset_top = -75.5
-offset_right = 382.5
-offset_bottom = 109.5
+offset_left = -376.5
+offset_top = -171.5
+offset_right = 385.5
+offset_bottom = 13.5
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_fonts/normal_font = ExtResource("2_mdvjf")
@@ -43,52 +38,5 @@ text = "[center]ゲームオーバー[/center]"
 scroll_active = false
 language = "JP"
 
-[node name="GameOverButtonControl" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 0
-offset_left = 1.0
-offset_top = 622.0
-offset_right = 391.0
-offset_bottom = 756.0
-
-[node name="RetryButton" type="TextureButton" parent="GameOverButtonControl" node_paths=PackedStringArray("gameover_screen", "text_label")]
-process_mode = 3
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -163.0
-offset_top = -64.0
-offset_right = 437.0
-offset_bottom = 136.0
-grow_horizontal = 2
-grow_vertical = 2
-scale = Vector2(0.559547, 0.544881)
-toggle_mode = true
-button_group = SubResource("ButtonGroup_53a0d")
-texture_normal = ExtResource("3_7bmx8")
-texture_pressed = ExtResource("4_y8bl8")
-texture_hover = ExtResource("5_1roge")
-script = ExtResource("6_qvxod")
-gameover_screen = NodePath("../..")
-text_label = NodePath("RetryText")
-text = "リトライ"
-
-[node name="RetryText" type="RichTextLabel" parent="GameOverButtonControl/RetryButton"]
-layout_mode = 0
-offset_left = 28.0
-offset_top = 47.0
-offset_right = 579.0
-offset_bottom = 180.0
-mouse_filter = 1
-theme_override_fonts/normal_font = ExtResource("2_mdvjf")
-theme_override_font_sizes/normal_font_size = 72
-bbcode_enabled = true
-scroll_active = false
-shortcut_keys_enabled = false
-language = "JP"
-
-[connection signal="pressed" from="GameOverButtonControl/RetryButton" to="GameOverButtonControl/RetryButton" method="_on_pressed"]
-[connection signal="ready" from="GameOverButtonControl/RetryButton" to="GameOverButtonControl/RetryButton" method="_on_ready"]
+[node name="Retry" parent="." instance=ExtResource("3_78npu")]
+position = Vector2(791, 477)
