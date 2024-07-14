@@ -8,7 +8,7 @@ class_name PlayerController
 @export var auto_retry: bool = false
 var ai_controller: AIController
 @export var noir: NoiR
-@export var next_purin_indicator: Sprite2D
+@export var purin_bag: PurinBag
 @export var top_edge: Node2D
 @export var left_edge: Node2D
 @export var right_edge: Node2D
@@ -25,6 +25,7 @@ var ai_controller: AIController
 @export var ai_inputs_object: Node2D
 @export var ai_mutation_rate: float
 @export var training: bool = false
+
 var rank: int = 0
 
 var config_json
@@ -38,8 +39,7 @@ var purin_textures: Array[Texture2D] = []
 var purin_sizes: Array = [50, 100, 125, 156, 175, 195, 220, 250, 275, 300, 343]
 var highest_possible_purin_level: int
 const purin_file_path_root = "res://assets/images/"
-var purin_bag: PurinBag
-var highest_tier_purin_dropped: int = 0
+
 var dropped_purin_count: int = 0
 
 var evil_purin_spawn_level_threshold: float = 4
@@ -141,11 +141,14 @@ func set_up_game():
 	score = 0
 	dropped_purin_count = 0
 	time_since_last_dropped_purin_sec = drop_purin_cooldown_sec
-	highest_tier_purin_dropped = 0
+	
 	# Generate a new bag of purin (what you get next to drop)
-	purin_bag = PurinBag.new()
-	purin_bag.generate_purin_bag(0)
-
+	# for AI and such that don't need a visual representation of their bag shown
+	if purin_bag == null:
+		purin_bag = PurinBag.new()
+	purin_bag.max_purin_level = 0
+	purin_bag.generate_purin_bag()
+	
 	# if this is an AI player then create an AIController for it
 	if ai_controlled and not is_instance_valid(ai_controller):
 		ai_controller = AIController.new()
@@ -166,7 +169,8 @@ func remove_all_purin():
 		purin.queue_free()
 		
 func update_score_label():
-	score_label.text = "[center]%s[/center]" % [score]
+	if score_label != null:
+		score_label.text = "[center]%s[/center]" % [score]
 
 
 func get_board_state():
@@ -290,12 +294,7 @@ func process_player(_delta):
 
 func drop_purin():
 	spawn_purin()
-	noir.change_held_purin(
-		purin_textures[purin_bag.get_current_purin_level(highest_tier_purin_dropped)]
-	)
-	next_purin_indicator.texture = purin_textures[purin_bag.get_next_purin_level(
-		highest_tier_purin_dropped
-	)]
+	noir.change_held_purin(purin_bag.get_current_purin_level())
 	time_since_last_dropped_purin_sec = 0
 
 
@@ -311,7 +310,7 @@ func valid_x_pos(x_pos: float):
 
 func spawn_purin(
 	initial_position: Vector2 = noir.position,
-	level = purin_bag.drop_purin(highest_tier_purin_dropped),
+	level = purin_bag.drop_purin(),
 	evil: bool = false
 ):
 	# level is 0-indexed
@@ -408,10 +407,10 @@ func combine_purin(purin1: Purin, purin2: Purin):
 	if not mute_sound:
 		sfx_pop_player.play()
 
-	if new_level > highest_tier_purin_dropped:
-		highest_tier_purin_dropped = new_level
+	if new_level > purin_bag.max_purin_level:
+		purin_bag.max_purin_level = new_level
 		purin_bag.bag.append_array(
-			purin_bag.generate_purin_bag(max(0, round(highest_tier_purin_dropped * 0.5)))
+			purin_bag.generate_purin_bag()
 		)
 	# give the player score based on the size of the purin that was combined into
 	# and give a multiplier that increases the more purin they have placed

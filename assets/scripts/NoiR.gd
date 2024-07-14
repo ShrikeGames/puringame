@@ -1,7 +1,7 @@
 extends Node2D
 class_name NoiR
 @export var drop_line: Line2D
-@export var held_purin: Sprite2D
+@export var held_purin: AnimatedSprite2D
 var space_state
 
 
@@ -11,7 +11,8 @@ func _on_ready():
 	drop_line.add_point(Vector2(0, 0))
 	drop_line.default_color = "FF0000"
 	drop_line.width = 5
-
+	held_purin.set_frame(0)
+	held_purin.pause()
 
 func _process(_delta):
 	drop_line.set_point_position(0, to_local(global_position))
@@ -29,5 +30,6 @@ func _process(_delta):
 		drop_line.set_point_position(1, to_local(result.position))
 
 
-func change_held_purin(new_purin_texture: Texture2D):
-	held_purin.texture = new_purin_texture
+func change_held_purin(purin_level:int):
+	held_purin.set_frame(purin_level)
+	held_purin.pause()

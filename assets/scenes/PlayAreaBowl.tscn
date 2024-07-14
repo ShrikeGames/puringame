@@ -1,12 +1,10 @@
-[gd_scene load_steps=14 format=3 uid="uid://con8stx2et0ea"]
+[gd_scene load_steps=12 format=3 uid="uid://con8stx2et0ea"]
 
 [ext_resource type="Script" path="res://assets/scripts/PlayerController.gd" id="1_anyjf"]
 [ext_resource type="AudioStream" uid="uid://borrrahqop0te" path="res://assets/audio/sfx/pop.wav" id="2_tn86m"]
 [ext_resource type="Texture2D" uid="uid://c7q1lcjlkysl4" path="res://assets/images/PlayArea.png" id="2_x4cw2"]
 [ext_resource type="AudioStream" uid="uid://cir0gwbyyr3h5" path="res://assets/audio/sfx/bonk.wav" id="3_wfp2k"]
 [ext_resource type="PackedScene" uid="uid://d3mm5neerbgqy" path="res://assets/scenes/NoiR.tscn" id="4_tleir"]
-[ext_resource type="Texture2D" uid="uid://c7vje2fcd4i0o" path="res://assets/images/Bubble.png" id="5_2jxer"]
-[ext_resource type="Texture2D" uid="uid://xt87hje080jt" path="res://assets/images/purin1.png" id="6_h5ooi"]
 [ext_resource type="FontFile" uid="uid://cdwb8ivskcjue" path="res://assets/fonts/NotoSansCJK-Regular.ttc" id="7_xor5u"]
 [ext_resource type="PackedScene" uid="uid://digt3ya6lodli" path="res://assets/scenes/GameOverScreen.tscn" id="10_vwbcx"]
 [ext_resource type="FontFile" uid="uid://buytj31trs62" path="res://assets/fonts/NotoSansCJK-Bold.ttc" id="12_dx1lx"]
@@ -20,10 +18,9 @@ size = Vector2(70, 890)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_u6thl"]
 size = Vector2(69, 890)
 
-[node name="PlayAreaBowl" type="Node2D" node_paths=PackedStringArray("noir", "next_purin_indicator", "top_edge", "left_edge", "right_edge", "bottom_edge", "purin_node", "sfx_pop_player", "sfx_bonk_player", "gameover_screen", "player_label", "debug_label", "score_label", "ai_inputs_object")]
+[node name="PlayAreaBowl" type="Node2D" node_paths=PackedStringArray("noir", "top_edge", "left_edge", "right_edge", "bottom_edge", "purin_node", "sfx_pop_player", "sfx_bonk_player", "gameover_screen", "player_label", "debug_label", "score_label", "ai_inputs_object")]
 script = ExtResource("1_anyjf")
 noir = NodePath("NoiR")
-next_purin_indicator = NodePath("NextIndicator/NextPurin")
 top_edge = NodePath("TopEdge")
 left_edge = NodePath("Bowl/LeftEdge")
 right_edge = NodePath("Bowl/RightEdge")
@@ -86,14 +83,8 @@ width = 2.0
 default_color = Color(1, 0, 0, 0.470588)
 
 [node name="ScoreInfo" type="Node2D" parent="."]
-position = Vector2(-2, -115)
-
-[node name="Bubble" type="Sprite2D" parent="ScoreInfo"]
 visible = false
-modulate = Color(1, 1, 1, 0.282353)
-position = Vector2(219, 181)
-scale = Vector2(1.9, 1.9)
-texture = ExtResource("5_2jxer")
+position = Vector2(-2, -115)
 
 [node name="Control" type="Control" parent="ScoreInfo"]
 layout_mode = 3
@@ -149,38 +140,6 @@ text = "[center]99999[/center]"
 scroll_active = false
 shortcut_keys_enabled = false
 
-[node name="NextIndicator" type="Node2D" parent="."]
-position = Vector2(642, -43)
-scale = Vector2(0.5, 0.5)
-
-[node name="Bubble2" type="Sprite2D" parent="NextIndicator"]
-modulate = Color(1, 1, 1, 0.282353)
-position = Vector2(252.5, 258.5)
-scale = Vector2(1.86458, 1.86458)
-texture = ExtResource("5_2jxer")
-
-[node name="NextPurin" type="Sprite2D" parent="NextIndicator"]
-position = Vector2(250, 261)
-scale = Vector2(2, 2)
-texture = ExtResource("6_h5ooi")
-
-[node name="NextLabel" type="RichTextLabel" parent="NextIndicator"]
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = 34.0
-offset_top = 124.0
-offset_right = 463.0
-offset_bottom = 211.0
-grow_horizontal = 2
-theme_override_fonts/normal_font = ExtResource("7_xor5u")
-theme_override_font_sizes/normal_font_size = 60
-bbcode_enabled = true
-text = "[center]ネクスト[/center]"
-scroll_active = false
-shortcut_keys_enabled = false
-language = "JP"
-
 [node name="DebugText" type="RichTextLabel" parent="."]
 offset_left = 6.0
 offset_top = 4.0
@@ -196,7 +155,7 @@ bbcode_enabled = true
 layout_mode = 3
 anchors_preset = 0
 offset_top = 965.0
-offset_right = 1824.0
+offset_right = 801.0
 offset_bottom = 1075.0
 
 [node name="Player Label" type="RichTextLabel" parent="Control"]
@@ -213,7 +172,7 @@ theme_override_fonts/normal_font = ExtResource("7_xor5u")
 theme_override_fonts/bold_font = ExtResource("12_dx1lx")
 theme_override_font_sizes/normal_font_size = 72
 theme_override_font_sizes/bold_font_size = 72
-text = "AI1"
+text = "Name"
 
 [node name="NoiR" parent="." instance=ExtResource("4_tleir")]
 position = Vector2(0, 138)

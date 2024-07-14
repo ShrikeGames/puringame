@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://cg6rs6yybp3g6"]
+[gd_scene load_steps=15 format=3 uid="uid://cg6rs6yybp3g6"]
 
 [ext_resource type="Texture2D" uid="uid://xt87hje080jt" path="res://assets/images/purin1.png" id="2_fsy0n"]
 [ext_resource type="Texture2D" uid="uid://ds7ffculpywfr" path="res://assets/images/purin2.png" id="3_1t0pr"]
@@ -13,10 +13,12 @@
 [ext_resource type="Texture2D" uid="uid://bja3p1ji46rhl" path="res://assets/images/purin11.png" id="12_hc0wc"]
 [ext_resource type="PackedScene" uid="uid://con8stx2et0ea" path="res://assets/scenes/PlayAreaBowl.tscn" id="13_3k2pk"]
 [ext_resource type="PackedScene" uid="uid://debe6w31cqgfn" path="res://assets/scenes/P5Menu/P5MenuItem_Menu.tscn" id="13_uimt6"]
+[ext_resource type="PackedScene" uid="uid://cudqnnw8oypk1" path="res://assets/scenes/PurinBag.tscn" id="14_gsn0q"]
 
 [node name="Game" type="Node2D"]
 
 [node name="ProgressionIndicator" type="Node2D" parent="."]
+visible = false
 position = Vector2(961, 25)
 scale = Vector2(0.84, 0.84)
 
@@ -75,18 +77,26 @@ position = Vector2(0, 1140)
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("12_hc0wc")
 
-[node name="AI" parent="." node_paths=PackedStringArray("opponents") instance=ExtResource("13_3k2pk")]
+[node name="AI" parent="." node_paths=PackedStringArray("purin_bag", "opponents") instance=ExtResource("13_3k2pk")]
 position = Vector2(1070, 0)
 player_name = "ai"
 config_path = "user://ai.json"
 default_config_path = "res://ai.json"
 ai_controlled = true
+purin_bag = NodePath("../PurinBagAI")
 opponents = [NodePath("../Player")]
 
-[node name="Player" parent="." node_paths=PackedStringArray("opponents") instance=ExtResource("13_3k2pk")]
+[node name="Player" parent="." node_paths=PackedStringArray("purin_bag", "opponents") instance=ExtResource("13_3k2pk")]
 position = Vector2(40, 0)
 default_config_path = "res://player.json"
+purin_bag = NodePath("../PurinBagPlayer")
 opponents = [NodePath("../AI")]
 
 [node name="P5MenuItem" parent="." instance=ExtResource("13_uimt6")]
 position = Vector2(1710, 1010)
+
+[node name="PurinBagAI" parent="." instance=ExtResource("14_gsn0q")]
+position = Vector2(1021, 82)
+
+[node name="PurinBagPlayer" parent="." instance=ExtResource("14_gsn0q")]
+position = Vector2(887, 82)

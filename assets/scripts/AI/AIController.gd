@@ -38,7 +38,7 @@ func update_inputs():
 	remove_all_inputs()
 	
 	var space_state = game.get_world_2d().direct_space_state
-	var radius =  2*self.game.get_purin_radius(self.game.purin_bag.get_current_purin_level(self.game.highest_tier_purin_dropped))
+	var radius =  2*self.game.get_purin_radius(self.game.purin_bag.get_current_purin_level())
 	for x in range(0, (game.right_edge.position.x - game.left_edge.position.x - (radius))/radius):
 		var input:AIInput = self.inputs[x]
 		input.position = Vector2((x*radius)+radius, game.noir.position.y)
@@ -59,7 +59,7 @@ func best_x_pos():
 	var x_pos:float = 0#game.valid_x_pos(randf_range(game.left_edge.position.x+50, game.right_edge.position.x-50))
 	# TODO implement AI to evaluate board state and determine best place to drop a purin
 	# maybe: ray cast down in set intervals (equal to the smallest purin size)
-	held_purin_level = game.purin_bag.get_current_purin_level(game.highest_tier_purin_dropped)
+	held_purin_level = game.purin_bag.get_current_purin_level()
 	var values:Array[Value] = []
 	if not inputs.is_empty():
 		for input in inputs:
@@ -67,7 +67,7 @@ func best_x_pos():
 			var value:Value = input.value
 			if is_instance_valid(value):
 				if value.purin != null and is_instance_valid(value.purin):
-					var next_purin_cost = value.evaluate(game, self, game.purin_bag.get_current_purin_level(game.highest_tier_purin_dropped))
+					var next_purin_cost = value.evaluate(game, self, game.purin_bag.get_current_purin_level())
 					value.cost = value.evaluate(game, self, held_purin_level, next_purin_cost)
 				else:
 					value.cost = 99

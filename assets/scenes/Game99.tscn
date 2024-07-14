@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://cxb8b37m7qbdl"]
+[gd_scene load_steps=16 format=3 uid="uid://cxb8b37m7qbdl"]
 
 [ext_resource type="Script" path="res://assets/scripts/AI/AI99Manager.gd" id="1_j1h3y"]
 [ext_resource type="Texture2D" uid="uid://xt87hje080jt" path="res://assets/images/purin1.png" id="2_b6mh1"]
@@ -14,6 +14,7 @@
 [ext_resource type="Texture2D" uid="uid://bja3p1ji46rhl" path="res://assets/images/purin11.png" id="12_ch4aq"]
 [ext_resource type="PackedScene" uid="uid://con8stx2et0ea" path="res://assets/scenes/PlayAreaBowl.tscn" id="13_gy0je"]
 [ext_resource type="PackedScene" uid="uid://debe6w31cqgfn" path="res://assets/scenes/P5Menu/P5MenuItem_Menu.tscn" id="14_vkqg3"]
+[ext_resource type="PackedScene" uid="uid://cudqnnw8oypk1" path="res://assets/scenes/PurinBag.tscn" id="15_qafyh"]
 
 [node name="Game" type="Node2D" node_paths=PackedStringArray("player_game", "ai_games_node")]
 script = ExtResource("1_j1h3y")
@@ -82,11 +83,14 @@ texture = ExtResource("12_ch4aq")
 [node name="AIGames" type="Node2D" parent="."]
 position = Vector2(1040, 0)
 
-[node name="Player" parent="." instance=ExtResource("13_gy0je")]
+[node name="Player" parent="." node_paths=PackedStringArray("purin_bag") instance=ExtResource("13_gy0je")]
 position = Vector2(40, 0)
 default_config_path = "res://player.json"
+purin_bag = NodePath("../PurinBag")
 
 [node name="P5MenuItem" parent="." instance=ExtResource("14_vkqg3")]
 position = Vector2(1710, 1010)
+
+[node name="PurinBag" parent="." instance=ExtResource("15_qafyh")]
 
 [connection signal="ready" from="." to="." method="_on_ready"]
