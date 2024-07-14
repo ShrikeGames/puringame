@@ -83,14 +83,25 @@ player_name = "ai"
 config_path = "user://ai.json"
 default_config_path = "res://ai.json"
 ai_controlled = true
+auto_retry = null
 purin_bag = NodePath("../PurinBagAI")
+mute_sound = null
 opponents = [NodePath("../Player")]
+ai_mutation_rate = null
+training = null
 
 [node name="Player" parent="." node_paths=PackedStringArray("purin_bag", "opponents") instance=ExtResource("13_3k2pk")]
 position = Vector2(40, 0)
+player_name = null
+config_path = null
 default_config_path = "res://player.json"
+ai_controlled = null
+auto_retry = null
 purin_bag = NodePath("../PurinBagPlayer")
+mute_sound = null
 opponents = [NodePath("../AI")]
+ai_mutation_rate = null
+training = null
 
 [node name="P5MenuItem" parent="." instance=ExtResource("13_uimt6")]
 position = Vector2(1710, 1010)

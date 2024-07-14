@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://csor0u1p34yq1"]
+[gd_scene load_steps=15 format=3 uid="uid://csor0u1p34yq1"]
 
 [ext_resource type="Texture2D" uid="uid://xt87hje080jt" path="res://assets/images/purin1.png" id="1_pbh4i"]
 [ext_resource type="Texture2D" uid="uid://ds7ffculpywfr" path="res://assets/images/purin2.png" id="2_etdgd"]
@@ -11,6 +11,8 @@
 [ext_resource type="Texture2D" uid="uid://k1hduynp1pgw" path="res://assets/images/purin9.png" id="9_vs86u"]
 [ext_resource type="Texture2D" uid="uid://cwcmvy5fu6w86" path="res://assets/images/purin10.png" id="10_ou54y"]
 [ext_resource type="Texture2D" uid="uid://bja3p1ji46rhl" path="res://assets/images/purin11.png" id="11_shfep"]
+[ext_resource type="Script" path="res://assets/scripts/PurinIndicator.gd" id="12_hys5f"]
+[ext_resource type="Texture2D" uid="uid://crra4gd3ck4vb" path="res://assets/images/evilge.png" id="13_nxjcp"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_oxh1t"]
 animations = [{
@@ -53,5 +55,13 @@ animations = [{
 "speed": 1.0
 }]
 
-[node name="PurinIndicator" type="AnimatedSprite2D"]
+[node name="PurinIndicator" type="AnimatedSprite2D" node_paths=PackedStringArray("evil_visual")]
 sprite_frames = SubResource("SpriteFrames_oxh1t")
+script = ExtResource("12_hys5f")
+evil_visual = NodePath("Evilge")
+
+[node name="Evilge" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(-1, 7)
+scale = Vector2(0.24, 0.24)
+texture = ExtResource("13_nxjcp")

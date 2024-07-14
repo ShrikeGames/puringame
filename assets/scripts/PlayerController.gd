@@ -159,9 +159,9 @@ func set_up_game():
 
 	gameover_screen.visible = false
 	# for testing
-	#spawn_purin(Vector2(350,400),8)
-	#spawn_purin(Vector2(300,400),9)
-	#spawn_purin(Vector2(200,400),10)
+	#spawn_purin(Vector2(350,400),{"level": 8, "evil": false})
+	#spawn_purin(Vector2(300,400),{"level": 9, "evil": false})
+	#spawn_purin(Vector2(200,400),{"level": 10, "evil": false})
 
 
 func remove_all_purin():
@@ -294,7 +294,7 @@ func process_player(_delta):
 
 func drop_purin():
 	spawn_purin()
-	noir.change_held_purin(purin_bag.get_current_purin_level())
+	noir.change_held_purin(purin_bag.get_current_purin())
 	time_since_last_dropped_purin_sec = 0
 
 
@@ -310,12 +310,13 @@ func valid_x_pos(x_pos: float):
 
 func spawn_purin(
 	initial_position: Vector2 = noir.position,
-	level = purin_bag.drop_purin(),
-	evil: bool = false
+	purin_info = purin_bag.drop_purin()
 ):
 	# level is 0-indexed
 	var purin: Purin = purin_object.instantiate()
 	purin.position = Vector2(valid_x_pos(initial_position.x), initial_position.y)
+	var level = purin_info["level"]
+	var evil = purin_info["evil"]
 	purin.set_meta("level", level)
 	purin.set_meta("combined", false)
 	purin.image.texture = purin_textures[level]
@@ -333,6 +334,8 @@ func spawn_purin(
 	# if it's an evil purin then make that visible
 	if evil:
 		purin.evil.visible = true
+		# if it's evil then make have much more mass than normal
+		purin.mass = pow(3, level)
 		# evil ones spawn at the bottom
 		purin.position = Vector2(purin.position.x, purin.position.y)
 
@@ -340,14 +343,7 @@ func spawn_purin(
 		var opponent: PlayerController = opponents.pick_random()
 		if is_instance_valid(opponent):
 			# if it's not evil then depending on level it could spawn an evil purin in opponent's game
-			opponent.spawn_purin(
-				Vector2(
-					randf_range(opponent.left_edge.position.x, opponent.right_edge.position.x),
-					opponent.bottom_edge.position.y
-				),
-				round(level / evil_purin_spawn_level_divider),
-				true
-			)
+			opponent.purin_bag.add_evil_purin(round(level / evil_purin_spawn_level_divider))
 
 	# listen to its signals for combining or bonking
 	purin.connect("combine", combine_purin)
@@ -395,10 +391,13 @@ func combine_purin(purin1: Purin, purin2: Purin):
 	purin2.queue_free()
 
 	# create new purin of highest level
-	var new_purin = spawn_purin(Vector2(spawn_x, spawn_y), new_level)
+	var new_purin = spawn_purin(Vector2(spawn_x, spawn_y), {"level": new_level, "evil": false})
 	# set its new values based on the combined stats
 	new_purin.rotation = spawn_rotation
 	new_purin.evil.visible = evil
+	if evil:
+		# if it's evil then make have much more mass than normal
+		new_purin.mass = pow(3, new_level)
 	new_purin.angular_velocity = spawn_angular_velocity
 	new_purin.linear_velocity = spawn_linear_velocity
 	
