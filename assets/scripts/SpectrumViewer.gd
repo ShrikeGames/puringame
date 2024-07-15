@@ -16,7 +16,8 @@ var max_values = []
 # https://github.com/godotengine/godot-demo-projects/blob/4.2-31d1c0c/audio/spectrum/show_spectrum.gd
 
 func _on_draw():
-	var w = WIDTH / VU_COUNT
+	@warning_ignore("integer_division")
+	var w:int = int(WIDTH / VU_COUNT)
 	for i in range(VU_COUNT):
 		var min_height = min_values[i]
 		var max_height = max_values[i]
@@ -80,7 +81,7 @@ func _on_ready():
 	AudioServer.add_bus_effect(0, effect, effectsCount)
 	
 	spectrum = AudioServer.get_bus_effect_instance(0, effectsCount)
-	print(spectrum)
+	
 	min_values.resize(VU_COUNT)
 	max_values.resize(VU_COUNT)
 	min_values.fill(0.0)

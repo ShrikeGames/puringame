@@ -88,7 +88,6 @@ func get_next_purin_level() -> int:
 	return second_purin
 
 func add_evil_purin(level:int) -> void:
-	print("Add evil  purin:", level)
 	var indicator:PurinIndicator = purin_indicator.instantiate()
 	indicator.level = min(level, int(max_purin_level*0.5))
 	indicator.set_frame(indicator.level)
