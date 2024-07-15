@@ -18,10 +18,11 @@
 
 [node name="Game" type="Node2D" node_paths=PackedStringArray("player_game", "ai_games_node")]
 script = ExtResource("1_j1h3y")
-player_game = NodePath("Player")
+player_game = NodePath("PlayAreaBowl")
 ai_games_node = NodePath("AIGames")
 
 [node name="ProgressionIndicator" type="Node2D" parent="."]
+visible = false
 position = Vector2(961, 25)
 scale = Vector2(0.84, 0.84)
 
@@ -83,21 +84,15 @@ texture = ExtResource("12_ch4aq")
 [node name="AIGames" type="Node2D" parent="."]
 position = Vector2(1040, 0)
 
-[node name="Player" parent="." node_paths=PackedStringArray("purin_bag") instance=ExtResource("13_gy0je")]
-position = Vector2(40, 0)
-player_name = null
-config_path = null
+[node name="PlayAreaBowl" parent="." node_paths=PackedStringArray("purin_bag") instance=ExtResource("13_gy0je")]
+position = Vector2(48, -2)
 default_config_path = "res://player.json"
-ai_controlled = null
-auto_retry = null
-purin_bag = NodePath("../PurinBag")
-mute_sound = null
-ai_mutation_rate = null
-training = null
+purin_bag = NodePath("../PurinBagPlayer")
 
 [node name="P5MenuItem" parent="." instance=ExtResource("14_vkqg3")]
 position = Vector2(1710, 1010)
 
-[node name="PurinBag" parent="." instance=ExtResource("15_qafyh")]
+[node name="PurinBagPlayer" parent="." instance=ExtResource("15_qafyh")]
+position = Vector2(887, 82)
 
 [connection signal="ready" from="." to="." method="_on_ready"]

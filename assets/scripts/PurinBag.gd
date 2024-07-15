@@ -24,7 +24,8 @@ func generate_purin_bag() -> Array[PurinIndicator]:
 		var indicator_scale:float = scales[indicator.level]
 		indicator.scale = Vector2(indicator_scale, indicator_scale)
 		new_bag.append(indicator)
-		bag_node.add_child(indicator)
+		if bag_node!= null:
+			bag_node.add_child(indicator)
 	# shuffle it randomly
 	new_bag.shuffle()
 	#print("new_bag: ", new_bag)
@@ -97,4 +98,5 @@ func add_evil_purin(level:int) -> void:
 	var indicator_scale:float = scales[indicator.level]
 	indicator.scale = Vector2(indicator_scale, indicator_scale)
 	bag.append(indicator)
-	bag_node.add_child(indicator)
+	if bag_node:
+		bag_node.add_child(indicator)

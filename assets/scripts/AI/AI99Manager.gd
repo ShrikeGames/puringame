@@ -39,7 +39,8 @@ func init_ai_players():
 		ai_games_node.add_child(game)
 		game.init()
 		games.append(game)
-	#player_game.opponents = games
+	
+	player_game.opponents = games
 	games.append(player_game)
 	
 	for game in games:

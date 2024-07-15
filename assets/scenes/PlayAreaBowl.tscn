@@ -20,11 +20,6 @@ size = Vector2(69, 890)
 
 [node name="PlayAreaBowl" type="Node2D" node_paths=PackedStringArray("noir", "top_edge", "left_edge", "right_edge", "bottom_edge", "purin_node", "sfx_pop_player", "sfx_bonk_player", "gameover_screen", "player_label", "debug_label", "score_label", "ai_inputs_object")]
 script = ExtResource("1_anyjf")
-player_name = null
-config_path = null
-default_config_path = null
-ai_controlled = null
-auto_retry = null
 noir = NodePath("NoiR")
 top_edge = NodePath("TopEdge")
 left_edge = NodePath("Bowl/LeftEdge")
@@ -33,14 +28,11 @@ bottom_edge = NodePath("Bowl/BottomEdge")
 purin_node = NodePath("PurinObjects")
 sfx_pop_player = NodePath("Pop")
 sfx_bonk_player = NodePath("Bonk")
-mute_sound = null
 gameover_screen = NodePath("GameOverScreen")
 player_label = NodePath("Control/Player Label")
 debug_label = NodePath("DebugText")
-score_label = NodePath("ScoreInfo/Control/Score")
+score_label = NodePath("ScoreInfo/Control/ScoreLabel")
 ai_inputs_object = NodePath("AIInputs")
-ai_mutation_rate = null
-training = null
 
 [node name="Pop" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("2_tn86m")

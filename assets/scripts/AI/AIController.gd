@@ -56,9 +56,7 @@ func remove_all_inputs():
 	
 func best_x_pos():
 	# start at a random x_pos
-	var x_pos:float = 0#game.valid_x_pos(randf_range(game.left_edge.position.x+50, game.right_edge.position.x-50))
-	# TODO implement AI to evaluate board state and determine best place to drop a purin
-	# maybe: ray cast down in set intervals (equal to the smallest purin size)
+	var x_pos:float = game.valid_x_pos(randf_range(game.left_edge.position.x+50, game.right_edge.position.x-50))
 	held_purin_level = game.purin_bag.get_current_purin()["level"]
 	var values:Array[Value] = []
 	if not inputs.is_empty():
