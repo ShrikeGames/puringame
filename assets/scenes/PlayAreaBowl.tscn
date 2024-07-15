@@ -31,7 +31,7 @@ sfx_bonk_player = NodePath("Bonk")
 gameover_screen = NodePath("GameOverScreen")
 player_label = NodePath("Control/Player Label")
 debug_label = NodePath("DebugText")
-score_label = NodePath("ScoreInfo/Control/ScoreLabel")
+score_label = NodePath("ScoreInfo/Control/Score")
 ai_inputs_object = NodePath("AIInputs")
 
 [node name="Pop" type="AudioStreamPlayer" parent="."]
@@ -83,7 +83,6 @@ width = 2.0
 default_color = Color(1, 0, 0, 0.470588)
 
 [node name="ScoreInfo" type="Node2D" parent="."]
-visible = false
 position = Vector2(-2, -115)
 
 [node name="Control" type="Control" parent="ScoreInfo"]
