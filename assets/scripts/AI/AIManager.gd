@@ -30,14 +30,15 @@ func init_ai_players():
 		game.auto_retry = true
 		game.ai_mutation_rate = 0
 		game.training = true
-		var player_name = "ai%s"%(i)
+		var player_name = "ai%s"%[i]
 		game.player_name = player_name
 		# for now all save to the same file instead of individual
 		# working to improve just one result
 		# TODO change later
-		game.config_path = "user://ai.json"
+		game.config_path = "user://ai%s.json"%[i]
 		game.default_config_path = "res://ai.json"
 		game.position = Vector2(40 + (x_pos*1020), y_pos)
+		
 		game.init()
 		x_pos += 1
 		if i > 0 and (i+1) % 2 == 0:
@@ -50,31 +51,43 @@ func init_ai_players():
 	for game in original_population:
 		rank += 1
 		game.rank = rank
-		if rank < num_ai * 0.25:
-			game.ai_mutation_rate = 0.05
-		elif rank < num_ai * 0.5:
-			game.ai_mutation_rate = 0.1
+		if generation == 1:
+			game.ai_mutation_rate = 0
 		else:
-			game.ai_mutation_rate = 0.2
+			if rank < num_ai * 0.25:
+				game.ai_mutation_rate = 0.15
+			elif rank < num_ai * 0.5:
+				game.ai_mutation_rate = 0.30
+				game.config_path = "user://ai%s.json"%[int(rank*0.5)]
+				game.default_config_path = "res://ai.json"
+			else:
+				game.ai_mutation_rate = 0.50
+				game.config_path = "user://ai%s.json"%[int(rank*0.25)]
+				game.default_config_path = "res://ai.json"
 		games.append(game)
 		
 	games.sort_custom(rank_ai_players)
 	for game in ai_games_node.get_children():
 		ai_games_node.queue_free()
 	
+	var weights = [[0,0,0,0,0,0],[0,0,0,0,0,1],[0,0,0,0,1,0],[0,0,0,0,1,1],[0,0,0,1,0,0],[0,0,0,1,0,1],[0,0,0,1,1,0],[0,0,0,1,1,1],[0,0,1,0,0,0],[0,0,1,0,0,1],[0,0,1,0,1,0],[0,0,1,0,1,1],[0,0,1,1,0,0],[0,0,1,1,0,1],[0,0,1,1,1,0],[0,0,1,1,1,1],[0,1,0,0,0,0],[0,1,0,0,0,1],[0,1,0,0,1,0],[0,1,0,0,1,1],[0,1,0,1,0,0],[0,1,0,1,0,1],[0,1,0,1,1,0],[0,1,0,1,1,1],[0,1,1,0,0,0],[0,1,1,0,0,1],[0,1,1,0,1,0],[0,1,1,0,1,1],[0,1,1,1,0,0],[0,1,1,1,0,1],[0,1,1,1,1,0],[0,1,1,1,1,1],[1,0,0,0,0,0],[1,0,0,0,0,1],[1,0,0,0,1,0],[1,0,0,0,1,1],[1,0,0,1,0,0],[1,0,0,1,0,1],[1,0,0,1,1,0],[1,0,0,1,1,1],[1,0,1,0,0,0],[1,0,1,0,0,1],[1,0,1,0,1,0],[1,0,1,0,1,1],[1,0,1,1,0,0],[1,0,1,1,0,1],[1,0,1,1,1,0],[1,0,1,1,1,1],[1,1,0,0,0,0],[1,1,0,0,0,1],[1,1,0,0,1,0],[1,1,0,0,1,1],[1,1,0,1,0,0],[1,1,0,1,0,1],[1,1,0,1,1,0],[1,1,0,1,1,1],[1,1,1,0,0,0],[1,1,1,0,0,1],[1,1,1,0,1,0],[1,1,1,0,1,1],[1,1,1,1,0,0],[1,1,1,1,0,1],[1,1,1,1,1,0],[1,1,1,1,1,1],[0,0,0,0,0,0],[0,0,0,0,0,2],[0,0,0,0,2,0],[0,0,0,0,2,2],[0,0,0,2,0,0],[0,0,0,2,0,2],[0,0,0,2,2,0],[0,0,0,2,2,2],[0,0,2,0,0,0],[0,0,2,0,0,2],[0,0,2,0,2,0],[0,0,2,0,2,2],[0,0,2,2,0,0],[0,0,2,2,0,2],[0,0,2,2,2,0],[0,0,2,2,2,2],[0,2,0,0,0,0],[0,2,0,0,0,2],[0,2,0,0,2,0],[0,2,0,0,2,2],[0,2,0,2,0,0],[0,2,0,2,0,2],[0,2,0,2,2,0],[0,2,0,2,2,2],[0,2,2,0,0,0],[0,2,2,0,0,2],[0,2,2,0,2,0],[0,2,2,0,2,2],[0,2,2,2,0,0],[0,2,2,2,0,2],[0,2,2,2,2,0],[0,2,2,2,2,2],[2,0,0,0,0,0],[2,0,0,0,0,2],[2,0,0,0,2,0],[2,0,0,0,2,2],[2,0,0,2,0,0],[2,0,0,2,0,2],[2,0,0,2,2,0],[2,0,0,2,2,2],[2,0,2,0,0,0],[2,0,2,0,0,2],[2,0,2,0,2,0],[2,0,2,0,2,2],[2,0,2,2,0,0],[2,0,2,2,0,2],[2,0,2,2,2,0],[2,0,2,2,2,2],[2,2,0,0,0,0],[2,2,0,0,0,2],[2,2,0,0,2,0],[2,2,0,0,2,2],[2,2,0,2,0,0],[2,2,0,2,0,2],[2,2,0,2,2,0],[2,2,0,2,2,2],[2,2,2,0,0,0],[2,2,2,0,0,2],[2,2,2,0,2,0],[2,2,2,0,2,2],[2,2,2,2,0,0],[2,2,2,2,0,2],[2,2,2,2,2,0],[2,2,2,2,2,2]]
 	for game in games:
 		ai_games_node.add_child(game)
 		game.init()
+		if generation == 1:
+			game.config_json["highscore_weights"] = weights.pick_random()
+			game.config_json["highscore_biases"] = [0,0,0,0,0,0]
 		game.set_up_game()
-		print("%s. %s (%s) %s %s"%[game.rank, game.player_name, game.highscore, game.ai_controller.weights, game.ai_controller.biases])
-	
+	games.sort_custom(rank_ai_players)
+	for game in games:
+		game.average_score = game.lifetime_score / max(1, game.total_games)
+		print("%s. %s (%s avg %s) %s %s"%[game.rank, game.player_name, game.highscore, game.average_score, game.ai_controller.weights, game.ai_controller.biases])
+		
 	following_game = games[0]
-	camera.position.y = 535
+	camera.position.y = following_game.position.y + 535
 	
 func rank_ai_players(player1:PlayerController, player2:PlayerController):
-	if player1.highscore > player2.highscore:
-		return true
-	if player1.highscore > player2.highscore:
+	if player1.average_score > player2.average_score:
 		return true
 	return false
 	
@@ -94,6 +107,7 @@ func _process(delta):
 	if camera != null and not games.is_empty() and not is_instance_valid(following_game):
 		for game in games:
 			if is_instance_valid(game):
+				print("Now watching ", game.player_name)
 				camera.position.y = game.position.y + 535
 				following_game = game
 				break

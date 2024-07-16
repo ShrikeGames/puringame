@@ -16,7 +16,7 @@ func generate_purin_bag() -> Array[PurinIndicator]:
 	#print("generate bag of max level: ", max_level)
 	var new_bag: Array[PurinIndicator] = []
 	# add each level of purin to the bag
-	for level in range(0, how_many_to_show-len(bag)):
+	for level in range(0, 1+int(max_purin_level*0.5)):
 		var indicator:PurinIndicator = purin_indicator.instantiate()
 		indicator.level = min(level, int(max_purin_level*0.5))
 		indicator.set_frame(indicator.level)
@@ -24,7 +24,7 @@ func generate_purin_bag() -> Array[PurinIndicator]:
 		var indicator_scale:float = scales[indicator.level]
 		indicator.scale = Vector2(indicator_scale, indicator_scale)
 		new_bag.append(indicator)
-		if bag_node!= null:
+		if bag_node != null:
 			bag_node.add_child(indicator)
 	# shuffle it randomly
 	new_bag.shuffle()
@@ -47,6 +47,8 @@ func update_bag_visuals() -> void:
 				y_pos += 125
 			else:
 				y_pos += 75
+		if i > how_many_to_show:
+			break
 		i += 1
 	
 func restock_bag() -> void:
@@ -88,14 +90,17 @@ func get_next_purin_level() -> int:
 	return second_purin
 
 func add_evil_purin(level:int) -> void:
-	var indicator:PurinIndicator = purin_indicator.instantiate()
-	indicator.level = min(level, int(max_purin_level*0.5))
-	indicator.set_frame(indicator.level)
-	indicator.evil = true
-	indicator.evil_visual.visible = true
-	indicator.pause()
-	var indicator_scale:float = scales[indicator.level]
-	indicator.scale = Vector2(indicator_scale, indicator_scale)
-	bag.append(indicator)
-	if bag_node:
-		bag_node.add_child(indicator)
+	# overrides the next non-evil purin with a new evil one
+	var i:int = 0
+	for indicator in bag:
+		if not indicator.evil and i > 0:
+			indicator.level = min(level, int(max_purin_level*0.5))
+			indicator.set_frame(indicator.level)
+			indicator.evil = true
+			indicator.evil_visual.visible = true
+			indicator.pause()
+			var indicator_scale:float = scales[indicator.level]
+			indicator.scale = Vector2(indicator_scale, indicator_scale)
+			break
+		i += 1
+	update_bag_visuals()

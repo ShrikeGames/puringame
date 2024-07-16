@@ -25,16 +25,16 @@ func evaluate(player_controller:PlayerController, ai_controller:AIController, he
 		evaluated_cost += get_strength(weights, 1) * abs(held_purin_level - level) + get_strength(biases, 1)
 	
 	# punish it for being farther from the bottom
-	if purin != null and is_instance_valid(purin):
-		evaluated_cost += get_strength(weights, 2) * (player_controller.bottom_edge.position.y / position.y)  + get_strength(biases, 2)
+	evaluated_cost += get_strength(weights, 2) * (player_controller.bottom_edge.position.y / position.y)  + get_strength(biases, 2)
 	
 	# punish it for being in the middle and not the sides
 	var width = (player_controller.right_edge.position.x - player_controller.left_edge.position.x)
-	var mid_point = 0.5 * width
-	if position.x < mid_point:
-		evaluated_cost += get_strength(weights, 3) * (position.x / width) + get_strength(biases, 3)
+	var mid_point = player_controller.left_edge.position.x + (0.5 * width)
+	if position.x > mid_point:
+		evaluated_cost += get_strength(weights, 2) * (position.x)  + get_strength(biases, 2)
 	else:
-		evaluated_cost += (get_strength(weights, 3) * ((mid_point - position.x)/width)) + get_strength(biases, 3)
+		evaluated_cost += get_strength(weights, 2) * (player_controller.right_edge.position.x / position.x)  + get_strength(biases, 2)
+	
 	if purin != null and is_instance_valid(purin):
 		if level != held_purin_level:
 			evaluated_cost += (get_strength(weights, 4) * purin.number_possible_combines()) + get_strength(biases, 4)

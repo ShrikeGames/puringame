@@ -15,7 +15,7 @@ func _on_ready():
 	
 func init_ai_players():
 	games = []
-	var x_pos:int = 0
+	var x_pos:int = 1040
 	var y_pos:int = 0
 	for i in range(0, num_ai):
 		var game:PlayerController = play_package.instantiate()
@@ -34,7 +34,7 @@ func init_ai_players():
 		
 		x_pos += 310
 		if i >0 and (i+1) % 3 == 0:
-			x_pos = 0
+			x_pos = 1040
 			y_pos += 310
 		ai_games_node.add_child(game)
 		game.init()

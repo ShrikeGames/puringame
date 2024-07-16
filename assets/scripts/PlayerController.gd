@@ -14,6 +14,8 @@ var ai_controller: AIController
 @export var right_edge: Node2D
 @export var bottom_edge: Node2D
 @export var purin_node: Node2D
+@export var scoreorb_node: Node2D
+@export var scoreorb_target: Node2D
 @export var sfx_pop_player: AudioStreamPlayer
 @export var sfx_bonk_player: AudioStreamPlayer
 @export var mute_sound: bool = false
@@ -33,6 +35,8 @@ var default_config_json
 
 var score: int = 0
 var highscore: int = 0
+var score_orb: Resource = load("res://assets/scenes/ScoreOrb.tscn")
+var evil_orb: Resource = load("res://assets/scenes/EvilOrb.tscn")
 
 var purin_object: Resource = load("res://assets/scenes/Purin.tscn")
 var purin_textures: Array[Texture2D] = []
@@ -50,9 +54,10 @@ var drop_purin_cooldown_sec: float = 0.5
 
 var game_over_threshold_sec: float = 3
 
-
+var total_games:int = 0
+var lifetime_score:int = 0
+var average_score:float = 0
 func _on_ready():
-	print(player_name, " on ready")
 	# first time load the purin images/textures
 	load_purin()
 	if not training:
@@ -60,7 +65,6 @@ func _on_ready():
 
 
 func init():
-	print(player_name, " init")
 	load_configs()
 	if not training:
 		# set up the game, can be called to restart at anytime
@@ -75,33 +79,27 @@ func read_json(path:String):
 	return json_dict
 	
 func load_configs():
-	print("load configs from ", config_path)
 	config_json = read_json(config_path)
-	print("config_json:", config_json)
 	default_config_json = read_json(default_config_path)
 	if config_json == null:
 		config_json = default_config_json
 	# get values from config file (player's save, or from default config)
-	#purin_sizes = get_config_value_or_default("purin_sizes")
-	print("purin_sizes:", purin_sizes)
 	highest_possible_purin_level = get_config_value_or_default("highest_possible_purin_level", 0, 10)
-	print("highest_possible_purin_level:", highest_possible_purin_level)
 	game_over_threshold_sec = get_config_value_or_default("game_over_threshold_sec", 0, 6)
-	print("game_over_threshold_sec:", game_over_threshold_sec)
 	var hacky_workaround = 0.25
 	if player_name != "player":
 		hacky_workaround = 1.25
 	drop_purin_cooldown_sec = get_config_value_or_default("drop_purin_cooldown_sec", 0, hacky_workaround)
-	print("drop_purin_cooldown_sec:", drop_purin_cooldown_sec)
 	evil_purin_spawn_level_threshold = get_config_value_or_default(
 		"evil_purin_spawn_level_threshold", 0, 3
 	)
-	print("evil_purin_spawn_level_threshold:", evil_purin_spawn_level_threshold)
 	evil_purin_spawn_level_divider = get_config_value_or_default("evil_purin_spawn_level_divider", 0, 4)
-	print("evil_purin_spawn_level_divider:", evil_purin_spawn_level_divider)
 	highscore = get_config_value_or_default("highscore", 0, 0)
-	print("highscore:", highscore)
+	total_games = get_config_value_or_default("total_games", 0, 0)
+	lifetime_score = get_config_value_or_default("lifetime_score", 0, 0)
+	average_score = get_config_value_or_default("average_score", 0, 0)
 	#default_config.save(default_config_path)
+	
 
 func get_config_value_or_default(key: String, mutation_rate: float = 0.0, default_default_value = 0):
 	var config_value = 0
@@ -146,9 +144,11 @@ func set_up_game():
 	# for AI and such that don't need a visual representation of their bag shown
 	if purin_bag == null:
 		purin_bag = PurinBag.new()
+		purin_bag.visible = false
 	purin_bag.max_purin_level = 0
+	purin_bag.bag = []
 	purin_bag.generate_purin_bag()
-	
+	noir.change_held_purin(purin_bag.get_current_purin())
 	# if this is an AI player then create an AIController for it
 	if ai_controlled and not is_instance_valid(ai_controller):
 		ai_controller = AIController.new()
@@ -158,10 +158,11 @@ func set_up_game():
 	update_score_label()
 
 	gameover_screen.visible = false
+	
 	# for testing
-	#spawn_purin(Vector2(350,400),{"level": 8, "evil": false})
-	#spawn_purin(Vector2(300,400),{"level": 9, "evil": false})
-	#spawn_purin(Vector2(200,400),{"level": 10, "evil": false})
+	#spawn_purin(Vector2(350,400),{"level": 2, "evil": false})
+	#spawn_purin(Vector2(300,400),{"level": 3, "evil": false})
+	#spawn_purin(Vector2(200,400),{"level": 4, "evil": false})
 
 
 func remove_all_purin():
@@ -195,11 +196,21 @@ func save_results():
 		return
 	# update config
 	config_json["last_score"] = score
+	total_games += 1
+	config_json["total_games"] = total_games
+	lifetime_score += score
+	config_json["lifetime_score"] = lifetime_score
+	@warning_ignore("integer_division")
+	average_score = lifetime_score/total_games
+	config_json["average_score"] = average_score
+	
 	if ai_controlled:
 		config_json["weights"] = ai_controller.weights
 		config_json["biases"] = ai_controller.biases
-	if score > highscore:
+	if score > config_json["highscore"]:
 		print(player_name, " got a new personal highscore of ", score)
+		if training:
+			print("weights:", ai_controller.weights)
 		highscore = score
 		config_json["highscore"] = highscore
 		if ai_controlled:
@@ -237,9 +248,15 @@ func check_game_over(delta):
 			save_results()
 			get_tree().paused = false
 			set_up_game()
+			if not ai_controlled and opponents:
+				for opponent in opponents:
+					if is_instance_valid(opponent):
+						opponent.gameover_screen.visible = true
+						opponent.save_results()
+						opponent.set_up_game()
 			return false
 		if ai_controlled and not auto_retry and training:
-			print("Delete AI player ", player_name, " because they lost, are not set to auto retry and are in training")
+			#print("Delete AI player ", player_name, " because they lost, are not set to auto retry and are in training")
 			save_results()
 			self.queue_free()
 		return true
@@ -321,7 +338,7 @@ func spawn_purin(
 	purin.set_meta("combined", false)
 	purin.image.texture = purin_textures[level]
 	purin.image.scale = self.scale
-	purin.mass = pow(1.2, level)
+	purin.mass = pow(1.4, level)
 	# update collider shape to be appropriate size
 	var new_shape = CircleShape2D.new()
 	var new_radius: float = get_purin_radius(level)
@@ -334,16 +351,11 @@ func spawn_purin(
 	# if it's an evil purin then make that visible
 	if evil:
 		purin.evil.visible = true
-		# if it's evil then make have much more mass than normal
-		purin.mass = pow(3, level)
+		# if it's evil then make have more mass than normal
+		purin.mass = pow(1.4, level+2)
 		# evil ones spawn at the bottom
 		purin.position = Vector2(purin.position.x, purin.position.y)
-
-	elif not opponents.is_empty() and level > evil_purin_spawn_level_threshold:
-		var opponent: PlayerController = opponents.pick_random()
-		if is_instance_valid(opponent):
-			# if it's not evil then depending on level it could spawn an evil purin in opponent's game
-			opponent.purin_bag.add_evil_purin(round(level / evil_purin_spawn_level_divider))
+		
 
 	# listen to its signals for combining or bonking
 	purin.connect("combine", combine_purin)
@@ -356,7 +368,6 @@ func spawn_purin(
 	dropped_purin_count += 1
 
 	return purin
-
 
 func get_purin_radius(level: int):
 	return (purin_sizes[level] * 0.5) * 1.17 * self.scale.x
@@ -396,12 +407,26 @@ func combine_purin(purin1: Purin, purin2: Purin):
 	new_purin.rotation = spawn_rotation
 	new_purin.evil.visible = evil
 	if evil:
-		# if it's evil then make have much more mass than normal
-		new_purin.mass = pow(3, new_level)
+		# if it's evil then make have more mass than normal
+		new_purin.mass = pow(1.2, new_level+2)
+	elif not opponents.is_empty() and new_level >= evil_purin_spawn_level_threshold:
+		# if it's not evil then depending on level it could spawn an evil purin in opponent's game
+		var opponent: PlayerController = opponents.pick_random()
+		if is_instance_valid(opponent) and opponent.player_name != player_name:
+			var evilorb: EvilOrb = evil_orb.instantiate()
+			evilorb.purin_level = new_level
+			evilorb.position = to_global(new_purin.position)
+			evilorb.opponent = opponent
+			if opponent.purin_bag.visible == true:
+				evilorb.target_position = opponent.purin_bag.position
+			else:
+				evilorb.target_position = opponent.position
+			evilorb.connect("evilguh", add_evil_purin)
+			get_tree().root.add_child(evilorb)
 	new_purin.angular_velocity = spawn_angular_velocity
 	new_purin.linear_velocity = spawn_linear_velocity
-	
-	new_purin.particle_system.emitting = true
+	if not training:
+		new_purin.particle_system.emitting = true
 	# play sfx if not muted
 	if not mute_sound:
 		sfx_pop_player.play()
@@ -415,11 +440,26 @@ func combine_purin(purin1: Purin, purin2: Purin):
 	# and give a multiplier that increases the more purin they have placed
 	# so the value goes up the longer they play giving it a non-linear curve
 	var score_increase = int(pow(new_level, 2)) * int(1 + (dropped_purin_count * 0.1))
-	score += score_increase
-	update_score_label()
+	if training:
+		gain_score(score_increase)
+	else:
+		var scoreorb:ScoreOrb = score_orb.instantiate()
+		scoreorb.score_worth = score_increase
+		scoreorb.position = new_purin.position
+		scoreorb.target_position = scoreorb_target.position
+		scoreorb_node.add_child(scoreorb)
+		scoreorb.connect("scored", gain_score)
+	
 	return new_purin
-
-
+	
+func add_evil_purin(level, opponent):
+	opponent.purin_bag.add_evil_purin(level)
+	opponent.noir.change_held_purin(opponent.purin_bag.get_current_purin())
+	
+func gain_score(score_amount:int):
+	score += score_amount
+	update_score_label()
+	
 func bonk_purin(_purin1: Purin, _purin2: Purin):
 	# TODO later maybe use the bodys to do something else
 	# for now just play audio file

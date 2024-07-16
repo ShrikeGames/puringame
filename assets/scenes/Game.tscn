@@ -79,7 +79,15 @@ texture = ExtResource("13_bcewv")
 
 [node name="PlayAreaBowl" parent="." node_paths=PackedStringArray("purin_bag") instance=ExtResource("13_ohdrd")]
 position = Vector2(550, 0)
+player_name = "player"
+config_path = "user://player.json"
+default_config_path = "res://default.json"
+ai_controlled = false
+auto_retry = false
 purin_bag = NodePath("../PurinBag")
+mute_sound = false
+ai_mutation_rate = 0.0
+training = false
 
 [node name="P5MenuItem" parent="." instance=ExtResource("13_yh0lk")]
 position = Vector2(1710, 1010)

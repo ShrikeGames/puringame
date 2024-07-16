@@ -82,12 +82,18 @@ scale = Vector2(0.5, 0.5)
 texture = ExtResource("12_ch4aq")
 
 [node name="AIGames" type="Node2D" parent="."]
-position = Vector2(1040, 0)
 
 [node name="PlayAreaBowl" parent="." node_paths=PackedStringArray("purin_bag") instance=ExtResource("13_gy0je")]
 position = Vector2(48, -2)
+player_name = "player"
+config_path = "user://player.json"
 default_config_path = "res://player.json"
+ai_controlled = false
+auto_retry = false
 purin_bag = NodePath("../PurinBagPlayer")
+mute_sound = false
+ai_mutation_rate = 0.0
+training = false
 
 [node name="P5MenuItem" parent="." instance=ExtResource("14_vkqg3")]
 position = Vector2(1710, 1010)

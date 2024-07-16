@@ -55,11 +55,11 @@ func remove_all_inputs():
 		
 	
 func best_x_pos():
-	# start at a random x_pos
-	var x_pos:float = game.valid_x_pos(randf_range(game.left_edge.position.x+50, game.right_edge.position.x-50))
+	var x_pos:float = 0
 	held_purin_level = game.purin_bag.get_current_purin()["level"]
 	var values:Array[Value] = []
 	if not inputs.is_empty():
+		var i:int = 0
 		for input in inputs:
 			update_inputs()
 			var value:Value = input.value
@@ -68,9 +68,9 @@ func best_x_pos():
 					var next_purin_cost = value.evaluate(game, self, game.purin_bag.get_current_purin()["level"])
 					value.cost = value.evaluate(game, self, held_purin_level, next_purin_cost)
 				else:
-					value.cost = 99
+					value.cost = sin(i)/2.0
 				values.append(value)
-		
+			i += 1
 	values.sort_custom(cost_function)
 	
 	if not values.is_empty():

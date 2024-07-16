@@ -1,6 +1,6 @@
 extends Camera2D
 
-@export var camera_move_speed: float = 500
+@export var camera_move_speed: float = 1080
 @export var camera_zoom_speed: float = 0.1
 
 
