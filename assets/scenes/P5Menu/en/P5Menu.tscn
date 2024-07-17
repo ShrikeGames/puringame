@@ -13,7 +13,7 @@
 [node name="P5Menu" type="Node2D"]
 
 [node name="Logo" parent="." instance=ExtResource("9_fqk3c")]
-position = Vector2(895, 880)
+position = Vector2(892, 880)
 
 [node name="Training" parent="." instance=ExtResource("2_x8mm0")]
 position = Vector2(444, 813)

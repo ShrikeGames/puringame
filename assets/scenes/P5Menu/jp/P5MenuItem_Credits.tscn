@@ -1,6 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://bkbar47uq7mri"]
+[gd_scene load_steps=8 format=3 uid="uid://bkbar47uq7mri"]
 
 [ext_resource type="Texture2D" uid="uid://btyumx18vhf4x" path="res://assets/images/Menu/jp/MM_Credits_Normal_jp.png" id="1_2b4gv"]
+[ext_resource type="Material" uid="uid://2xolnxlijcva" path="res://assets/scenes/ShineMaterial.tres" id="1_spoxy"]
 [ext_resource type="Texture2D" uid="uid://cenggsyfxoqc8" path="res://assets/images/Menu/jp/MM_Credits_Clicked_jp.png" id="2_u0myi"]
 [ext_resource type="Texture2D" uid="uid://d04oh8txpgjdo" path="res://assets/images/Menu/jp/MM_Credits_Selected_jp.png" id="3_hbnyk"]
 [ext_resource type="Script" path="res://assets/scripts/P5Menu/P5TextureButton.gd" id="4_l2p3v"]
@@ -16,6 +17,7 @@ max_contacts_reported = 20
 contact_monitor = true
 
 [node name="Button" type="TextureButton" parent="." node_paths=PackedStringArray("audio_player")]
+material = ExtResource("1_spoxy")
 offset_left = -406.0
 offset_top = -116.0
 offset_right = 674.0
