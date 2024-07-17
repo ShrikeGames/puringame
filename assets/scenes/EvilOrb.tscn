@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://bq4so1gtcnast"]
 
 [ext_resource type="Script" path="res://assets/scripts/EvilOrb.gd" id="1_7a2vn"]
-[ext_resource type="Texture2D" uid="uid://c2p2b5mp5hh6d" path="res://assets/images/EvilOrb.png" id="2_q2kh8"]
+[ext_resource type="Texture2D" uid="uid://c2p2b5mp5hh6d" path="res://assets/images/game/EvilOrb.png" id="2_q2kh8"]
 
 [node name="EvilOrb" type="Node2D"]
 script = ExtResource("1_7a2vn")

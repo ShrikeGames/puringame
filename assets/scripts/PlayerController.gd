@@ -42,7 +42,7 @@ var purin_object: Resource = load("res://assets/scenes/Purin.tscn")
 var purin_textures: Array[Texture2D] = []
 var purin_sizes: Array = [50, 100, 125, 156, 175, 195, 220, 250, 275, 300, 343]
 var highest_possible_purin_level: int
-const purin_file_path_root = "res://assets/images/"
+const purin_file_path_root = "res://assets/images/game/"
 
 var dropped_purin_count: int = 0
 
@@ -66,21 +66,14 @@ func _on_ready():
 
 func init():
 	load_configs()
+	
 	if not training:
 		# set up the game, can be called to restart at anytime
 		set_up_game()
 
-func read_json(path:String):
-	if not FileAccess.file_exists(path):
-		return null
-	var json_string = FileAccess.get_file_as_string(path)
-	var json_dict = JSON.parse_string(json_string)
-
-	return json_dict
-	
 func load_configs():
-	config_json = read_json(config_path)
-	default_config_json = read_json(default_config_path)
+	config_json = Global.read_json(config_path)
+	default_config_json = Global.read_json(default_config_path)
 	if config_json == null:
 		config_json = default_config_json
 	# get values from config file (player's save, or from default config)
@@ -187,8 +180,8 @@ func save_results():
 	if config_path.contains("res://"):
 		return
 	# get latest copies of the configs before updating them
-	config_json = read_json(config_path)
-	default_config_json = read_json(default_config_path)
+	config_json = Global.read_json(config_path)
+	default_config_json = Global.read_json(default_config_path)
 	if config_json == null:
 		config_json = default_config_json
 	if config_json == null:

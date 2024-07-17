@@ -1,0 +1,52 @@
+[gd_scene load_steps=10 format=3 uid="uid://qou3inft6ujl"]
+
+[ext_resource type="PackedScene" uid="uid://befd1y6a5yrko" path="res://assets/scenes/P5Menu/jp/Logo_jp.tscn" id="1_7ovk7"]
+[ext_resource type="PackedScene" uid="uid://bc7mu6re8asw" path="res://assets/scenes/P5Menu/jp/P5MenuItem_Exit_jp.tscn" id="2_didm7"]
+[ext_resource type="PackedScene" uid="uid://bkbar47uq7mri" path="res://assets/scenes/P5Menu/jp/P5MenuItem_Credits.tscn" id="3_0isu1"]
+[ext_resource type="PackedScene" uid="uid://c57of4aq0xruv" path="res://assets/scenes/P5Menu/jp/P5MenuItem_Training.tscn" id="4_fdr20"]
+[ext_resource type="PackedScene" uid="uid://6lnnrgn5vgni" path="res://assets/scenes/P5Menu/jp/P5MenuItem_Leaderboard.tscn" id="5_0ismh"]
+[ext_resource type="PackedScene" uid="uid://dq1heslp86t1s" path="res://assets/scenes/P5Menu/jp/P5MenuItem_Purin99.tscn" id="6_4j1so"]
+[ext_resource type="PackedScene" uid="uid://cypo6uoxohwxu" path="res://assets/scenes/P5Menu/jp/P5MenuItem_Settings.tscn" id="7_hhv1w"]
+[ext_resource type="PackedScene" uid="uid://cxpkl384yuulr" path="res://assets/scenes/P5Menu/jp/P5MenuItem_Versus.tscn" id="8_17e5f"]
+[ext_resource type="PackedScene" uid="uid://drwam0cjnekrr" path="res://assets/scenes/P5Menu/jp/P5MenuItem_Solo.tscn" id="9_cqudu"]
+
+[node name="P5Menu_JP" type="Node2D"]
+
+[node name="Logo" parent="." instance=ExtResource("1_7ovk7")]
+position = Vector2(893, 877)
+
+[node name="Exit" parent="." instance=ExtResource("2_didm7")]
+position = Vector2(134, 997)
+rotation = -0.0706961
+lock_rotation = true
+freeze = true
+
+[node name="Credits" parent="." instance=ExtResource("3_0isu1")]
+position = Vector2(281, 894)
+rotation = -0.0137827
+lock_rotation = true
+freeze = true
+
+[node name="Training" parent="." instance=ExtResource("4_fdr20")]
+position = Vector2(370, 787)
+rotation = -0.0102308
+
+[node name="Leaderboard" parent="." instance=ExtResource("5_0ismh")]
+position = Vector2(458, 673)
+rotation = 0.00228447
+lock_rotation = true
+
+[node name="Settings" parent="." instance=ExtResource("7_hhv1w")]
+position = Vector2(384, 562)
+
+[node name="Purin99" parent="." instance=ExtResource("6_4j1so")]
+position = Vector2(515, 443)
+lock_rotation = true
+
+[node name="Versus" parent="." instance=ExtResource("8_17e5f")]
+position = Vector2(575, 329)
+rotation = -0.0931157
+
+[node name="Solo" parent="." instance=ExtResource("9_cqudu")]
+position = Vector2(533, 220)
+rotation = -0.187751

@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=3 uid="uid://digt3ya6lodli"]
 
-[ext_resource type="Texture2D" uid="uid://bkidel8xvjsvt" path="res://assets/images/GameOverBackdrop.png" id="1_yrhqy"]
+[ext_resource type="Texture2D" uid="uid://bkidel8xvjsvt" path="res://assets/images/game/GameOverBackdrop.png" id="1_yrhqy"]
 [ext_resource type="FontFile" uid="uid://cdwb8ivskcjue" path="res://assets/fonts/NotoSansCJK-Regular.ttc" id="2_mdvjf"]
-[ext_resource type="PackedScene" uid="uid://bv0hug7esyx87" path="res://assets/scenes/P5Menu/P5MenuItem_Retry.tscn" id="3_78npu"]
+[ext_resource type="PackedScene" uid="uid://bv0hug7esyx87" path="res://assets/scenes/P5Menu/en/P5MenuItem_Retry.tscn" id="3_78npu"]
 
 [node name="GameOverScreen" type="Node2D"]
 

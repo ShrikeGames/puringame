@@ -1,0 +1,172 @@
+extends Node
+# This class is always available
+var settings_config_location:String = "user://settings.json"
+var default_settings_config_location:String = "res://settings.json"
+
+# audio sliders 0.0 - 1.0
+var volume_master:float = 1.0
+var volume_menu:float = 1.0
+var volume_game_sfx:float = 1.0
+var volume_voices:float = 1.0
+var volume_music:float = 1.0
+
+# controls
+# enable or disable control types (applies to menus and in-game)
+var controls_mouse:bool = true
+var controls_keyboard:bool = true
+var controls_controller:bool = true
+var controls_move_speed:float = 50.0
+# add additional keybinds for the actions, allow overlap with drop (applies to menus and in-game)
+var custom_key_up:Key = KEY_W
+var custom_key_down:Key = KEY_S
+var custom_key_left:Key = KEY_A
+var custom_key_right:Key = KEY_D
+# for menus primarily
+var cusom_key_accept:Key = KEY_ENTER
+var custom_key_drop:Key = KEY_S
+var custom_key_retry:Key = KEY_R
+var custom_key_pause:Key = KEY_ESCAPE
+var zoom_in:Key = KEY_PLUS
+var zoom_out:Key = KEY_MINUS
+
+# language: "en" or "jp"
+var language:String = "en"
+
+# Accessibility settings
+# if true show the purin's "level" on them
+var numbered_purin:bool = false
+# if enabled will drop continuously until you press the key again
+var drop_troggle:bool = false
+# the normal game speed, slow it down to be easier. 0.5-1.0
+var game_speed:float = 1
+# if enabled the AI will only drop purin after you do
+var turn_based_mode:bool = false
+
+# AI training settings
+var training_number_of_ai:int = 2
+# how long each "generation" of training is before it restarts a new one
+var training_generation_lifetime_sec:int = 600
+# how fast the game should play when training 1.0-3.0
+var training_game_speed:float = 1
+
+func read_json(path:String) -> Dictionary:
+	if not FileAccess.file_exists(path):
+		return {}
+	var json_string = FileAccess.get_file_as_string(path)
+	var json_dict = JSON.parse_string(json_string)
+
+	return json_dict
+	
+func load_settings():
+	var config_json:Dictionary = read_json(settings_config_location)
+	var default_config_json:Dictionary = read_json(default_settings_config_location)
+	if config_json.is_empty():
+		config_json = default_config_json
+	# audio sliders 0.0 - 1.0
+	volume_master = config_json.get("volume_master", volume_master)
+	volume_menu = config_json.get("volume_menu", volume_menu)
+	volume_game_sfx = config_json.get("volume_game_sfx", volume_game_sfx)
+	volume_voices = config_json.get("volume_voices", volume_voices)
+	volume_music = config_json.get("volume_music", volume_music)
+	
+	# controls
+	# enable or disable control types (applies to menus and in-game)
+	controls_mouse = config_json.get("controls_mouse", controls_mouse)
+	controls_keyboard = config_json.get("controls_keyboard", controls_keyboard)
+	controls_controller = config_json.get("controls_controller", controls_controller)
+	controls_move_speed = config_json.get("controls_move_speed", controls_move_speed)
+	
+	# add additional keybinds for the actions, allow overlap with drop (applies to menus and in-game)
+	
+	custom_key_up = config_json.get("custom_key_up", custom_key_up)
+	custom_key_down = config_json.get("custom_key_down", custom_key_down)
+	custom_key_left = config_json.get("custom_key_left", custom_key_left)
+	custom_key_right =config_json.get("custom_key_right", custom_key_right)
+	# for menus primarily
+	cusom_key_accept = config_json.get("cusom_key_accept", cusom_key_accept)
+	custom_key_drop = config_json.get("custom_key_drop", custom_key_drop)
+	custom_key_retry = config_json.get("custom_key_retry", custom_key_retry)
+	custom_key_pause = config_json.get("custom_key_pause", custom_key_pause)
+	zoom_in = config_json.get("zoom_in", zoom_in)
+	zoom_out = config_json.get("zoom_out", zoom_out)
+	
+	# language: "en" or "jp"
+	language = config_json.get("language", language)
+	if language not in ["en", "jp"]:
+		language = "en"
+		
+	# Accessibility settings
+	# if true show the purin's "level" on them
+	numbered_purin = config_json.get("numbered_purin", numbered_purin)
+	# if enabled will drop continuously until you press the key again
+	drop_troggle = config_json.get("drop_troggle", drop_troggle)
+	# the normal game speed, slow it down to be easier. 0.5-1.0
+	game_speed = config_json.get("game_speed", game_speed)
+	# if enabled the AI will only drop purin after you do
+	turn_based_mode = config_json.get("turn_based_mode", turn_based_mode)
+	
+	# AI training settings
+	training_number_of_ai = config_json.get("training_number_of_ai", training_number_of_ai)
+	
+	# how long each "generation" of training is before it restarts a new one
+	training_generation_lifetime_sec = config_json.get("training_generation_lifetime_sec", training_generation_lifetime_sec)
+	
+	# how fast the game should play when training 1.0-3.0
+	training_game_speed = config_json.get("training_game_speed", training_game_speed)
+
+func save_settings():
+	var config_json:Dictionary = read_json(settings_config_location)
+	# audio sliders 0.0 - 1.0
+	config_json["volume_master"] = volume_master
+	config_json["volume_menu"] = volume_menu
+	config_json["volume_game_sfx"] = volume_game_sfx
+	config_json["volume_voices"] = volume_voices
+	config_json["volume_music"] = volume_music
+	
+	# controls
+	# enable or disable control types (applies to menus and in-game)
+	config_json["controls_mouse"] = controls_mouse
+	config_json["controls_keyboard"] = controls_keyboard
+	config_json["controls_controller"] = controls_controller
+	config_json["controls_move_speed"] = controls_move_speed
+	
+	# add additional keybinds for the actions, allow overlap with drop (applies to menus and in-game)
+	config_json["custom_key_up"] = custom_key_up
+	config_json["custom_key_down"] = custom_key_down
+	config_json["custom_key_left"] = custom_key_left
+	config_json["custom_key_right"] = custom_key_right
+	
+	# for menus primarily
+	config_json["cusom_key_accept"] = cusom_key_accept
+	config_json["custom_key_drop"] = custom_key_drop
+	config_json["custom_key_retry"] = custom_key_retry
+	config_json["custom_key_pause"] = custom_key_pause
+	
+	config_json["zoom_in"] = zoom_in
+	config_json["zoom_out"] = zoom_out
+	
+	# language: "en" or "jp"
+	config_json["language"] = language
+
+	# Accessibility settings
+	config_json["numbered_purin"] = numbered_purin
+	config_json["drop_troggle"] = drop_troggle
+	config_json["game_speed"] = game_speed
+	config_json["turn_based_mode"] = turn_based_mode
+	
+	# AI training settings
+	config_json["training_number_of_ai"] = training_number_of_ai
+	config_json["training_generation_lifetime_sec"] = training_generation_lifetime_sec
+	config_json["training_game_speed"] = training_game_speed
+	
+	# save the results
+	var json_string := JSON.stringify(config_json)
+	# We will need to open/create a new file for this data string
+	var file_access := FileAccess.open(settings_config_location, FileAccess.WRITE)
+	if not file_access:
+		print("An error happened while saving data: ", FileAccess.get_open_error())
+		return
+		
+	file_access.store_line(json_string)
+	file_access.close()
+	

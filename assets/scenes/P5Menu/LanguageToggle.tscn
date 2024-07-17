@@ -1,0 +1,13 @@
+[gd_scene load_steps=4 format=3 uid="uid://dvga7afntky3g"]
+
+[ext_resource type="Texture2D" uid="uid://clm6o1gogah0t" path="res://assets/images/Menu/language_en.png" id="1_smy6y"]
+[ext_resource type="Texture2D" uid="uid://dsn3x360lhi01" path="res://assets/images/Menu/language_jp.png" id="2_hntgw"]
+[ext_resource type="Script" path="res://assets/scripts/P5Menu/LanguageToggle.gd" id="3_3w7tm"]
+
+[node name="LanguageToggle" type="TextureButton"]
+toggle_mode = true
+texture_normal = ExtResource("1_smy6y")
+texture_pressed = ExtResource("2_hntgw")
+script = ExtResource("3_3w7tm")
+
+[connection signal="toggled" from="." to="." method="_on_toggled"]

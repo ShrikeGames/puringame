@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://rd8yldl3wqct"]
 
-[ext_resource type="Texture2D" uid="uid://6c1sp4supsbw" path="res://assets/images/ScoreOrb.png" id="1_ciyhf"]
+[ext_resource type="Texture2D" uid="uid://6c1sp4supsbw" path="res://assets/images/game/ScoreOrb.png" id="1_ciyhf"]
 [ext_resource type="Script" path="res://assets/scripts/ScoreOrb.gd" id="1_ow1uc"]
 
 [node name="ScoreOrb" type="Node2D"]

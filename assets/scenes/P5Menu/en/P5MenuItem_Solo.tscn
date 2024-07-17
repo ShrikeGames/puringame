@@ -1,0 +1,39 @@
+[gd_scene load_steps=7 format=3 uid="uid://b2f8kai1qddyo"]
+
+[ext_resource type="Texture2D" uid="uid://cfq72xtfp22o" path="res://assets/images/Menu/en/MM_Solo_Normal.png" id="1_yna8e"]
+[ext_resource type="Texture2D" uid="uid://d31lg5ocxyad0" path="res://assets/images/Menu/en/MM_Solo_Clicked.png" id="2_o8fyh"]
+[ext_resource type="Texture2D" uid="uid://c4554r5xixipy" path="res://assets/images/Menu/en/MM_Solo_Selected.png" id="3_7c1gi"]
+[ext_resource type="AudioStream" uid="uid://c5uqes11kgy3f" path="res://assets/audio/sfx/C-4.wav" id="5_331h4"]
+[ext_resource type="Script" path="res://assets/scripts/P5Menu/P5TextureButton.gd" id="5_x05t5"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_6gsb7"]
+rough = true
+
+[node name="P5MenuItem" type="RigidBody2D"]
+physics_material_override = SubResource("PhysicsMaterial_6gsb7")
+max_contacts_reported = 20
+contact_monitor = true
+
+[node name="Button" type="TextureButton" parent="." node_paths=PackedStringArray("audio_player")]
+offset_left = -543.0
+offset_top = -154.0
+offset_right = 537.0
+offset_bottom = 174.0
+texture_normal = ExtResource("1_yna8e")
+texture_pressed = ExtResource("2_o8fyh")
+texture_hover = ExtResource("3_7c1gi")
+script = ExtResource("5_x05t5")
+audio_player = NodePath("../AudioStreamPlayer")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(-137, -50, -114, -66, -75, -66, -58, -52, -58, -32, -44, -42, -12, -46, 5, -41, 19, -26, 19, -56, 22, -62, 49, -62, 54, -58, 54, -33, 72, -43, 112, -44, 130, -32, 132, -11, 131, 20, 121, 33, 91, 41, 69, 36, 55, 24, 55, 32, 50, 38, 19, 37, 14, 25, 0, 35, -24, 39, -46, 34, -60, 21, -72, 35, -92, 37, -120, 35, -137, 23, -137, -2, -128, -9, -137, -21, -139, -44)
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_331h4")
+bus = &"Menu"
+
+[connection signal="button_down" from="Button" to="Button" method="_on_button_down"]
+[connection signal="button_up" from="Button" to="Button" method="_on_button_up"]
+[connection signal="mouse_entered" from="Button" to="Button" method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="Button" to="Button" method="_on_mouse_exited"]
+[connection signal="ready" from="Button" to="Button" method="_on_ready"]

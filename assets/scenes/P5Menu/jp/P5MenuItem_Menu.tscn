@@ -1,0 +1,45 @@
+[gd_scene load_steps=7 format=3 uid="uid://dtnp5p2em8i44"]
+
+[ext_resource type="Texture2D" uid="uid://cx0v8gm88exbs" path="res://assets/images/Menu/jp/MM_Menu_Normal_jp.png" id="1_50aeu"]
+[ext_resource type="Texture2D" uid="uid://ca4qs7e5f3jcg" path="res://assets/images/Menu/jp/MM_Menu_Clicked_jp.png" id="2_j5jso"]
+[ext_resource type="Texture2D" uid="uid://di0hfqsgryimc" path="res://assets/images/Menu/jp/MM_Menu_Selected_jp.png" id="3_lqej7"]
+[ext_resource type="Script" path="res://assets/scripts/P5Menu/P5TextureButton.gd" id="4_kitdf"]
+[ext_resource type="AudioStream" uid="uid://l3anfuf7pqc4" path="res://assets/audio/sfx/A-1.wav" id="5_pcc7w"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_6gsb7"]
+rough = true
+
+[node name="P5MenuItem" type="RigidBody2D"]
+mass = 20.0
+physics_material_override = SubResource("PhysicsMaterial_6gsb7")
+max_contacts_reported = 20
+contact_monitor = true
+freeze = true
+
+[node name="Button" type="TextureButton" parent="." node_paths=PackedStringArray("audio_player")]
+process_mode = 3
+offset_left = -405.0
+offset_top = -115.0
+offset_right = 675.0
+offset_bottom = 213.0
+scale = Vector2(0.75, 0.75)
+texture_normal = ExtResource("1_50aeu")
+texture_pressed = ExtResource("2_j5jso")
+texture_hover = ExtResource("3_lqej7")
+script = ExtResource("4_kitdf")
+scene_to_change_to = "res://assets/scenes/Main.tscn"
+audio_player = NodePath("../AudioStreamPlayer")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+scale = Vector2(0.75, 0.75)
+polygon = PackedVector2Array(-234, -18, -232, -30, -216, -44, -199, -40, -183, -28, -175, -45, -172, -60, -157, -64, -139, -58, -129, -45, -111, -44, -105, -49, -21, -50, -13, -44, -9, -30, 22, -28, 75, -28, 91, -24, 98, -14, 113, -14, 122, -22, 228, -22, 240, -12, 242, 3, 237, 20, 226, 22, 124, 24, 116, 38, 114, 54, 109, 64, 98, 66, 7, 67, -4, 55, -11, 60, -115, 59, -125, 51, -129, 45, -137, 53, -152, 55, -174, 34, -198, 55, -220, 69, -234, 65, -248, 48, -246, 36, -207, 8)
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_pcc7w")
+bus = &"Menu"
+
+[connection signal="button_down" from="Button" to="Button" method="_on_button_down"]
+[connection signal="button_up" from="Button" to="Button" method="_on_button_up"]
+[connection signal="mouse_entered" from="Button" to="Button" method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="Button" to="Button" method="_on_mouse_exited"]
+[connection signal="ready" from="Button" to="Button" method="_on_ready"]

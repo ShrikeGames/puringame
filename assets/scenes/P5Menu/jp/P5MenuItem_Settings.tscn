@@ -1,0 +1,44 @@
+[gd_scene load_steps=7 format=3 uid="uid://cypo6uoxohwxu"]
+
+[ext_resource type="Texture2D" uid="uid://cvkb7xapirys0" path="res://assets/images/Menu/jp/MM_Settings_Normal_jp.png" id="1_vkdqf"]
+[ext_resource type="Texture2D" uid="uid://dcrvwcqgb4h51" path="res://assets/images/Menu/jp/MM_Settings_Clicked_jp.png" id="2_o0mkw"]
+[ext_resource type="Texture2D" uid="uid://b045jsuq4c4ot" path="res://assets/images/Menu/jp/MM_Settings_Selected_jp.png" id="3_7wamb"]
+[ext_resource type="Script" path="res://assets/scripts/P5Menu/P5TextureButton.gd" id="4_025l4"]
+[ext_resource type="AudioStream" uid="uid://c3rrhvay3sve2" path="res://assets/audio/sfx/F-4.wav" id="5_chapv"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_6gsb7"]
+rough = true
+
+[node name="P5MenuItem" type="RigidBody2D"]
+mass = 4.0
+physics_material_override = SubResource("PhysicsMaterial_6gsb7")
+max_contacts_reported = 20
+contact_monitor = true
+
+[node name="Button" type="TextureButton" parent="." node_paths=PackedStringArray("audio_player")]
+offset_left = -406.0
+offset_top = -115.0
+offset_right = 674.0
+offset_bottom = 213.0
+scale = Vector2(0.75, 0.75)
+texture_normal = ExtResource("1_vkdqf")
+texture_pressed = ExtResource("2_o0mkw")
+texture_hover = ExtResource("3_7wamb")
+script = ExtResource("4_025l4")
+scene_to_change_to = "res://assets/scenes/Settings.tscn"
+audio_player = NodePath("../AudioStreamPlayer")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+rotation = 1.5509
+scale = Vector2(0.75, 0.75)
+polygon = PackedVector2Array(-49.6964, 135.038, -61.6741, 133.799, -73.4529, 122.563, -70.6575, 82.6106, -64.5592, 77.731, -70.3193, 65.614, -70.4437, 21.6028, -57.2672, 12.8632, -49.2887, 14.0222, -42.1111, 5.16322, -53.0492, 1.94497, -60.8487, -8.21221, -58.1129, -45.1651, -71.951, -53.442, -71.6526, -68.4391, -69.454, -78.3973, -60.2966, -86.2167, -57.7599, -113.172, -56.5014, -126.149, -39.3655, -132.809, -20.3295, -134.431, -5.41206, -130.133, 9.36612, -118.837, 25.4226, -121.518, 38.4798, -124.259, 49.6566, -133.038, 60.6346, -131.82, 71.5528, -127.602, 79.1533, -107.447, 73.0203, -50.5573, 62.7039, -34.7594, 70.5034, -24.6022, 72.2046, -9.56538, 61.8883, 6.2325, 71.6674, 17.4293, 69.3694, 32.3865, 63.0921, 46.2644, 69.6928, 66.3997, 72.4136, 80.4566, 67.2754, 87.3557, 68.9368, 104.392, 71.6974, 116.449, 67.36, 133.367, 54.283, 137.107, 13.2314, 139.291, -1.74571, 137.993, -12.7435, 137.774, -26.8601, 143.494, -39.8775, 144.235)
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_chapv")
+bus = &"Menu"
+
+[connection signal="button_down" from="Button" to="Button" method="_on_button_down"]
+[connection signal="button_up" from="Button" to="Button" method="_on_button_up"]
+[connection signal="mouse_entered" from="Button" to="Button" method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="Button" to="Button" method="_on_mouse_exited"]
+[connection signal="ready" from="Button" to="Button" method="_on_ready"]

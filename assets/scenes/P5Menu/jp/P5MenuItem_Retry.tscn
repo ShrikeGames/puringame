@@ -1,0 +1,31 @@
+[gd_scene load_steps=6 format=3 uid="uid://ceu5vk176dotl"]
+
+[ext_resource type="Texture2D" uid="uid://b7356bxfrfnsr" path="res://assets/images/Menu/jp/Retry_Normal_jp.png" id="1_m0dml"]
+[ext_resource type="Texture2D" uid="uid://b0englktqf5nn" path="res://assets/images/Menu/jp/Retry_Clicked_jp.png" id="2_jb1iu"]
+[ext_resource type="Texture2D" uid="uid://cmrf5sffqetf1" path="res://assets/images/Menu/jp/Retry_Selected_jp.png" id="3_1buf7"]
+[ext_resource type="Script" path="res://assets/scripts/RetryButton.gd" id="4_yodup"]
+[ext_resource type="AudioStream" uid="uid://l3anfuf7pqc4" path="res://assets/audio/sfx/A-1.wav" id="5_amppq"]
+
+[node name="P5MenuItem" type="Node2D"]
+
+[node name="Button" type="TextureButton" parent="." node_paths=PackedStringArray("audio_player")]
+process_mode = 3
+offset_left = -543.0
+offset_top = -154.0
+offset_right = 537.0
+offset_bottom = 174.0
+texture_normal = ExtResource("1_m0dml")
+texture_pressed = ExtResource("2_jb1iu")
+texture_hover = ExtResource("3_1buf7")
+script = ExtResource("4_yodup")
+audio_player = NodePath("../AudioStreamPlayer")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_amppq")
+bus = &"Menu"
+
+[connection signal="button_down" from="Button" to="Button" method="_on_button_down"]
+[connection signal="button_up" from="Button" to="Button" method="_on_button_up"]
+[connection signal="mouse_entered" from="Button" to="Button" method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="Button" to="Button" method="_on_mouse_exited"]
+[connection signal="ready" from="Button" to="Button" method="_on_ready"]

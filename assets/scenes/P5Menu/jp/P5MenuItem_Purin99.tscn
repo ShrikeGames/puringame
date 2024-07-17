@@ -1,0 +1,44 @@
+[gd_scene load_steps=7 format=3 uid="uid://dq1heslp86t1s"]
+
+[ext_resource type="Texture2D" uid="uid://xvdlb031li8w" path="res://assets/images/Menu/jp/MM_99_Normal_jp.png" id="1_u2u2j"]
+[ext_resource type="Texture2D" uid="uid://npjmk67vkkca" path="res://assets/images/Menu/jp/MM_99_Clicked_jp.png" id="2_0osaa"]
+[ext_resource type="Texture2D" uid="uid://bng8dntufcwuk" path="res://assets/images/Menu/jp/MM_99_Selected_jp.png" id="3_01bbh"]
+[ext_resource type="Script" path="res://assets/scripts/P5Menu/P5TextureButton.gd" id="4_xdax4"]
+[ext_resource type="AudioStream" uid="uid://dlui3qa2knmgj" path="res://assets/audio/sfx/E-4.wav" id="5_stxjo"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_6gsb7"]
+rough = true
+
+[node name="P5MenuItem" type="RigidBody2D"]
+mass = 3.0
+physics_material_override = SubResource("PhysicsMaterial_6gsb7")
+max_contacts_reported = 20
+contact_monitor = true
+
+[node name="Button" type="TextureButton" parent="." node_paths=PackedStringArray("audio_player")]
+offset_left = -406.0
+offset_top = -115.0
+offset_right = 674.0
+offset_bottom = 213.0
+scale = Vector2(0.75, 0.75)
+texture_normal = ExtResource("1_u2u2j")
+texture_pressed = ExtResource("2_0osaa")
+texture_hover = ExtResource("3_01bbh")
+script = ExtResource("4_xdax4")
+scene_to_change_to = "res://assets/scenes/Game99.tscn"
+audio_player = NodePath("../AudioStreamPlayer")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+rotation = 1.5509
+scale = Vector2(0.75, 0.75)
+polygon = PackedVector2Array(-31.1676, 259.431, -49.164, 259.073, -59.9629, 248.856, -58.4508, 172.871, -70.2296, 161.635, -75.9101, 145.519, -71.6125, 130.601, -63.5146, 125.761, -63.2162, 110.764, -59.978, 98.8263, -52.9197, 95.9661, -52.4422, 71.9709, -62.301, 64.7733, -65.8227, 40.6985, -55.6059, 29.8996, -46.548, 27.0793, -59.2668, 12.8234, -56.0287, 0.885482, -31.3769, -31.6305, -27.8403, -58.5655, -39.6191, -69.802, -34.3416, -83.6998, -48.9208, -104.994, -55.5016, -126.129, -53.1041, -146.085, -39.7287, -164.823, -27.6316, -169.583, -45.3893, -181.939, -54.9297, -205.133, -52.4725, -228.089, -38.1172, -245.807, -13.8832, -257.327, 18.1701, -259.69, 43.966, -249.175, 61.664, -233.819, 67.265, -213.704, 63.7682, -188.769, 53.4717, -173.971, 53.1733, -158.974, 64.7929, -139.739, 66.3946, -119.703, 59.9979, -99.8261, 48.7812, -89.0471, 32.8839, -94.3644, 27.0641, -103.482, 13.8678, -93.7427, 4.77006, -88.9227, 24.5274, -76.5272, 46.9061, -45.0757, 61.2267, -10.784, 68.7078, 15.37, 60.4508, 28.2083, 41.2357, 38.8281, 43.0363, 48.8659, 56.7749, 62.1418, 66.2955, 86.336, 62.9578, 103.273, 47.742, 113.972, 36.764, 112.754, 29.9246, 104.616, 24.7266, 114.515, 24.5277, 124.513, 11.3512, 133.252, 5.99407, 151.149, 26.7711, 162.565, 49.3487, 184.018, 65.7286, 215.35, 63.4306, 230.308, 48.155, 244.006, 37.0378, 249.786, 27.2189, 240.589, 14.7984, 211.336, -18.6577, 183.665, -17.6131, 231.695, -20.9706, 249.632)
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_stxjo")
+bus = &"Menu"
+
+[connection signal="button_down" from="Button" to="Button" method="_on_button_down"]
+[connection signal="button_up" from="Button" to="Button" method="_on_button_up"]
+[connection signal="mouse_entered" from="Button" to="Button" method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="Button" to="Button" method="_on_mouse_exited"]
+[connection signal="ready" from="Button" to="Button" method="_on_ready"]

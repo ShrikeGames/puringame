@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://d3mm5neerbgqy"]
 
-[ext_resource type="Texture2D" uid="uid://bj7tvykj3i11p" path="res://assets/images/Noir.png" id="1_caifl"]
+[ext_resource type="Texture2D" uid="uid://bj7tvykj3i11p" path="res://assets/images/game/Noir.png" id="1_caifl"]
 [ext_resource type="Script" path="res://assets/scripts/NoiR.gd" id="1_kbn2q"]
 [ext_resource type="PackedScene" uid="uid://csor0u1p34yq1" path="res://assets/scenes/PurinIndicator.tscn" id="3_tmiyj"]
 

@@ -1,18 +1,18 @@
 [gd_scene load_steps=15 format=3 uid="uid://cg6rs6yybp3g6"]
 
-[ext_resource type="Texture2D" uid="uid://xt87hje080jt" path="res://assets/images/purin1.png" id="2_fsy0n"]
-[ext_resource type="Texture2D" uid="uid://ds7ffculpywfr" path="res://assets/images/purin2.png" id="3_1t0pr"]
-[ext_resource type="Texture2D" uid="uid://d1l07juub21tt" path="res://assets/images/purin3.png" id="4_gdvjw"]
-[ext_resource type="Texture2D" uid="uid://r1wwvaqohtgs" path="res://assets/images/purin4.png" id="5_mqtht"]
-[ext_resource type="Texture2D" uid="uid://cc26nt2jn3vxa" path="res://assets/images/purin5.png" id="6_txklj"]
-[ext_resource type="Texture2D" uid="uid://bsm8qt57ehuah" path="res://assets/images/purin6.png" id="7_7j80a"]
-[ext_resource type="Texture2D" uid="uid://cekg4y1brmpw5" path="res://assets/images/purin7.png" id="8_h4aak"]
-[ext_resource type="Texture2D" uid="uid://djw85tem2f7me" path="res://assets/images/purin8.png" id="9_qoyht"]
-[ext_resource type="Texture2D" uid="uid://k1hduynp1pgw" path="res://assets/images/purin9.png" id="10_codve"]
-[ext_resource type="Texture2D" uid="uid://cwcmvy5fu6w86" path="res://assets/images/purin10.png" id="11_i2u1v"]
-[ext_resource type="Texture2D" uid="uid://bja3p1ji46rhl" path="res://assets/images/purin11.png" id="12_hc0wc"]
+[ext_resource type="Texture2D" uid="uid://xt87hje080jt" path="res://assets/images/game/purin1.png" id="2_fsy0n"]
+[ext_resource type="Texture2D" uid="uid://ds7ffculpywfr" path="res://assets/images/game/purin2.png" id="3_1t0pr"]
+[ext_resource type="Texture2D" uid="uid://d1l07juub21tt" path="res://assets/images/game/purin3.png" id="4_gdvjw"]
+[ext_resource type="Texture2D" uid="uid://r1wwvaqohtgs" path="res://assets/images/game/purin4.png" id="5_mqtht"]
+[ext_resource type="Texture2D" uid="uid://cc26nt2jn3vxa" path="res://assets/images/game/purin5.png" id="6_txklj"]
+[ext_resource type="Texture2D" uid="uid://bsm8qt57ehuah" path="res://assets/images/game/purin6.png" id="7_7j80a"]
+[ext_resource type="Texture2D" uid="uid://cekg4y1brmpw5" path="res://assets/images/game/purin7.png" id="8_h4aak"]
+[ext_resource type="Texture2D" uid="uid://djw85tem2f7me" path="res://assets/images/game/purin8.png" id="9_qoyht"]
+[ext_resource type="Texture2D" uid="uid://k1hduynp1pgw" path="res://assets/images/game/purin9.png" id="10_codve"]
+[ext_resource type="Texture2D" uid="uid://cwcmvy5fu6w86" path="res://assets/images/game/purin10.png" id="11_i2u1v"]
+[ext_resource type="Texture2D" uid="uid://bja3p1ji46rhl" path="res://assets/images/game/purin11.png" id="12_hc0wc"]
 [ext_resource type="PackedScene" uid="uid://con8stx2et0ea" path="res://assets/scenes/PlayAreaBowl.tscn" id="13_3k2pk"]
-[ext_resource type="PackedScene" uid="uid://debe6w31cqgfn" path="res://assets/scenes/P5Menu/P5MenuItem_Menu.tscn" id="13_uimt6"]
+[ext_resource type="PackedScene" uid="uid://debe6w31cqgfn" path="res://assets/scenes/P5Menu/en/P5MenuItem_Menu.tscn" id="13_uimt6"]
 [ext_resource type="PackedScene" uid="uid://cudqnnw8oypk1" path="res://assets/scenes/PurinBag.tscn" id="14_gsn0q"]
 
 [node name="Game" type="Node2D"]
@@ -83,25 +83,14 @@ player_name = "ai"
 config_path = "user://ai.json"
 default_config_path = "res://ai.json"
 ai_controlled = true
-auto_retry = false
 purin_bag = NodePath("../PurinBagAI")
-mute_sound = false
 opponents = [NodePath("../Player")]
-ai_mutation_rate = 0.0
-training = false
 
 [node name="Player" parent="." node_paths=PackedStringArray("purin_bag", "opponents") instance=ExtResource("13_3k2pk")]
 position = Vector2(40, 0)
-player_name = "player"
-config_path = "user://player.json"
 default_config_path = "res://player.json"
-ai_controlled = false
-auto_retry = false
 purin_bag = NodePath("../PurinBagPlayer")
-mute_sound = false
 opponents = [NodePath("../AI")]
-ai_mutation_rate = 0.0
-training = false
 
 [node name="P5MenuItem" parent="." instance=ExtResource("13_uimt6")]
 position = Vector2(1710, 1010)
