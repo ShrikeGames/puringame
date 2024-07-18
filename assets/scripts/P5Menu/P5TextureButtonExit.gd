@@ -38,5 +38,4 @@ func _on_button_down():
 	texture_click_mask = pressed_bitmap
 
 func _on_button_up():
-	texture_click_mask = normal_bitmap
 	get_tree().quit()

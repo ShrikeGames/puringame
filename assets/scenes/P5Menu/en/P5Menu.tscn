@@ -50,6 +50,7 @@ rotation = -0.127282
 contact_monitor = false
 
 [node name="Exit" parent="." instance=ExtResource("7_2lyop")]
+visible = false
 position = Vector2(140, 1036)
 lock_rotation = true
 freeze = true
@@ -58,4 +59,5 @@ freeze = true
 position = Vector2(266, 926)
 mass = 20.0
 contact_monitor = false
+lock_rotation = true
 freeze = true

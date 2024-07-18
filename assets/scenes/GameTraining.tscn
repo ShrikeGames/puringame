@@ -8,7 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://cc26nt2jn3vxa" path="res://assets/images/game/purin5.png" id="12_yciu4"]
 [ext_resource type="Texture2D" uid="uid://bsm8qt57ehuah" path="res://assets/images/game/purin6.png" id="13_5jixj"]
 [ext_resource type="Texture2D" uid="uid://cekg4y1brmpw5" path="res://assets/images/game/purin7.png" id="14_6yd54"]
-[ext_resource type="PackedScene" uid="uid://107gthrv1rw0" path="res://assets/scenes/LocalizedObject.tscn" id="14_65ufy"]
+[ext_resource type="PackedScene" uid="uid://beiw15i5eegic" path="res://assets/scenes/LocalizedObject.tscn" id="14_65ufy"]
 [ext_resource type="Script" path="res://assets/scripts/Camera.gd" id="15_1ghtr"]
 [ext_resource type="Texture2D" uid="uid://djw85tem2f7me" path="res://assets/images/game/purin8.png" id="15_w5ebm"]
 [ext_resource type="Texture2D" uid="uid://k1hduynp1pgw" path="res://assets/images/game/purin9.png" id="16_riydc"]
@@ -17,7 +17,7 @@
 
 [node name="Game" type="Node2D" node_paths=PackedStringArray("ai_games_node", "camera")]
 script = ExtResource("1_doc3l")
-num_ai = 128
+num_ai = 10
 ai_games_node = NodePath("AIGames")
 time_scale = 2.0
 camera = NodePath("Camera2D")

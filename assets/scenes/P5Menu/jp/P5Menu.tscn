@@ -16,6 +16,7 @@
 position = Vector2(890, 877)
 
 [node name="Exit" parent="." instance=ExtResource("2_didm7")]
+visible = false
 position = Vector2(134, 997)
 rotation = -0.0706961
 lock_rotation = true

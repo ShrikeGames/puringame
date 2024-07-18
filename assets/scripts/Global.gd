@@ -54,7 +54,7 @@ func read_json(path:String) -> Dictionary:
 		return {}
 	var json_string = FileAccess.get_file_as_string(path)
 	var json_dict = JSON.parse_string(json_string)
-
+	
 	return json_dict
 	
 func load_settings():
@@ -113,6 +113,8 @@ func load_settings():
 	
 	# how fast the game should play when training 1.0-3.0
 	training_game_speed = config_json.get("training_game_speed", training_game_speed)
+	
+	
 
 func save_settings():
 	var config_json:Dictionary = read_json(settings_config_location)
