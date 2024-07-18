@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://cudqnnw8oypk1"]
+[gd_scene load_steps=4 format=3 uid="uid://cudqnnw8oypk1"]
 
 [ext_resource type="Script" path="res://assets/scripts/PurinBag.gd" id="1_ekapc"]
 [ext_resource type="Texture2D" uid="uid://bgjx5b6yw8wvc" path="res://assets/images/game/Next.png" id="2_dst0v"]
+[ext_resource type="PackedScene" uid="uid://buaytyuaj2i6p" path="res://assets/scenes/LocalizedImage.tscn" id="3_6owvh"]
 
 [node name="PurinBag" type="Node2D" node_paths=PackedStringArray("bag_node")]
 script = ExtResource("1_ekapc")
@@ -10,8 +11,15 @@ bag_node = NodePath("Bag")
 [node name="Bag" type="Node2D" parent="."]
 
 [node name="Next" type="Sprite2D" parent="."]
+visible = false
 position = Vector2(0, -27)
 scale = Vector2(0.639999, 0.639999)
 texture = ExtResource("2_dst0v")
+
+[node name="LocalizedNext" parent="." instance=ExtResource("3_6owvh")]
+position = Vector2(0, -28)
+scale = Vector2(0.25, 0.25)
+en = "res://assets/images/Menu/en/Next.png"
+jp = "res://assets/images/Menu/jp/Next.png"
 
 [connection signal="ready" from="." to="." method="_on_ready"]

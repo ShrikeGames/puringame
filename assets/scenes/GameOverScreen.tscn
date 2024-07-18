@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://digt3ya6lodli"]
 
 [ext_resource type="Texture2D" uid="uid://bkidel8xvjsvt" path="res://assets/images/game/GameOverBackdrop.png" id="1_yrhqy"]
-[ext_resource type="FontFile" uid="uid://cdwb8ivskcjue" path="res://assets/fonts/NotoSansCJK-Regular.ttc" id="2_mdvjf"]
+[ext_resource type="PackedScene" uid="uid://buaytyuaj2i6p" path="res://assets/scenes/LocalizedImage.tscn" id="2_8inkl"]
 [ext_resource type="PackedScene" uid="uid://beiw15i5eegic" path="res://assets/scenes/LocalizedObject.tscn" id="3_jxdnt"]
 
 [node name="GameOverScreen" type="Node2D"]
@@ -18,27 +18,12 @@ offset_top = 269.0
 offset_right = 1597.0
 offset_bottom = 618.0
 
-[node name="GameOverText" type="RichTextLabel" parent="Control"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -376.5
-offset_top = -171.5
-offset_right = 385.5
-offset_bottom = 13.5
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_fonts/normal_font = ExtResource("2_mdvjf")
-theme_override_font_sizes/normal_font_size = 72
-bbcode_enabled = true
-text = "[center]ゲームオーバー[/center]"
-scroll_active = false
-language = "JP"
+[node name="LocalizedImage" parent="." instance=ExtResource("2_8inkl")]
+position = Vector2(782, 344)
+en = "res://assets/images/Menu/en/GameOver.png"
+jp = "res://assets/images/Menu/jp/GameOver.png"
 
 [node name="LocalizedRetryButton" parent="." instance=ExtResource("3_jxdnt")]
-position = Vector2(782, 477)
+position = Vector2(782, 490)
 en = "res://assets/scenes/P5Menu/en/P5MenuItem_Retry.tscn"
 jp = "res://assets/scenes/P5Menu/jp/P5MenuItem_Retry.tscn"

@@ -1,10 +1,11 @@
-[gd_scene load_steps=12 format=3 uid="uid://con8stx2et0ea"]
+[gd_scene load_steps=13 format=3 uid="uid://con8stx2et0ea"]
 
 [ext_resource type="Script" path="res://assets/scripts/PlayerController.gd" id="1_anyjf"]
 [ext_resource type="AudioStream" uid="uid://borrrahqop0te" path="res://assets/audio/sfx/pop.wav" id="2_tn86m"]
 [ext_resource type="AudioStream" uid="uid://cir0gwbyyr3h5" path="res://assets/audio/sfx/bonk.wav" id="3_wfp2k"]
 [ext_resource type="Texture2D" uid="uid://c7q1lcjlkysl4" path="res://assets/images/game/PlayArea.png" id="4_smst5"]
 [ext_resource type="PackedScene" uid="uid://d3mm5neerbgqy" path="res://assets/scenes/NoiR.tscn" id="4_tleir"]
+[ext_resource type="PackedScene" uid="uid://buaytyuaj2i6p" path="res://assets/scenes/LocalizedImage.tscn" id="5_ca7jp"]
 [ext_resource type="FontFile" uid="uid://cdwb8ivskcjue" path="res://assets/fonts/NotoSansCJK-Regular.ttc" id="7_xor5u"]
 [ext_resource type="PackedScene" uid="uid://digt3ya6lodli" path="res://assets/scenes/GameOverScreen.tscn" id="10_vwbcx"]
 [ext_resource type="FontFile" uid="uid://buytj31trs62" path="res://assets/fonts/NotoSansCJK-Bold.ttc" id="12_dx1lx"]
@@ -103,23 +104,11 @@ grow_vertical = 2
 size_flags_horizontal = 6
 size_flags_vertical = 6
 
-[node name="ScoreLabel" type="RichTextLabel" parent="ScoreInfo/Control"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -433.5
-offset_top = 39.0
-offset_right = 365.5
-offset_bottom = 126.0
-grow_horizontal = 2
-theme_override_fonts/normal_font = ExtResource("7_xor5u")
-theme_override_font_sizes/normal_font_size = 72
-bbcode_enabled = true
-text = "[center]スコア[/center]"
-scroll_active = false
-shortcut_keys_enabled = false
-language = "JP"
+[node name="LocalizedScore" parent="ScoreInfo/Control" instance=ExtResource("5_ca7jp")]
+position = Vector2(379, 91)
+scale = Vector2(0.5, 0.5)
+en = "res://assets/images/Menu/en/Score.png"
+jp = "res://assets/images/Menu/jp/Score.png"
 
 [node name="Score" type="RichTextLabel" parent="ScoreInfo/Control"]
 layout_mode = 1
