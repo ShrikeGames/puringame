@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://buaytyuaj2i6p"]
+
+[ext_resource type="Script" path="res://assets/scripts/LocalizedImage.gd" id="1_66a8r"]
+[ext_resource type="Texture2D" uid="uid://bj7tvykj3i11p" path="res://assets/images/game/Noir.png" id="2_mg2fo"]
+
+[node name="LocalizedImage" type="Node2D" node_paths=PackedStringArray("image")]
+script = ExtResource("1_66a8r")
+image = NodePath("Image")
+
+[node name="Image" type="Sprite2D" parent="."]
+texture = ExtResource("2_mg2fo")

@@ -1,9 +1,9 @@
 [gd_scene load_steps=5 format=3 uid="uid://b6rr2t10c874m"]
 
-[ext_resource type="PackedScene" uid="uid://debe6w31cqgfn" path="res://assets/scenes/P5Menu/en/P5MenuItem_Menu.tscn" id="1_pq1n6"]
 [ext_resource type="Texture2D" uid="uid://b11n40aw5nnif" path="res://assets/images/Background.jpg" id="1_rn6gr"]
-[ext_resource type="Texture2D" uid="uid://c15anccl7rbif" path="res://assets/images/Menu/Title_Credits.png" id="3_3momd"]
-[ext_resource type="Texture2D" uid="uid://hi7dcx0g6rpp" path="res://assets/images/Menu/Credits.png" id="4_l24ce"]
+[ext_resource type="PackedScene" uid="uid://buaytyuaj2i6p" path="res://assets/scenes/LocalizedImage.tscn" id="3_32mtp"]
+[ext_resource type="Texture2D" uid="uid://hi7dcx0g6rpp" path="res://assets/images/Menu/en/Credits.png" id="4_l24ce"]
+[ext_resource type="PackedScene" uid="uid://beiw15i5eegic" path="res://assets/scenes/LocalizedObject.tscn" id="4_wvhx3"]
 
 [node name="Credits" type="Node2D"]
 
@@ -11,13 +11,16 @@
 position = Vector2(960, 540)
 texture = ExtResource("1_rn6gr")
 
-[node name="P5MenuItem" parent="." instance=ExtResource("1_pq1n6")]
-position = Vector2(1710, 1010)
-
-[node name="Title" type="Sprite2D" parent="."]
-position = Vector2(255, 100)
-texture = ExtResource("3_3momd")
-
 [node name="Credits" type="Sprite2D" parent="."]
 position = Vector2(964, 748)
 texture = ExtResource("4_l24ce")
+
+[node name="LocalizedImage" parent="." instance=ExtResource("3_32mtp")]
+position = Vector2(305, 126)
+en = "res://assets/images/Menu/en/Title_Credits.png"
+jp = "res://assets/images/Menu/jp/Title_Credits_jp.png"
+
+[node name="LocalizedMenuButton" parent="." instance=ExtResource("4_wvhx3")]
+position = Vector2(1708, 1009)
+en = "res://assets/scenes/P5Menu/en/P5MenuItem_Menu.tscn"
+jp = "res://assets/scenes/P5Menu/jp/P5MenuItem_Menu.tscn"

@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://bkidel8xvjsvt" path="res://assets/images/game/GameOverBackdrop.png" id="1_yrhqy"]
 [ext_resource type="FontFile" uid="uid://cdwb8ivskcjue" path="res://assets/fonts/NotoSansCJK-Regular.ttc" id="2_mdvjf"]
-[ext_resource type="PackedScene" uid="uid://bv0hug7esyx87" path="res://assets/scenes/P5Menu/en/P5MenuItem_Retry.tscn" id="3_78npu"]
+[ext_resource type="PackedScene" uid="uid://beiw15i5eegic" path="res://assets/scenes/LocalizedObject.tscn" id="3_jxdnt"]
 
 [node name="GameOverScreen" type="Node2D"]
 
@@ -38,5 +38,7 @@ text = "[center]ゲームオーバー[/center]"
 scroll_active = false
 language = "JP"
 
-[node name="Retry" parent="." instance=ExtResource("3_78npu")]
-position = Vector2(791, 477)
+[node name="LocalizedRetryButton" parent="." instance=ExtResource("3_jxdnt")]
+position = Vector2(782, 477)
+en = "res://assets/scenes/P5Menu/en/P5MenuItem_Retry.tscn"
+jp = "res://assets/scenes/P5Menu/jp/P5MenuItem_Retry.tscn"

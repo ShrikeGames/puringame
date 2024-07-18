@@ -13,8 +13,8 @@
 [ext_resource type="Texture2D" uid="uid://cwcmvy5fu6w86" path="res://assets/images/game/purin10.png" id="11_bhs5c"]
 [ext_resource type="Texture2D" uid="uid://bja3p1ji46rhl" path="res://assets/images/game/purin11.png" id="12_ch4aq"]
 [ext_resource type="PackedScene" uid="uid://con8stx2et0ea" path="res://assets/scenes/PlayAreaBowl.tscn" id="13_gy0je"]
-[ext_resource type="PackedScene" uid="uid://debe6w31cqgfn" path="res://assets/scenes/P5Menu/en/P5MenuItem_Menu.tscn" id="14_vkqg3"]
 [ext_resource type="PackedScene" uid="uid://cudqnnw8oypk1" path="res://assets/scenes/PurinBag.tscn" id="15_qafyh"]
+[ext_resource type="PackedScene" uid="uid://107gthrv1rw0" path="res://assets/scenes/LocalizedObject.tscn" id="15_soh2e"]
 
 [node name="Game" type="Node2D" node_paths=PackedStringArray("player_game", "ai_games_node")]
 script = ExtResource("1_j1h3y")
@@ -88,10 +88,12 @@ position = Vector2(48, -2)
 default_config_path = "res://player.json"
 purin_bag = NodePath("../PurinBagPlayer")
 
-[node name="P5MenuItem" parent="." instance=ExtResource("14_vkqg3")]
-position = Vector2(1710, 1010)
-
 [node name="PurinBagPlayer" parent="." instance=ExtResource("15_qafyh")]
 position = Vector2(887, 82)
+
+[node name="LocalizedMenuButton" parent="." instance=ExtResource("15_soh2e")]
+position = Vector2(1708, 1009)
+en = "res://assets/scenes/P5Menu/en/P5MenuItem_Menu.tscn"
+jp = "res://assets/scenes/P5Menu/jp/P5MenuItem_Menu.tscn"
 
 [connection signal="ready" from="." to="." method="_on_ready"]
