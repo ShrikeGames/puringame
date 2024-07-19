@@ -1,13 +1,21 @@
-[gd_scene load_steps=4 format=3 uid="uid://dvga7afntky3g"]
+[gd_scene load_steps=5 format=3 uid="uid://dvga7afntky3g"]
 
 [ext_resource type="Texture2D" uid="uid://clm6o1gogah0t" path="res://assets/images/Menu/language_en.png" id="1_smy6y"]
 [ext_resource type="Texture2D" uid="uid://dsn3x360lhi01" path="res://assets/images/Menu/language_jp.png" id="2_hntgw"]
 [ext_resource type="Script" path="res://assets/scripts/P5Menu/LanguageToggle.gd" id="3_3w7tm"]
+[ext_resource type="Texture2D" uid="uid://dmw4c43ovv7dp" path="res://assets/images/Menu/language_focus.png" id="4_r5gxu"]
 
-[node name="LanguageToggle" type="TextureButton"]
+[node name="LanguageToggle" type="TextureButton" node_paths=PackedStringArray("active_image")]
 toggle_mode = true
 texture_normal = ExtResource("1_smy6y")
 texture_pressed = ExtResource("2_hntgw")
 script = ExtResource("3_3w7tm")
+scene_to_change_to = ""
+active_image = NodePath("LanguageFocus")
+
+[node name="LanguageFocus" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(481, 350)
+texture = ExtResource("4_r5gxu")
 
 [connection signal="toggled" from="." to="." method="_on_toggled"]

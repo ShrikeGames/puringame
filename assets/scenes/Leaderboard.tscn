@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://2jru5ulg8rxn"]
+[gd_scene load_steps=5 format=3 uid="uid://2jru5ulg8rxn"]
 
 [ext_resource type="Texture2D" uid="uid://b11n40aw5nnif" path="res://assets/images/Background.jpg" id="1_thxoh"]
 [ext_resource type="PackedScene" uid="uid://beiw15i5eegic" path="res://assets/scenes/LocalizedObject.tscn" id="3_damng"]
 [ext_resource type="PackedScene" uid="uid://buaytyuaj2i6p" path="res://assets/scenes/LocalizedImage.tscn" id="3_hdmwl"]
+[ext_resource type="PackedScene" uid="uid://btot4uhtfnrhg" path="res://assets/scenes/MenuNavigation.tscn" id="4_mdfro"]
 
 [node name="Leaderboard" type="Node2D"]
 
@@ -16,6 +17,9 @@ en = "res://assets/scenes/P5Menu/en/P5MenuItem_Menu.tscn"
 jp = "res://assets/scenes/P5Menu/jp/P5MenuItem_Menu.tscn"
 
 [node name="LocalizedImage" parent="." instance=ExtResource("3_hdmwl")]
-position = Vector2(305, 126)
+position = Vector2(504, 126)
 en = "res://assets/images/Menu/en/Title_Leaderboards.png"
 jp = "res://assets/images/Menu/jp/Title_Leaderboards_jp.png"
+
+[node name="MenuNavigation" parent="." node_paths=PackedStringArray("external_buttons") instance=ExtResource("4_mdfro")]
+external_buttons = [NodePath("../LocalizedMenuButton")]

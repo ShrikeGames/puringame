@@ -13,7 +13,7 @@
 [ext_resource type="Texture2D" uid="uid://bja3p1ji46rhl" path="res://assets/images/game/purin11.png" id="12_hc0wc"]
 [ext_resource type="PackedScene" uid="uid://con8stx2et0ea" path="res://assets/scenes/PlayAreaBowl.tscn" id="13_3k2pk"]
 [ext_resource type="PackedScene" uid="uid://cudqnnw8oypk1" path="res://assets/scenes/PurinBag.tscn" id="14_gsn0q"]
-[ext_resource type="PackedScene" uid="uid://107gthrv1rw0" path="res://assets/scenes/LocalizedObject.tscn" id="14_yk5hl"]
+[ext_resource type="PackedScene" uid="uid://beiw15i5eegic" path="res://assets/scenes/LocalizedObject.tscn" id="14_yk5hl"]
 
 [node name="Game" type="Node2D"]
 

@@ -7,10 +7,14 @@ var menu
 func _on_ready():
 	Global.load_settings()
 	update_menu()
-	if language_toggle:
+	if language_toggle and not language_toggle.is_connected("language_toggle", language_toggled):
 		language_toggle.connect("language_toggle", language_toggled)
 
 func update_menu():
+	for child in menu_container.get_children():
+		child.queue_free()
+		menu = null
+	
 	if Global.language == "jp":
 		if language_toggle:
 			language_toggle.button_pressed = false
@@ -21,11 +25,11 @@ func update_menu():
 			language_toggle.button_pressed = true
 		var menu_jp: Resource = load("res://assets/scenes/P5Menu/en/P5Menu.tscn")
 		menu = menu_jp.instantiate()
-		
-	menu_container.add_child(menu)
+	if menu:
+		menu_container.add_child(menu)
+		menu.add_external_menu_button(language_toggle)
+	
 
 func language_toggled(_language):
 	Global.save_settings()
-	for child in menu_container.get_children():
-		child.queue_free()
 	update_menu()

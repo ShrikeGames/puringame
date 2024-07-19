@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://ccx5plx0mqy8i"]
+[gd_scene load_steps=6 format=3 uid="uid://ccx5plx0mqy8i"]
 
 [ext_resource type="Texture2D" uid="uid://b11n40aw5nnif" path="res://assets/images/Background.jpg" id="1_qygx5"]
 [ext_resource type="PackedScene" uid="uid://beiw15i5eegic" path="res://assets/scenes/LocalizedObject.tscn" id="3_b3fto"]
 [ext_resource type="PackedScene" uid="uid://buaytyuaj2i6p" path="res://assets/scenes/LocalizedImage.tscn" id="3_ije50"]
 [ext_resource type="PackedScene" uid="uid://dvga7afntky3g" path="res://assets/scenes/P5Menu/LanguageToggle.tscn" id="4_lt85l"]
+[ext_resource type="PackedScene" uid="uid://btot4uhtfnrhg" path="res://assets/scenes/MenuNavigation.tscn" id="5_mxmbp"]
 
 [node name="Settings" type="Node2D"]
 
@@ -11,16 +12,16 @@
 position = Vector2(960, 540)
 texture = ExtResource("1_qygx5")
 
-[node name="LocalizedMenuButton" parent="." node_paths=PackedStringArray("language_toggle") instance=ExtResource("3_b3fto")]
-position = Vector2(1718, 1006)
-en = "res://assets/scenes/P5Menu/en/P5MenuItem_Menu.tscn"
-jp = "res://assets/scenes/P5Menu/jp/P5MenuItem_Menu.tscn"
-language_toggle = NodePath("../LanguageToggle")
-
 [node name="LocalizedTitle" parent="." node_paths=PackedStringArray("language_toggle") instance=ExtResource("3_ije50")]
 position = Vector2(305, 126)
 en = "res://assets/images/Menu/en/Title_Settings.png"
 jp = "res://assets/images/Menu/jp/Title_Settings_jp.png"
+language_toggle = NodePath("../LanguageToggle")
+
+[node name="LocalizedLabel_Language" parent="." node_paths=PackedStringArray("language_toggle") instance=ExtResource("3_ije50")]
+position = Vector2(294, 264)
+en = "res://assets/images/Menu/settings/Language_en.png"
+jp = "res://assets/images/Menu/settings/Language_jp.png"
 language_toggle = NodePath("../LanguageToggle")
 
 [node name="LanguageToggle" parent="." instance=ExtResource("4_lt85l")]
@@ -30,8 +31,11 @@ offset_right = 996.0
 offset_bottom = 932.0
 scale = Vector2(0.1, 0.1)
 
-[node name="LocalizedLabel_Language" parent="." node_paths=PackedStringArray("language_toggle") instance=ExtResource("3_ije50")]
-position = Vector2(294, 264)
-en = "res://assets/images/Menu/settings/Language_en.png"
-jp = "res://assets/images/Menu/settings/Language_jp.png"
+[node name="LocalizedMenuButton" parent="." node_paths=PackedStringArray("language_toggle") instance=ExtResource("3_b3fto")]
+position = Vector2(1718, 1006)
+en = "res://assets/scenes/P5Menu/en/P5MenuItem_Menu.tscn"
+jp = "res://assets/scenes/P5Menu/jp/P5MenuItem_Menu.tscn"
 language_toggle = NodePath("../LanguageToggle")
+
+[node name="MenuNavigation" parent="." node_paths=PackedStringArray("external_buttons") instance=ExtResource("5_mxmbp")]
+external_buttons = [NodePath("../LanguageToggle"), NodePath("../LocalizedMenuButton")]

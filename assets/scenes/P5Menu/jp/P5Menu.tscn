@@ -1,6 +1,7 @@
-[gd_scene load_steps=10 format=3 uid="uid://qou3inft6ujl"]
+[gd_scene load_steps=11 format=3 uid="uid://qou3inft6ujl"]
 
 [ext_resource type="PackedScene" uid="uid://befd1y6a5yrko" path="res://assets/scenes/P5Menu/jp/Logo_jp.tscn" id="1_7ovk7"]
+[ext_resource type="Script" path="res://assets/scripts/P5Menu/MenuNavigation.gd" id="1_wt2he"]
 [ext_resource type="PackedScene" uid="uid://bc7mu6re8asw" path="res://assets/scenes/P5Menu/jp/P5MenuItem_Exit_jp.tscn" id="2_didm7"]
 [ext_resource type="PackedScene" uid="uid://bkbar47uq7mri" path="res://assets/scenes/P5Menu/jp/P5MenuItem_Credits.tscn" id="3_0isu1"]
 [ext_resource type="PackedScene" uid="uid://c57of4aq0xruv" path="res://assets/scenes/P5Menu/jp/P5MenuItem_Training.tscn" id="4_fdr20"]
@@ -10,45 +11,49 @@
 [ext_resource type="PackedScene" uid="uid://cxpkl384yuulr" path="res://assets/scenes/P5Menu/jp/P5MenuItem_Versus.tscn" id="8_17e5f"]
 [ext_resource type="PackedScene" uid="uid://drwam0cjnekrr" path="res://assets/scenes/P5Menu/jp/P5MenuItem_Solo.tscn" id="9_cqudu"]
 
-[node name="P5Menu_JP" type="Node2D"]
+[node name="P5Menu_JP" type="Node2D" node_paths=PackedStringArray("menu_items_node")]
+script = ExtResource("1_wt2he")
+menu_items_node = NodePath("MenuItems")
 
 [node name="Logo" parent="." instance=ExtResource("1_7ovk7")]
 position = Vector2(890, 877)
 
-[node name="Exit" parent="." instance=ExtResource("2_didm7")]
-visible = false
-position = Vector2(134, 997)
-rotation = -0.0706961
-lock_rotation = true
-freeze = true
+[node name="MenuItems" type="Node2D" parent="."]
 
-[node name="Credits" parent="." instance=ExtResource("3_0isu1")]
+[node name="Solo" parent="MenuItems" instance=ExtResource("9_cqudu")]
+position = Vector2(644, 175)
+rotation = 0.28407
+
+[node name="Versus" parent="MenuItems" instance=ExtResource("8_17e5f")]
+position = Vector2(602, 305)
+rotation = 0.157703
+
+[node name="Purin99" parent="MenuItems" instance=ExtResource("6_4j1so")]
+position = Vector2(507, 418)
+rotation = 0.0432596
+lock_rotation = true
+
+[node name="Settings" parent="MenuItems" instance=ExtResource("7_hhv1w")]
+position = Vector2(387, 528)
+
+[node name="Leaderboard" parent="MenuItems" instance=ExtResource("5_0ismh")]
+position = Vector2(458, 647)
+rotation = 0.00228447
+lock_rotation = true
+
+[node name="Training" parent="MenuItems" instance=ExtResource("4_fdr20")]
+position = Vector2(369, 769)
+rotation = -0.0102308
+
+[node name="Credits" parent="MenuItems" instance=ExtResource("3_0isu1")]
 position = Vector2(281, 894)
 rotation = -0.0137827
 lock_rotation = true
 freeze = true
 
-[node name="Training" parent="." instance=ExtResource("4_fdr20")]
-position = Vector2(369, 769)
-rotation = -0.0102308
-
-[node name="Leaderboard" parent="." instance=ExtResource("5_0ismh")]
-position = Vector2(458, 647)
-rotation = 0.00228447
+[node name="Exit" parent="MenuItems" instance=ExtResource("2_didm7")]
+visible = false
+position = Vector2(134, 997)
+rotation = -0.0706961
 lock_rotation = true
-
-[node name="Settings" parent="." instance=ExtResource("7_hhv1w")]
-position = Vector2(387, 528)
-
-[node name="Purin99" parent="." instance=ExtResource("6_4j1so")]
-position = Vector2(507, 418)
-rotation = 0.0432596
-lock_rotation = true
-
-[node name="Versus" parent="." instance=ExtResource("8_17e5f")]
-position = Vector2(602, 305)
-rotation = 0.157703
-
-[node name="Solo" parent="." instance=ExtResource("9_cqudu")]
-position = Vector2(644, 175)
-rotation = 0.28407
+freeze = true

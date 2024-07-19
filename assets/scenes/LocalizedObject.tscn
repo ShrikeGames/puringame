@@ -2,5 +2,5 @@
 
 [ext_resource type="Script" path="res://assets/scripts/LocalizedObject.gd" id="1_1oxrj"]
 
-[node name="s" type="Node2D"]
+[node name="LocalizedObject" type="Node2D"]
 script = ExtResource("1_1oxrj")

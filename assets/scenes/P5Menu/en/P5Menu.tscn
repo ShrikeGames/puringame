@@ -1,5 +1,6 @@
-[gd_scene load_steps=10 format=3 uid="uid://di6f5367c0hfj"]
+[gd_scene load_steps=11 format=3 uid="uid://di6f5367c0hfj"]
 
+[ext_resource type="Script" path="res://assets/scripts/P5Menu/MenuNavigation.gd" id="1_10sn5"]
 [ext_resource type="PackedScene" uid="uid://b2f8kai1qddyo" path="res://assets/scenes/P5Menu/en/P5MenuItem_Solo.tscn" id="1_m4aaq"]
 [ext_resource type="PackedScene" uid="uid://cyovdhp07uxnm" path="res://assets/scenes/P5Menu/en/P5MenuItem_Training.tscn" id="2_x8mm0"]
 [ext_resource type="PackedScene" uid="uid://dvgaw226y7204" path="res://assets/scenes/P5Menu/en/P5MenuItem_Leaderboard.tscn" id="2_xqi8g"]
@@ -10,52 +11,59 @@
 [ext_resource type="PackedScene" uid="uid://cafny72kvmnm" path="res://assets/scenes/P5Menu/en/P5MenuItem_Credits.tscn" id="8_beba7"]
 [ext_resource type="PackedScene" uid="uid://b3u3o6600wbsd" path="res://assets/scenes/P5Menu/en/Logo.tscn" id="9_fqk3c"]
 
-[node name="P5Menu" type="Node2D"]
+[node name="P5Menu" type="Node2D" node_paths=PackedStringArray("menu_items_node")]
+script = ExtResource("1_10sn5")
+menu_items_node = NodePath("MenuItems")
 
 [node name="Logo" parent="." instance=ExtResource("9_fqk3c")]
 position = Vector2(892, 880)
 
-[node name="Training" parent="." instance=ExtResource("2_x8mm0")]
-position = Vector2(444, 813)
-rotation = -0.0161528
-mass = 1000.0
+[node name="MenuItems" type="Node2D" parent="."]
+
+[node name="Solo" parent="MenuItems" instance=ExtResource("1_m4aaq")]
+position = Vector2(666, 117)
+rotation = -0.127282
 contact_monitor = false
 
-[node name="Leaderboard" parent="." instance=ExtResource("2_xqi8g")]
-position = Vector2(568, 674)
-rotation = -0.0566351
+[node name="Verus" parent="MenuItems" instance=ExtResource("3_ty0db")]
+position = Vector2(615, 255)
+rotation = 0.120469
+scale = Vector2(1, 1)
 contact_monitor = false
 
-[node name="Settings" parent="." instance=ExtResource("3_1bvp2")]
+[node name="Purin99" parent="MenuItems" instance=ExtResource("3_ohso7")]
+position = Vector2(571, 403)
+rotation = -0.0440394
+mass = 4.0
+contact_monitor = false
+
+[node name="Settings" parent="MenuItems" instance=ExtResource("3_1bvp2")]
 position = Vector2(524, 568)
 rotation = -0.00117026
 mass = 6.0
 contact_monitor = false
 lock_rotation = true
 
-[node name="Purin99" parent="." instance=ExtResource("3_ohso7")]
-position = Vector2(571, 403)
-rotation = -0.0440394
-mass = 4.0
+[node name="Leaderboard" parent="MenuItems" instance=ExtResource("2_xqi8g")]
+position = Vector2(568, 674)
+rotation = -0.0566351
+scale = Vector2(1, 1)
 contact_monitor = false
 
-[node name="Verus" parent="." instance=ExtResource("3_ty0db")]
-position = Vector2(615, 255)
-rotation = 0.120469
+[node name="Training" parent="MenuItems" instance=ExtResource("2_x8mm0")]
+position = Vector2(444, 813)
+rotation = -0.0161528
+scale = Vector2(1, 1)
+mass = 1000.0
 contact_monitor = false
 
-[node name="Solo" parent="." instance=ExtResource("1_m4aaq")]
-position = Vector2(666, 117)
-rotation = -0.127282
-contact_monitor = false
-
-[node name="Exit" parent="." instance=ExtResource("7_2lyop")]
+[node name="Exit" parent="MenuItems" instance=ExtResource("7_2lyop")]
 visible = false
 position = Vector2(140, 1036)
 lock_rotation = true
 freeze = true
 
-[node name="Credits" parent="." instance=ExtResource("8_beba7")]
+[node name="Credits" parent="MenuItems" instance=ExtResource("8_beba7")]
 position = Vector2(266, 926)
 mass = 20.0
 contact_monitor = false

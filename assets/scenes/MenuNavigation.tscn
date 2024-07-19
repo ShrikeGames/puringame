@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://btot4uhtfnrhg"]
+
+[ext_resource type="Script" path="res://assets/scripts/P5Menu/MenuNavigation.gd" id="1_tjd6u"]
+
+[node name="MenuNavigation" type="Node2D"]
+script = ExtResource("1_tjd6u")
