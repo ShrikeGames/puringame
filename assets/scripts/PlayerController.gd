@@ -27,6 +27,10 @@ var ai_controller: AIController
 @export var ai_inputs_object: Node2D
 @export var ai_mutation_rate: float
 @export var training: bool = false
+@export var move_speed: float = 450.0
+@export var last_mouse_pos:Vector2 = Vector2(0.0, 0.0)
+
+var auto_drop:bool = false
 
 var rank: int = 0
 
@@ -290,30 +294,46 @@ func check_game_over(delta):
 
 	return false
 
-
-func process_player(_delta):
+func process_player(delta):
 	# reposition the player
-	update_noir_position()
+	update_noir_position(delta)
 	# check inputs
+	var just_pressed:bool = Input.is_action_just_pressed("drop_purin")
+	var just_released:bool = Input.is_action_just_released("drop_purin")
+	# accessibility setting will cause you to always drop until toggled off
+	if just_released and Global.drop_troggle:
+		# toggle between auto drop on or off
+		auto_drop = not auto_drop
+		print(auto_drop)
 	if (
-		Input.is_action_just_pressed("drop_purin")
-		and time_since_last_dropped_purin_sec >= drop_purin_cooldown_sec
+		(just_pressed and time_since_last_dropped_purin_sec >= drop_purin_cooldown_sec) 
+		or (Global.drop_troggle and auto_drop  and time_since_last_dropped_purin_sec >= max(drop_purin_cooldown_sec, Global.auto_drop_cooldown_sec))
 	):
 		drop_purin()
-
-
+	
 func drop_purin():
 	spawn_purin()
 	noir.change_held_purin(purin_bag.get_current_purin())
 	time_since_last_dropped_purin_sec = 0
 
 
-func update_noir_position():
-	# get mouse position in local coords instead of global
-	var mouse_pos = to_local(get_viewport().get_mouse_position())
-	noir.position.x = valid_x_pos(mouse_pos.x)
-
-
+func update_noir_position(delta):
+	
+	if Input.is_action_pressed("move_left"):
+		Global.active_controls = "not_mouse"
+		noir.position.x = valid_x_pos(noir.position.x - (move_speed*delta))
+	elif Input.is_action_pressed("move_right"):
+		Global.active_controls = "not_mouse"
+		noir.position.x = valid_x_pos(noir.position.x + (move_speed*delta))
+	else:
+		# get mouse position in local coords instead of global
+		var mouse_pos = to_local(get_viewport().get_mouse_position())
+		if mouse_pos.x != last_mouse_pos.x and mouse_pos.y != last_mouse_pos.y:
+			Global.active_controls = "mouse"
+		last_mouse_pos = mouse_pos
+		if Global.active_controls == "mouse":
+			noir.position.x = valid_x_pos(mouse_pos.x)
+	
 func valid_x_pos(x_pos: float):
 	return max(left_edge.position.x, min(x_pos, right_edge.position.x))
 

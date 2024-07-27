@@ -28,7 +28,6 @@ contact_monitor = false
 [node name="Verus" parent="MenuItems" instance=ExtResource("3_ty0db")]
 position = Vector2(615, 255)
 rotation = 0.120469
-scale = Vector2(1, 1)
 contact_monitor = false
 
 [node name="Purin99" parent="MenuItems" instance=ExtResource("3_ohso7")]
@@ -47,25 +46,23 @@ lock_rotation = true
 [node name="Leaderboard" parent="MenuItems" instance=ExtResource("2_xqi8g")]
 position = Vector2(568, 674)
 rotation = -0.0566351
-scale = Vector2(1, 1)
 contact_monitor = false
 
 [node name="Training" parent="MenuItems" instance=ExtResource("2_x8mm0")]
 position = Vector2(444, 813)
 rotation = -0.0161528
-scale = Vector2(1, 1)
 mass = 1000.0
 contact_monitor = false
-
-[node name="Exit" parent="MenuItems" instance=ExtResource("7_2lyop")]
-visible = false
-position = Vector2(140, 1036)
-lock_rotation = true
-freeze = true
 
 [node name="Credits" parent="MenuItems" instance=ExtResource("8_beba7")]
 position = Vector2(266, 926)
 mass = 20.0
 contact_monitor = false
+lock_rotation = true
+freeze = true
+
+[node name="Exit" parent="MenuItems" instance=ExtResource("7_2lyop")]
+visible = false
+position = Vector2(140, 1036)
 lock_rotation = true
 freeze = true

@@ -1,9 +1,9 @@
-[gd_scene load_steps=2 format=3 uid="uid://3hmhpqcwiump"]
+[gd_scene load_steps=2 format=3 uid="uid://22dh4cimngq6"]
 
-[ext_resource type="Script" path="res://assets/scripts/AI/Input.gd" id="1_b6seg"]
+[ext_resource type="Script" path="res://assets/scripts/AI/Input.gd" id="1_g4r2m"]
 
 [node name="AIInput" type="Node2D"]
-script = ExtResource("1_b6seg")
+script = ExtResource("1_g4r2m")
 drop_line = Object(Line2D,"_import_path":NodePath(""),"unique_name_in_owner":false,"process_mode":0,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"editor_description":"","visible":true,"modulate":Color(1, 1, 1, 1),"self_modulate":Color(1, 1, 1, 1),"show_behind_parent":false,"top_level":false,"clip_children":0,"light_mask":1,"visibility_layer":1,"z_index":0,"z_as_relative":true,"y_sort_enabled":false,"texture_filter":0,"texture_repeat":0,"material":null,"use_parent_material":false,"position":Vector2(0, 0),"rotation":0.0,"scale":Vector2(1, 1),"skew":0.0,"points":PackedVector2Array(),"width":5.0,"width_curve":null,"default_color":Color(1, 1, 1, 1),"gradient":null,"texture":null,"texture_mode":0,"joint_mode":0,"begin_cap_mode":0,"end_cap_mode":0,"sharp_limit":2.0,"round_precision":8,"antialiased":false,"script":null)
 
 

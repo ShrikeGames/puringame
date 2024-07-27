@@ -11,6 +11,7 @@ var volume_voices:float = 1.0
 var volume_music:float = 1.0
 
 # controls
+var active_controls:String = "mouse"
 # enable or disable control types (applies to menus and in-game)
 var controls_mouse:bool = true
 var controls_keyboard:bool = true
@@ -36,7 +37,10 @@ var language:String = "en"
 # if true show the purin's "level" on them
 var numbered_purin:bool = false
 # if enabled will drop continuously until you press the key again
-var drop_troggle:bool = false
+var drop_troggle:bool = true
+# how often it should auto drop
+var auto_drop_cooldown_sec:float = 1.0
+
 # the normal game speed, slow it down to be easier. 0.5-1.0
 var game_speed:float = 1
 # if enabled the AI will only drop purin after you do
@@ -100,6 +104,8 @@ func load_settings():
 	numbered_purin = config_json.get("numbered_purin", numbered_purin)
 	# if enabled will drop continuously until you press the key again
 	drop_troggle = config_json.get("drop_troggle", drop_troggle)
+	auto_drop_cooldown_sec = config_json.get("auto_drop_cooldown_sec", auto_drop_cooldown_sec)
+	
 	# the normal game speed, slow it down to be easier. 0.5-1.0
 	game_speed = config_json.get("game_speed", game_speed)
 	# if enabled the AI will only drop purin after you do
@@ -153,6 +159,7 @@ func save_settings():
 	# Accessibility settings
 	config_json["numbered_purin"] = numbered_purin
 	config_json["drop_troggle"] = drop_troggle
+	config_json["auto_drop_cooldown_sec"] = auto_drop_cooldown_sec
 	config_json["game_speed"] = game_speed
 	config_json["turn_based_mode"] = turn_based_mode
 	

@@ -12,8 +12,8 @@
 [ext_resource type="Texture2D" uid="uid://cwcmvy5fu6w86" path="res://assets/images/game/purin10.png" id="11_i2u1v"]
 [ext_resource type="Texture2D" uid="uid://bja3p1ji46rhl" path="res://assets/images/game/purin11.png" id="12_hc0wc"]
 [ext_resource type="PackedScene" uid="uid://con8stx2et0ea" path="res://assets/scenes/PlayAreaBowl.tscn" id="13_3k2pk"]
+[ext_resource type="PackedScene" uid="uid://dm83ybcd6qyvo" path="res://assets/scenes/PauseMenu.tscn" id="14_10evg"]
 [ext_resource type="PackedScene" uid="uid://cudqnnw8oypk1" path="res://assets/scenes/PurinBag.tscn" id="14_gsn0q"]
-[ext_resource type="PackedScene" uid="uid://beiw15i5eegic" path="res://assets/scenes/LocalizedObject.tscn" id="14_yk5hl"]
 
 [node name="Game" type="Node2D"]
 
@@ -98,7 +98,4 @@ position = Vector2(1021, 82)
 [node name="PurinBagPlayer" parent="." instance=ExtResource("14_gsn0q")]
 position = Vector2(887, 82)
 
-[node name="LocalizedMenuButton" parent="." instance=ExtResource("14_yk5hl")]
-position = Vector2(1708, 1009)
-en = "res://assets/scenes/P5Menu/en/P5MenuItem_Menu.tscn"
-jp = "res://assets/scenes/P5Menu/jp/P5MenuItem_Menu.tscn"
+[node name="PauseMenu" parent="." instance=ExtResource("14_10evg")]

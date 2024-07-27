@@ -86,7 +86,6 @@ func get_visible_menu_items():
 	for menu_item in menu_buttons:
 		if menu_item.visible and menu_item.get_parent().visible:
 			visible_items.append(menu_item)
-	print(visible_items)
 	return visible_items
 
 func get_real_index(visible_menu_items, button):
