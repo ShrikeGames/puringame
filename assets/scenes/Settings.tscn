@@ -401,6 +401,12 @@ theme_override_constants/margin_bottom = 20
 layout_mode = 2
 size_flags_vertical = 0
 
+[node name="LocalizedImage" parent="SettingsTabs/Controls/Grid" node_paths=PackedStringArray("language_toggle") instance=ExtResource("3_ije50")]
+position = Vector2(400, 300)
+en = "res://assets/images/Menu/settings/Controls_en.png"
+jp = "res://assets/images/Menu/settings/Controls_jp.png"
+language_toggle = NodePath("../../../Language/Grid/LanguageToggle")
+
 [node name="LocalizedMenuButton" parent="." node_paths=PackedStringArray("language_toggle") instance=ExtResource("3_b3fto")]
 position = Vector2(1708, 1009)
 en = "res://assets/scenes/P5Menu/en/P5MenuItem_Menu.tscn"
