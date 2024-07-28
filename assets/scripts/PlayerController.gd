@@ -304,7 +304,6 @@ func process_player(delta):
 	if just_released and Global.drop_troggle:
 		# toggle between auto drop on or off
 		auto_drop = not auto_drop
-		print(auto_drop)
 	if (
 		(just_pressed and time_since_last_dropped_purin_sec >= drop_purin_cooldown_sec) 
 		or (Global.drop_troggle and auto_drop  and time_since_last_dropped_purin_sec >= max(drop_purin_cooldown_sec, Global.auto_drop_cooldown_sec))

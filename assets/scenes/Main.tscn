@@ -54,6 +54,9 @@ offset_bottom = 1631.0
 scale = Vector2(0.24, 0.24)
 focus_mode = 0
 texture_focused = ExtResource("6_xcjt3")
+active = null
+menu_index = null
+allow_texture_updates = null
 
 [node name="VersionText" type="RichTextLabel" parent="."]
 offset_left = 1712.0

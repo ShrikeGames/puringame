@@ -30,6 +30,14 @@ func subscribe_image(image:LocalizedImage):
 func subscribe_object(object:LocalizedObject):
 	if not self.is_connected("language_toggle", object.update):
 		self.connect("language_toggle", object.update)
+		
+func subscribe_settings_slider(object:SettingsSlider):
+	if not self.is_connected("language_toggle", object.update):
+		self.connect("language_toggle", object.update)
+		
+func subscribe_settings_tabs(object:SettingsTabs):
+	if not self.is_connected("language_toggle", object.update):
+		self.connect("language_toggle", object.update)
 
 func do_action():
 	button_pressed = not button_pressed

@@ -4,11 +4,11 @@ var settings_config_location:String = "user://settings.json"
 var default_settings_config_location:String = "res://settings.json"
 
 # audio sliders 0.0 - 1.0
-var volume_master:float = 1.0
-var volume_menu:float = 1.0
-var volume_game_sfx:float = 1.0
-var volume_voices:float = 1.0
-var volume_music:float = 1.0
+var volume_master:float = 0.5
+var volume_menu:float = 0.5
+var volume_game_sfx:float = 0.5
+var volume_voices:float = 0.5
+var volume_music:float = 0.5
 
 # controls
 var active_controls:String = "mouse"
@@ -120,6 +120,7 @@ func load_settings():
 	# how fast the game should play when training 1.0-3.0
 	training_game_speed = config_json.get("training_game_speed", training_game_speed)
 	
+	update_all_volumes()
 	
 
 func save_settings():
@@ -179,3 +180,13 @@ func save_settings():
 	file_access.store_line(json_string)
 	file_access.close()
 	
+func update_volume(audio_bus_index:int, linear_value:float):
+	var volume_db = 20 * (log(linear_value*0.01) / log(10))
+	AudioServer.set_bus_volume_db(audio_bus_index, volume_db)
+
+func update_all_volumes():
+	update_volume(AudioServer.get_bus_index("Master"), Global.volume_master * 100)
+	update_volume(AudioServer.get_bus_index("Menu"), Global.volume_menu * 100)
+	update_volume(AudioServer.get_bus_index("Game"), Global.volume_game_sfx * 100)
+	update_volume(AudioServer.get_bus_index("Voice"), Global.volume_voices * 100)
+	update_volume(AudioServer.get_bus_index("Music"), Global.volume_music * 100)

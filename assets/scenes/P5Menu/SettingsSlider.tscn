@@ -1,0 +1,26 @@
+[gd_scene load_steps=2 format=3 uid="uid://dio17of6qgv3u"]
+
+[ext_resource type="Script" path="res://assets/scripts/P5Menu/SettingsSlider.gd" id="1_l1eca"]
+
+[node name="SettingsSlider" type="VSplitContainer" node_paths=PackedStringArray("label", "slider")]
+layout_direction = 2
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 26.0
+grow_horizontal = 2
+collapsed = true
+dragger_visibility = 2
+script = ExtResource("1_l1eca")
+label = NodePath("Label")
+slider = NodePath("Slider")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+text = "Master Audio"
+
+[node name="Slider" type="HSlider" parent="."]
+layout_mode = 2
+value = 50.0
+scrollable = false
+
+[connection signal="value_changed" from="Slider" to="." method="_on_slider_value_changed"]
