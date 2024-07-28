@@ -1,4 +1,4 @@
-extends Node
+extends Node2D
 class_name LocalizedObject
 
 @export var en:String
@@ -8,7 +8,7 @@ class_name LocalizedObject
 var object_en
 var object_jp
 # Called when the node enters the scene tree for the first time.
-func _ready():
+func _on_ready():
 	if language_toggle:
 		language_toggle.subscribe_object(self)
 	for child in self.get_children():
@@ -30,5 +30,4 @@ func update(toggled_language):
 	else:
 		object_en.visible = true
 		object_jp.visible = false
-	
 	

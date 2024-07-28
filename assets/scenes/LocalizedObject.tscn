@@ -4,3 +4,5 @@
 
 [node name="LocalizedObject" type="Node2D"]
 script = ExtResource("1_1oxrj")
+
+[connection signal="ready" from="." to="." method="_on_ready"]

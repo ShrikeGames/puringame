@@ -28,15 +28,15 @@ position = Vector2(589, 540)
 scale = Vector2(0.613542, 1)
 texture = ExtResource("3_31djw")
 
-[node name="LocalizedMenuButton" parent="." instance=ExtResource("3_damng")]
-position = Vector2(1708, 1009)
-en = "res://assets/scenes/P5Menu/en/P5MenuItem_Menu.tscn"
-jp = "res://assets/scenes/P5Menu/jp/P5MenuItem_Menu.tscn"
-
 [node name="LocalizedImage" parent="." instance=ExtResource("3_hdmwl")]
 position = Vector2(504, 126)
 en = "res://assets/images/Menu/en/Title_Leaderboards.png"
 jp = "res://assets/images/Menu/jp/Title_Leaderboards_jp.png"
+
+[node name="LocalizedMenuButton" parent="." instance=ExtResource("3_damng")]
+position = Vector2(1708, 1009)
+en = "res://assets/scenes/P5Menu/en/P5MenuItem_Menu.tscn"
+jp = "res://assets/scenes/P5Menu/jp/P5MenuItem_Menu.tscn"
 
 [node name="MenuNavigation" parent="." node_paths=PackedStringArray("external_buttons") instance=ExtResource("4_mdfro")]
 external_buttons = [NodePath("../LocalizedMenuButton")]

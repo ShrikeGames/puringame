@@ -38,10 +38,10 @@ position = Vector2(305, 126)
 en = "res://assets/images/Menu/en/Title_Credits.png"
 jp = "res://assets/images/Menu/jp/Title_Credits_jp.png"
 
-[node name="MenuNavigation" parent="." node_paths=PackedStringArray("external_buttons") instance=ExtResource("4_grh6r")]
-external_buttons = [NodePath("../LocalizedMenuButton")]
-
 [node name="LocalizedMenuButton" parent="." instance=ExtResource("4_wvhx3")]
 position = Vector2(1708, 1009)
 en = "res://assets/scenes/P5Menu/en/P5MenuItem_Menu.tscn"
 jp = "res://assets/scenes/P5Menu/jp/P5MenuItem_Menu.tscn"
+
+[node name="MenuNavigation" parent="." node_paths=PackedStringArray("external_buttons") instance=ExtResource("4_grh6r")]
+external_buttons = [NodePath("../LocalizedMenuButton")]

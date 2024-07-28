@@ -54,9 +54,7 @@ func change_active_button(new_button:P5TextureButton):
 	# button changed, only care if it's a visible button
 	if new_button.visible and is_instance_valid(new_button):
 		# is also triggering on roll over which isn't right
-#		if new_button == previous_button:
-#			new_button.do_action()
-#			return
+		
 		# reset old button back to its normal state
 		if previous_button != null:
 			previous_button.active = false
@@ -148,25 +146,13 @@ func _process(_delta):
 			change_active_button(get_next_visible_button(menu_buttons[len(menu_buttons)-1]))
 		else:
 			change_active_button(get_first_visible_button())
-		
-	elif Input.is_action_just_pressed("menu_1") and len(menu_buttons) >= 1:
-		change_active_button(menu_buttons[0])
-	elif Input.is_action_just_pressed("menu_2") and len(menu_buttons) >= 2:
-		change_active_button(menu_buttons[1])
-	elif Input.is_action_just_pressed("menu_3") and len(menu_buttons) >= 3:
-		change_active_button(menu_buttons[2])
-	elif Input.is_action_just_pressed("menu_4") and len(menu_buttons) >= 4:
-		change_active_button(menu_buttons[3])
-	elif Input.is_action_just_pressed("menu_5") and len(menu_buttons) >= 5:
-		change_active_button(menu_buttons[4])
-	elif Input.is_action_just_pressed("menu_6") and len(menu_buttons) >= 6:
-		change_active_button(menu_buttons[5])
-	elif Input.is_action_just_pressed("menu_7") and len(menu_buttons) >= 7:
-		change_active_button(menu_buttons[6])
-	elif Input.is_action_just_pressed("menu_8") and len(menu_buttons) >= 8:
-		change_active_button(menu_buttons[7])
-	elif Input.is_action_just_pressed("menu_9") and len(menu_buttons) >= 9:
-		change_active_button(menu_buttons[8])
-	elif Input.is_action_just_pressed("menu_0") and len(menu_buttons) >= 10:
-		change_active_button(menu_buttons[9])
+	else:
+		# numbers 1-9 on keyboard to quickly switch to a menu item
+		for i in range(1, 10):
+			if Input.is_action_just_pressed("menu_%s"%[i]) and len(menu_buttons) >= i:
+				if menu_buttons[i-1] == previous_button:
+					menu_buttons[i-1].do_action()
+					return
+				change_active_button(menu_buttons[i-1])
+				break
 	
