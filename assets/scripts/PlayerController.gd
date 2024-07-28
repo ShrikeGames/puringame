@@ -418,6 +418,7 @@ func combine_purin(purin1: Purin, purin2: Purin):
 	# set its new values based on the combined stats
 	new_purin.rotation = spawn_rotation
 	new_purin.evil.visible = evil
+	
 	if evil:
 		# if it's evil then make have more mass than normal
 		new_purin.mass = pow(1.2, new_level+2)

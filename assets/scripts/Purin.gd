@@ -7,6 +7,7 @@ var combined: bool = false
 var show_debug_info: bool = false
 @export var image: Sprite2D
 @export var collider: CollisionShape2D
+@export var number_label: RichTextLabel
 @export var debug_text: RichTextLabel
 @export var debug_line: Line2D
 @export var evil: Sprite2D
@@ -31,7 +32,9 @@ func _on_ready():
 	debug_line.default_color = "333333"
 	debug_line.width = 2
 	game_over_timer_sec = 0
-
+	if Global.numbered_purin and number_label:
+		number_label.text = "[center][color=fff]%s[/color][/center]"%[get_meta("level", 1)]
+		number_label.visible = true
 
 func reset_lines():
 	for i in range(0, debug_line.get_point_count()):

@@ -38,6 +38,10 @@ func subscribe_settings_slider(object:SettingsSlider):
 func subscribe_settings_tabs(object:SettingsTabs):
 	if not self.is_connected("language_toggle", object.update):
 		self.connect("language_toggle", object.update)
+		
+func subscribe_settings_checkbox(object:SettingsCheckbox):
+	if not self.is_connected("language_toggle", object.update):
+		self.connect("language_toggle", object.update)
 
 func do_action():
 	button_pressed = not button_pressed
