@@ -21,9 +21,9 @@ func _ready():
 		
 func update(language):
 	if language == "jp":
-		label.text = label_text_jp
+		label.text = "%s (%s)"%[label_text_jp, slider.value]
 	else:
-		label.text = label_text_en
+		label.text = "%s (%s)"%[label_text_en, slider.value]
 	
 	if config_name == "volume_master":
 		slider.value = Global.volume_master * 100
@@ -60,6 +60,12 @@ func _on_slider_value_changed(value):
 		Global.volume_music = scaled_value
 	elif config_name == "game_speed":
 		Global.game_speed = scaled_value
+		
+	if Global.language == "jp":
+		label.text = "%s (%s)"%[label_text_jp, slider.value]
+	else:
+		label.text = "%s (%s)"%[label_text_en, slider.value]
+		
 	Global.update_volume(audio_bus_index, value)
 	Global.save_settings()
 

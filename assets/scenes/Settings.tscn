@@ -210,7 +210,7 @@ language_toggle = NodePath("../SettingsTabs/Language/Grid/LanguageToggle")
 
 [node name="SettingsTabs" type="TabContainer" parent="." node_paths=PackedStringArray("language_toggle")]
 offset_top = 219.0
-offset_right = 1121.0
+offset_right = 1117.0
 offset_bottom = 1080.0
 focus_next = NodePath("Audio")
 focus_previous = NodePath("Controls")
@@ -218,7 +218,7 @@ focus_mode = 2
 theme = SubResource("Theme_yxvr4")
 script = ExtResource("8_gdtvk")
 tab_labels_en = Array[String](["Audio", "Language", "Graphics", "Accessibility", "Controls"])
-tab_labels_jp = Array[String](["Audio (JP)", "Language (JP)", "Graphics (JP)", "Accessibility (JP)", "Controls (JP)"])
+tab_labels_jp = Array[String](["オーディオ", "言語", "グラフィック", "アクセシビリティ", "コントロール"])
 language_toggle = NodePath("Language/Grid/LanguageToggle")
 
 [node name="Audio" type="MarginContainer" parent="SettingsTabs"]
@@ -243,7 +243,7 @@ focus_next = NodePath("../Menu")
 focus_previous = NodePath("../..")
 config_name = "volume_master"
 label_text_en = "Master Volume"
-label_text_jp = "Master Volume (JP)"
+label_text_jp = "全部音量"
 language_toggle = NodePath("../../../Language/Grid/LanguageToggle")
 
 [node name="Menu" parent="SettingsTabs/Audio/Grid" node_paths=PackedStringArray("language_toggle") instance=ExtResource("8_uyb6r")]
@@ -254,7 +254,7 @@ focus_next = NodePath("../Game")
 focus_previous = NodePath("../Master")
 config_name = "volume_menu"
 label_text_en = "Menu Volume"
-label_text_jp = "Menu Volume (JP)"
+label_text_jp = "メニュー音量"
 language_toggle = NodePath("../../../Language/Grid/LanguageToggle")
 
 [node name="Game" parent="SettingsTabs/Audio/Grid" node_paths=PackedStringArray("language_toggle") instance=ExtResource("8_uyb6r")]
@@ -264,8 +264,8 @@ focus_neighbor_bottom = NodePath("../Voices")
 focus_next = NodePath("../Voices")
 focus_previous = NodePath("../Menu")
 config_name = "volume_game_sfx"
-label_text_en = "Game Volume"
-label_text_jp = "Game Volume (JP)"
+label_text_en = "Game Sound Effects Volume"
+label_text_jp = "SFX音量"
 language_toggle = NodePath("../../../Language/Grid/LanguageToggle")
 
 [node name="Voices" parent="SettingsTabs/Audio/Grid" node_paths=PackedStringArray("language_toggle") instance=ExtResource("8_uyb6r")]
@@ -276,7 +276,7 @@ focus_next = NodePath("../Music")
 focus_previous = NodePath("../Game")
 config_name = "volume_voices"
 label_text_en = "Voice Volume"
-label_text_jp = "Voice Volume (JP)"
+label_text_jp = "ボイス音量"
 language_toggle = NodePath("../../../Language/Grid/LanguageToggle")
 
 [node name="Music" parent="SettingsTabs/Audio/Grid" node_paths=PackedStringArray("language_toggle") instance=ExtResource("8_uyb6r")]
@@ -287,7 +287,7 @@ focus_next = NodePath("../../../Language")
 focus_previous = NodePath("../Voices")
 config_name = "volume_music"
 label_text_en = "Music Volume"
-label_text_jp = "Music Volume (JP)"
+label_text_jp = "BGM音量"
 language_toggle = NodePath("../../../Language/Grid/LanguageToggle")
 
 [node name="Language" type="MarginContainer" parent="SettingsTabs"]
@@ -336,7 +336,7 @@ size_flags_vertical = 0
 layout_mode = 2
 config_name = "enable_rain"
 label_text_en = "Enable Rain"
-label_text_jp = "Enable Rain (JP)"
+label_text_jp = "雨を見せる"
 language_toggle = NodePath("../../../Language/Grid/LanguageToggle")
 toggle_object = NodePath("../../../../Rain")
 
@@ -344,7 +344,7 @@ toggle_object = NodePath("../../../../Rain")
 layout_mode = 2
 config_name = "fullscreen"
 label_text_en = "Fullscreen"
-label_text_jp = "Fullscreen JP"
+label_text_jp = "全画面"
 language_toggle = NodePath("../../../Language/Grid/LanguageToggle")
 
 [node name="Accessibility" type="MarginContainer" parent="SettingsTabs"]
@@ -367,22 +367,22 @@ size_flags_vertical = 0
 layout_mode = 2
 config_name = "game_speed"
 label_text_en = "Game Speed"
-label_text_jp = "Game Speed JP"
+label_text_jp = "ゲーム速度"
 language_toggle = NodePath("../../../Language/Grid/LanguageToggle")
 override_min = 50.0
 
 [node name="ToggleDrop" parent="SettingsTabs/Accessibility/Grid" node_paths=PackedStringArray("language_toggle") instance=ExtResource("9_fx3a5")]
 layout_mode = 2
 config_name = "drop_troggle"
-label_text_en = "Toggle Purin Drop"
-label_text_jp = "Toggle Purin Drop (JP)"
+label_text_en = "Automatic Purin Drop"
+label_text_jp = "プリン自動落下"
 language_toggle = NodePath("../../../Language/Grid/LanguageToggle")
 
 [node name="NumberedPurin" parent="SettingsTabs/Accessibility/Grid" node_paths=PackedStringArray("language_toggle") instance=ExtResource("9_fx3a5")]
 layout_mode = 2
 config_name = "numbered_purin"
 label_text_en = "Numbered Purin"
-label_text_jp = "Numbered Purin (JP)"
+label_text_jp = "番号付きプリン"
 language_toggle = NodePath("../../../Language/Grid/LanguageToggle")
 
 [node name="Controls" type="MarginContainer" parent="SettingsTabs"]
