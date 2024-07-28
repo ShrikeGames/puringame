@@ -1,20 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://2jru5ulg8rxn"]
+[gd_scene load_steps=6 format=3 uid="uid://2jru5ulg8rxn"]
 
 [ext_resource type="Texture2D" uid="uid://b11n40aw5nnif" path="res://assets/images/Background.jpg" id="1_thxoh"]
-[ext_resource type="Shader" path="res://assets/scenes/Rain.gdshader" id="2_av0er"]
-[ext_resource type="Texture2D" uid="uid://cj33x54uctfs7" path="res://assets/images/Menu/MenuRainArea.png" id="3_31djw"]
+[ext_resource type="PackedScene" uid="uid://ojda7swoxl4y" path="res://assets/scenes/Rain.tscn" id="2_3f8oa"]
 [ext_resource type="PackedScene" uid="uid://beiw15i5eegic" path="res://assets/scenes/LocalizedObject.tscn" id="3_damng"]
 [ext_resource type="PackedScene" uid="uid://buaytyuaj2i6p" path="res://assets/scenes/LocalizedImage.tscn" id="3_hdmwl"]
 [ext_resource type="PackedScene" uid="uid://btot4uhtfnrhg" path="res://assets/scenes/MenuNavigation.tscn" id="4_mdfro"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_ojviu"]
-shader = ExtResource("2_av0er")
-shader_parameter/count = 150
-shader_parameter/slant = 0.1
-shader_parameter/speed = 25.0
-shader_parameter/blur = 0.0025
-shader_parameter/colour = Color(1, 1, 1, 1)
-shader_parameter/size = Vector2(0.005, 0.2)
 
 [node name="Leaderboard" type="Node2D"]
 
@@ -22,11 +12,7 @@ shader_parameter/size = Vector2(0.005, 0.2)
 position = Vector2(960, 540)
 texture = ExtResource("1_thxoh")
 
-[node name="RainShader" type="Sprite2D" parent="."]
-material = SubResource("ShaderMaterial_ojviu")
-position = Vector2(589, 540)
-scale = Vector2(0.613542, 1)
-texture = ExtResource("3_31djw")
+[node name="Rain" parent="." instance=ExtResource("2_3f8oa")]
 
 [node name="LocalizedImage" parent="." instance=ExtResource("3_hdmwl")]
 position = Vector2(504, 126)

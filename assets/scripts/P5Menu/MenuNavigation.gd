@@ -17,7 +17,7 @@ func init():
 	if menu_items_node != null:
 		# connect to each button to listen for when the mouse changes its state
 		for menu_item in menu_items_node.get_children():
-			if menu_item.visible:
+			if menu_item.visible and is_instance_valid(menu_item):
 				var button:P5TextureButton = menu_item.get_node("Button")
 				if is_instance_of(button, P5TextureButton):
 					button.menu_index = index

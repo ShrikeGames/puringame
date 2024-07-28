@@ -62,6 +62,8 @@ var total_games:int = 0
 var lifetime_score:int = 0
 var average_score:float = 0
 func _on_ready():
+	# set game speed
+	Engine.time_scale = Global.game_speed
 	# first time load the purin images/textures
 	load_purin()
 	if not training:

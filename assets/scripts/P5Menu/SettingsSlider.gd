@@ -7,10 +7,15 @@ class_name SettingsSlider
 @export var label_text_en:String = ""
 @export var label_text_jp:String = ""
 @export var language_toggle:LanguageToggle
+@export var override_min:float = 0.0
+@export var override_max:float = 100.0
 var audio_bus_index:int = 0
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	update(Global.language)
+	slider.min_value = override_min
+	slider.max_value = override_max
+	
 	if is_instance_valid(language_toggle):
 		language_toggle.subscribe_settings_slider(self)
 		
@@ -35,6 +40,8 @@ func update(language):
 	elif config_name == "volume_music":
 		slider.value = Global.volume_music * 100
 		audio_bus_index = AudioServer.get_bus_index("Music")
+	elif config_name == "game_speed":
+		slider.value = Global.game_speed * 100
 	
 	Global.update_volume(audio_bus_index, slider.value)
 	
@@ -51,6 +58,8 @@ func _on_slider_value_changed(value):
 		Global.volume_voices = scaled_value
 	elif config_name == "volume_music":
 		Global.volume_music = scaled_value
+	elif config_name == "game_speed":
+		Global.game_speed = scaled_value
 	Global.update_volume(audio_bus_index, value)
 	Global.save_settings()
 

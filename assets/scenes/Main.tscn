@@ -1,22 +1,12 @@
-[gd_scene load_steps=10 format=3 uid="uid://bluist7lqnuec"]
+[gd_scene load_steps=8 format=3 uid="uid://bluist7lqnuec"]
 
 [ext_resource type="Texture2D" uid="uid://b11n40aw5nnif" path="res://assets/images/Background.jpg" id="1_85gj0"]
 [ext_resource type="Script" path="res://assets/scripts/Main.gd" id="1_dblri"]
-[ext_resource type="Shader" path="res://assets/scenes/Rain.gdshader" id="2_jc8yc"]
+[ext_resource type="PackedScene" uid="uid://ojda7swoxl4y" path="res://assets/scenes/Rain.tscn" id="3_fnayh"]
 [ext_resource type="Texture2D" uid="uid://b16vuwlym50hl" path="res://assets/images/Banner.png" id="3_h3db1"]
 [ext_resource type="PackedScene" uid="uid://clrvrh4wco6k5" path="res://assets/scenes/SpectrumViewer.tscn" id="4_5d8bm"]
 [ext_resource type="PackedScene" uid="uid://dvga7afntky3g" path="res://assets/scenes/P5Menu/LanguageToggle.tscn" id="5_dtpak"]
 [ext_resource type="Texture2D" uid="uid://dmw4c43ovv7dp" path="res://assets/images/Menu/language_focus.png" id="6_xcjt3"]
-[ext_resource type="Texture2D" uid="uid://cj33x54uctfs7" path="res://assets/images/Menu/MenuRainArea.png" id="7_lb4lb"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_nrnub"]
-shader = ExtResource("2_jc8yc")
-shader_parameter/count = 150
-shader_parameter/slant = 0.1
-shader_parameter/speed = 25.0
-shader_parameter/blur = 0.0025
-shader_parameter/colour = Color(1, 1, 1, 1)
-shader_parameter/size = Vector2(0.005, 0.2)
 
 [node name="Main" type="Node2D" node_paths=PackedStringArray("language_toggle", "menu_container")]
 script = ExtResource("1_dblri")
@@ -27,11 +17,7 @@ menu_container = NodePath("Menu")
 position = Vector2(960, 540)
 texture = ExtResource("1_85gj0")
 
-[node name="RainShader" type="Sprite2D" parent="."]
-material = SubResource("ShaderMaterial_nrnub")
-position = Vector2(589, 540)
-scale = Vector2(0.613542, 1)
-texture = ExtResource("7_lb4lb")
+[node name="Rain" parent="." instance=ExtResource("3_fnayh")]
 
 [node name="SpectrumViewer" parent="." instance=ExtResource("4_5d8bm")]
 FREQ_MAX = 5000.0
@@ -66,7 +52,7 @@ offset_top = 2.0
 offset_right = 1983.0
 offset_bottom = 78.0
 text = "Version 2.8.0
-\"Settings and Accessibility Options\""
+\"Settings and Accessibility\""
 
 [node name="Menu" type="Node2D" parent="."]
 

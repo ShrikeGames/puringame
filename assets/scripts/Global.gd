@@ -10,6 +10,10 @@ var volume_game_sfx:float = 0.5
 var volume_voices:float = 0.5
 var volume_music:float = 0.5
 
+# graphics
+var enable_rain:bool = true
+var fullscreen:bool = false
+
 # controls
 var active_controls:String = "mouse"
 # enable or disable control types (applies to menus and in-game)
@@ -80,8 +84,11 @@ func load_settings():
 	controls_controller = config_json.get("controls_controller", controls_controller)
 	controls_move_speed = config_json.get("controls_move_speed", controls_move_speed)
 	
-	# add additional keybinds for the actions, allow overlap with drop (applies to menus and in-game)
+	# graphics
+	enable_rain = config_json.get("enable_rain", enable_rain)
+	fullscreen = config_json.get("fullscreen", fullscreen)
 	
+	# add additional keybinds for the actions, allow overlap with drop (applies to menus and in-game)
 	custom_key_up = config_json.get("custom_key_up", custom_key_up)
 	custom_key_down = config_json.get("custom_key_down", custom_key_down)
 	custom_key_left = config_json.get("custom_key_left", custom_key_left)
@@ -131,6 +138,10 @@ func save_settings():
 	config_json["volume_game_sfx"] = volume_game_sfx
 	config_json["volume_voices"] = volume_voices
 	config_json["volume_music"] = volume_music
+	
+	# graphics
+	config_json["enable_rain"] = enable_rain
+	config_json["fullscreen"] = fullscreen
 	
 	# controls
 	# enable or disable control types (applies to menus and in-game)

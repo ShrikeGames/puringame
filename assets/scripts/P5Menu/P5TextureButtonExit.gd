@@ -1,11 +1,12 @@
-extends TextureButton
+extends P5TextureButton
 
-@export var audio_player: AudioStreamPlayer
-var normal_bitmap
-var hover_bitmap
-var pressed_bitmap
 # Called when the node enters the scene tree for the first time.
 func _on_ready():
+	# hide the exit button if playing in browser because it's borked
+	print(OS.get_name())
+	if OS.get_name() == "Web":
+		self.visible = false
+		
 	if texture_normal:
 		# Get the image from the texture normal
 		var image = texture_normal.get_image()

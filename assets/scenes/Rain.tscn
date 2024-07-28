@@ -1,0 +1,24 @@
+[gd_scene load_steps=5 format=3 uid="uid://ojda7swoxl4y"]
+
+[ext_resource type="Shader" path="res://assets/scenes/Rain.gdshader" id="1_7n3vx"]
+[ext_resource type="Script" path="res://assets/scripts/Rain.gd" id="1_bv060"]
+[ext_resource type="Texture2D" uid="uid://cj33x54uctfs7" path="res://assets/images/Menu/MenuRainArea.png" id="2_vsco7"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_l7o1u"]
+shader = ExtResource("1_7n3vx")
+shader_parameter/count = 150
+shader_parameter/slant = 0.1
+shader_parameter/speed = 25.0
+shader_parameter/blur = 0.0025
+shader_parameter/colour = Color(1, 1, 1, 1)
+shader_parameter/size = Vector2(0.005, 0.2)
+
+[node name="Rain" type="Node2D"]
+visible = false
+script = ExtResource("1_bv060")
+
+[node name="RainShader" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_l7o1u")
+position = Vector2(589, 540)
+scale = Vector2(0.613542, 1)
+texture = ExtResource("2_vsco7")

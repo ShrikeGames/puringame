@@ -9,7 +9,11 @@ func _on_ready():
 	update_menu()
 	if language_toggle and not language_toggle.is_connected("language_toggle", language_toggled):
 		language_toggle.connect("language_toggle", language_toggled)
-
+	if Global.fullscreen:
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+	else:
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+		
 func update_menu():
 	for child in menu_container.get_children():
 		child.queue_free()
