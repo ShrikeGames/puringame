@@ -50,7 +50,7 @@ void fragment() {
         vec2 position = vec2(pos_mod_x + sl, -mod(-pos_mod_y * time * 0.1, -1.));
 		
         float sdf = line_sdf(uv - position, s);
-        output += clamp(- sdf / (blur*(1.2*(0.75+position.x+(position.y*0.5)))), 0.0, 1.0);
+        output += clamp(- sdf / (blur*(0.8*(0.75+position.x+(position.y*0.5)))), 0.0, 1.0);
     }
 
     COLOR = vec4(colour.rgb, output);

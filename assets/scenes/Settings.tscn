@@ -223,7 +223,7 @@ jp = "res://assets/images/Menu/jp/Title_Settings_jp.png"
 language_toggle = NodePath("../SettingsTabs/Language/Grid/LanguageToggle")
 
 [node name="SettingsTabs" type="TabContainer" parent="." node_paths=PackedStringArray("language_toggle")]
-offset_top = 207.0
+offset_top = 219.0
 offset_right = 1121.0
 offset_bottom = 1080.0
 focus_next = NodePath("Audio")
