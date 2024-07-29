@@ -52,7 +52,7 @@ func add_external_menu_button(external_button:P5TextureButton, allow_texture_upd
 		
 func change_active_button(new_button:P5TextureButton):
 	# button changed, only care if it's a visible button
-	if new_button.visible and is_instance_valid(new_button):
+	if is_instance_valid(new_button) and new_button.visible:
 		# is also triggering on roll over which isn't right
 		
 		# reset old button back to its normal state
@@ -96,6 +96,8 @@ func get_real_index(visible_menu_items, button):
 	
 func get_first_visible_button():
 	var visible_menu_items:Array = get_visible_menu_items()
+	if visible_menu_items.is_empty():
+		return null
 	return visible_menu_items[0]
 	
 func get_next_visible_button(target_button:P5TextureButton=previous_button):
