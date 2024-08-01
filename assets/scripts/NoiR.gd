@@ -21,10 +21,12 @@ func _process(_delta):
 		global_position, global_position + Vector2(0, 800)
 	)
 	query.exclude = [self]
+	query.collision_mask = 1
 	var result = space_state.intersect_ray(query)
 	if (
 		result
 		and is_instance_valid(result.collider)
+		and result.collider.visible
 		and result.collider.get_instance_id() != self.get_instance_id()
 	):
 		drop_line.set_point_position(1, to_local(result.position))
