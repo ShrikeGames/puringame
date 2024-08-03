@@ -1,7 +1,8 @@
-[gd_scene load_steps=16 format=3 uid="uid://cxb8b37m7qbdl"]
+[gd_scene load_steps=21 format=3 uid="uid://cxb8b37m7qbdl"]
 
 [ext_resource type="Script" path="res://assets/scripts/AI/AI99Manager.gd" id="1_j1h3y"]
 [ext_resource type="Texture2D" uid="uid://xt87hje080jt" path="res://assets/images/game/purin1.png" id="2_b6mh1"]
+[ext_resource type="Texture2D" uid="uid://cwxk8d5paq5fl" path="res://assets/images/game/Purin99Background.png" id="2_m0r4p"]
 [ext_resource type="Texture2D" uid="uid://ds7ffculpywfr" path="res://assets/images/game/purin2.png" id="3_3tcjj"]
 [ext_resource type="Texture2D" uid="uid://d1l07juub21tt" path="res://assets/images/game/purin3.png" id="4_jns0m"]
 [ext_resource type="Texture2D" uid="uid://r1wwvaqohtgs" path="res://assets/images/game/purin4.png" id="5_ijdhb"]
@@ -15,11 +16,19 @@
 [ext_resource type="PackedScene" uid="uid://con8stx2et0ea" path="res://assets/scenes/PlayAreaBowl.tscn" id="13_gy0je"]
 [ext_resource type="PackedScene" uid="uid://dm83ybcd6qyvo" path="res://assets/scenes/PauseMenu.tscn" id="15_kd5si"]
 [ext_resource type="PackedScene" uid="uid://cudqnnw8oypk1" path="res://assets/scenes/PurinBag.tscn" id="15_qafyh"]
+[ext_resource type="Texture2D" uid="uid://brt7tyr0jdf2p" path="res://assets/images/Menu/ArrowDownBlack.png" id="16_poiw1"]
+[ext_resource type="Texture2D" uid="uid://vp0gkwodowi5" path="res://assets/images/Menu/ArrowUpBlue.png" id="17_0jlbb"]
+[ext_resource type="Texture2D" uid="uid://dhwsqd50q7ot5" path="res://assets/images/Menu/ArrowDownBlue.png" id="18_agq8r"]
+[ext_resource type="Script" path="res://assets/scripts/ToggleVisibilityButton.gd" id="19_m1mik"]
 
 [node name="Game" type="Node2D" node_paths=PackedStringArray("player_game", "ai_games_node")]
 script = ExtResource("1_j1h3y")
 player_game = NodePath("PlayAreaBowl")
 ai_games_node = NodePath("AIGames")
+
+[node name="Purin99Background" type="Sprite2D" parent="."]
+position = Vector2(960, 540)
+texture = ExtResource("2_m0r4p")
 
 [node name="ProgressionIndicator" type="Node2D" parent="."]
 visible = false
@@ -93,4 +102,17 @@ position = Vector2(887, 82)
 
 [node name="PauseMenu" parent="." instance=ExtResource("15_kd5si")]
 
+[node name="TogglePause" type="TextureButton" parent="." node_paths=PackedStringArray("object_to_toggle")]
+process_mode = 3
+offset_right = 40.0
+offset_bottom = 40.0
+scale = Vector2(0.4, 0.279999)
+toggle_mode = true
+texture_normal = ExtResource("16_poiw1")
+texture_pressed = ExtResource("17_0jlbb")
+texture_hover = ExtResource("18_agq8r")
+script = ExtResource("19_m1mik")
+object_to_toggle = NodePath("../PauseMenu")
+
 [connection signal="ready" from="." to="." method="_on_ready"]
+[connection signal="toggled" from="TogglePause" to="TogglePause" method="_on_toggled"]

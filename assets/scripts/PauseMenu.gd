@@ -5,3 +5,7 @@ func _process(_delta):
 	if Input.is_action_just_pressed("pause"):
 		self.visible = not self.visible
 		get_tree().paused = self.visible
+
+
+func _on_ready():
+	pass # Replace with function body.

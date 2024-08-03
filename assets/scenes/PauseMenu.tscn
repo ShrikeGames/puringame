@@ -1,12 +1,13 @@
-[gd_scene load_steps=5 format=3 uid="uid://dm83ybcd6qyvo"]
+[gd_scene load_steps=6 format=3 uid="uid://dm83ybcd6qyvo"]
 
 [ext_resource type="PackedScene" uid="uid://beiw15i5eegic" path="res://assets/scenes/LocalizedObject.tscn" id="1_gdgsm"]
 [ext_resource type="Script" path="res://assets/scripts/PauseMenu.gd" id="1_tcgu8"]
 [ext_resource type="PackedScene" uid="uid://btot4uhtfnrhg" path="res://assets/scenes/MenuNavigation.tscn" id="2_d1015"]
+[ext_resource type="PackedScene" uid="uid://buaytyuaj2i6p" path="res://assets/scenes/LocalizedImage.tscn" id="3_hxpao"]
 [ext_resource type="Texture2D" uid="uid://bkidel8xvjsvt" path="res://assets/images/game/GameOverBackdrop.png" id="4_faeth"]
 
 [node name="PauseMenu" type="Node2D"]
-process_mode = 3
+process_mode = 2
 visible = false
 script = ExtResource("1_tcgu8")
 
@@ -18,12 +19,18 @@ polygon = PackedVector2Array(0, 0, 1920, 0, 1920, 1080, 0, 1080)
 position = Vector2(960, 537)
 texture = ExtResource("4_faeth")
 
+[node name="Title" parent="." instance=ExtResource("3_hxpao")]
+position = Vector2(940, 428)
+en = "res://assets/images/game/TitleGamePaused_en.png"
+jp = "res://assets/images/game/TitleGamePaused_jp.png"
+
 [node name="LocalizedMenuButton" parent="." instance=ExtResource("1_gdgsm")]
-process_mode = 2
-position = Vector2(233, 541)
+position = Vector2(937, 592)
 en = "res://assets/scenes/P5Menu/en/P5MenuItem_Menu.tscn"
 jp = "res://assets/scenes/P5Menu/jp/P5MenuItem_Menu.tscn"
 
 [node name="MenuNavigation" parent="." node_paths=PackedStringArray("external_buttons") instance=ExtResource("2_d1015")]
-process_mode = 2
-external_buttons = [NodePath("../LocalizedMenuButton")]
+position = Vector2(-767, -428)
+external_buttons = [NodePath("")]
+
+[connection signal="ready" from="." to="." method="_on_ready"]

@@ -2,7 +2,9 @@ extends Node2D
 
 @export var language_toggle: LanguageToggle
 @export var menu_container: Node2D
-
+@export var hide_logo:bool = false
+@export var collapse_menu:bool = false
+@export var show_menu_button: TextureButton
 var menu
 func _on_ready():
 	Global.load_settings()
@@ -31,8 +33,14 @@ func update_menu():
 		menu = menu_jp.instantiate()
 	if menu:
 		menu_container.add_child(menu)
-		menu.add_external_menu_button(language_toggle)
-	
+		if language_toggle:
+			menu.add_external_menu_button(language_toggle)
+		if hide_logo:
+			menu.logo.queue_free()
+		if collapse_menu and show_menu_button:
+			menu.visible = false
+			show_menu_button.visible = true
+			
 
 func language_toggled(_language):
 	Global.save_settings()

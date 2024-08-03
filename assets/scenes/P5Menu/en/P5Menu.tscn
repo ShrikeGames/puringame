@@ -11,9 +11,10 @@
 [ext_resource type="PackedScene" uid="uid://cafny72kvmnm" path="res://assets/scenes/P5Menu/en/P5MenuItem_Credits.tscn" id="8_beba7"]
 [ext_resource type="PackedScene" uid="uid://b3u3o6600wbsd" path="res://assets/scenes/P5Menu/en/Logo.tscn" id="9_fqk3c"]
 
-[node name="P5Menu" type="Node2D" node_paths=PackedStringArray("menu_items_node")]
+[node name="P5Menu" type="Node2D" node_paths=PackedStringArray("menu_items_node", "logo")]
 script = ExtResource("1_10sn5")
 menu_items_node = NodePath("MenuItems")
+logo = NodePath("Logo")
 
 [node name="Logo" parent="." instance=ExtResource("9_fqk3c")]
 position = Vector2(892, 880)
@@ -53,6 +54,7 @@ position = Vector2(444, 813)
 rotation = -0.0161528
 mass = 1000.0
 contact_monitor = false
+freeze = true
 
 [node name="Credits" parent="MenuItems" instance=ExtResource("8_beba7")]
 position = Vector2(266, 926)

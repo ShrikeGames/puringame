@@ -11,9 +11,10 @@
 [ext_resource type="PackedScene" uid="uid://cxpkl384yuulr" path="res://assets/scenes/P5Menu/jp/P5MenuItem_Versus.tscn" id="8_17e5f"]
 [ext_resource type="PackedScene" uid="uid://drwam0cjnekrr" path="res://assets/scenes/P5Menu/jp/P5MenuItem_Solo.tscn" id="9_cqudu"]
 
-[node name="P5Menu_JP" type="Node2D" node_paths=PackedStringArray("menu_items_node")]
+[node name="P5Menu_JP" type="Node2D" node_paths=PackedStringArray("menu_items_node", "logo")]
 script = ExtResource("1_wt2he")
 menu_items_node = NodePath("MenuItems")
+logo = NodePath("Logo")
 
 [node name="Logo" parent="." instance=ExtResource("1_7ovk7")]
 position = Vector2(890, 877)

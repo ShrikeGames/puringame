@@ -49,8 +49,8 @@ offset_left = 1712.0
 offset_top = 2.0
 offset_right = 1983.0
 offset_bottom = 78.0
-text = "Version 2.8.1
-\"Settings and Accessibility\""
+text = "Version 2.8.2
+\"Bug Fixes + Pause Button\""
 
 [node name="Menu" type="Node2D" parent="."]
 

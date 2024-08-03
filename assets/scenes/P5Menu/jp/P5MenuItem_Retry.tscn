@@ -7,6 +7,7 @@
 [ext_resource type="AudioStream" uid="uid://l3anfuf7pqc4" path="res://assets/audio/sfx/A-1.wav" id="5_amppq"]
 
 [node name="P5MenuItem" type="Node2D"]
+process_mode = 3
 
 [node name="Button" type="TextureButton" parent="." node_paths=PackedStringArray("audio_player")]
 process_mode = 3

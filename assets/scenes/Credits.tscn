@@ -16,7 +16,8 @@ texture = ExtResource("1_rn6gr")
 [node name="Rain" parent="." instance=ExtResource("2_8uodc")]
 
 [node name="Credits" type="Sprite2D" parent="."]
-position = Vector2(964, 748)
+position = Vector2(780, 644.5)
+scale = Vector2(0.808333, 0.808333)
 texture = ExtResource("4_l24ce")
 
 [node name="LocalizedImage" parent="." instance=ExtResource("3_32mtp")]

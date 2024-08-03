@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://cg6rs6yybp3g6"]
+[gd_scene load_steps=20 format=3 uid="uid://cg6rs6yybp3g6"]
 
 [ext_resource type="Texture2D" uid="uid://xt87hje080jt" path="res://assets/images/game/purin1.png" id="2_fsy0n"]
 [ext_resource type="Texture2D" uid="uid://ds7ffculpywfr" path="res://assets/images/game/purin2.png" id="3_1t0pr"]
@@ -14,8 +14,17 @@
 [ext_resource type="PackedScene" uid="uid://con8stx2et0ea" path="res://assets/scenes/PlayAreaBowl.tscn" id="13_3k2pk"]
 [ext_resource type="PackedScene" uid="uid://dm83ybcd6qyvo" path="res://assets/scenes/PauseMenu.tscn" id="14_10evg"]
 [ext_resource type="PackedScene" uid="uid://cudqnnw8oypk1" path="res://assets/scenes/PurinBag.tscn" id="14_gsn0q"]
+[ext_resource type="Texture2D" uid="uid://brt7tyr0jdf2p" path="res://assets/images/Menu/ArrowDownBlack.png" id="15_cbbqt"]
+[ext_resource type="Texture2D" uid="uid://vp0gkwodowi5" path="res://assets/images/Menu/ArrowUpBlue.png" id="16_cbp28"]
+[ext_resource type="Texture2D" uid="uid://dhwsqd50q7ot5" path="res://assets/images/Menu/ArrowDownBlue.png" id="17_b6ja3"]
+[ext_resource type="Script" path="res://assets/scripts/ToggleVisibilityButton.gd" id="18_a0xn4"]
+[ext_resource type="Texture2D" uid="uid://cl477q3tqi7kf" path="res://assets/images/game/VSBackground.png" id="19_bn4lv"]
 
 [node name="Game" type="Node2D"]
+
+[node name="VsBackground" type="Sprite2D" parent="."]
+position = Vector2(960, 540)
+texture = ExtResource("19_bn4lv")
 
 [node name="ProgressionIndicator" type="Node2D" parent="."]
 visible = false
@@ -78,7 +87,7 @@ scale = Vector2(0.5, 0.5)
 texture = ExtResource("12_hc0wc")
 
 [node name="AI" parent="." node_paths=PackedStringArray("purin_bag", "opponents") instance=ExtResource("13_3k2pk")]
-position = Vector2(1070, 0)
+position = Vector2(1073, -2)
 player_name = "ai"
 config_path = "user://ai.json"
 default_config_path = "res://ai.json"
@@ -87,7 +96,7 @@ purin_bag = NodePath("../PurinBagAI")
 opponents = [NodePath("../Player")]
 
 [node name="Player" parent="." node_paths=PackedStringArray("purin_bag", "opponents") instance=ExtResource("13_3k2pk")]
-position = Vector2(40, 0)
+position = Vector2(47, -2)
 default_config_path = "res://player.json"
 purin_bag = NodePath("../PurinBagPlayer")
 opponents = [NodePath("../AI")]
@@ -99,3 +108,17 @@ position = Vector2(1021, 82)
 position = Vector2(887, 82)
 
 [node name="PauseMenu" parent="." instance=ExtResource("14_10evg")]
+
+[node name="TogglePause" type="TextureButton" parent="." node_paths=PackedStringArray("object_to_toggle")]
+process_mode = 3
+offset_right = 40.0
+offset_bottom = 40.0
+scale = Vector2(0.4, 0.279999)
+toggle_mode = true
+texture_normal = ExtResource("15_cbbqt")
+texture_pressed = ExtResource("16_cbp28")
+texture_hover = ExtResource("17_b6ja3")
+script = ExtResource("18_a0xn4")
+object_to_toggle = NodePath("../PauseMenu")
+
+[connection signal="toggled" from="TogglePause" to="TogglePause" method="_on_toggled"]

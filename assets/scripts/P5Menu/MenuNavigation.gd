@@ -2,6 +2,7 @@ extends Node2D
 
 @export var menu_items_node:Node2D
 @export var external_buttons:Array[Node] = []
+@export var logo:RigidBody2D
 var previous_texture_normal:Texture2D
 var previous_button:P5TextureButton
 var menu_buttons:Array[P5TextureButton]
