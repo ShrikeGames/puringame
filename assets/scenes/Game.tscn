@@ -1,6 +1,7 @@
-[gd_scene load_steps=20 format=3 uid="uid://cwgeb2d5e3a24"]
+[gd_scene load_steps=22 format=3 uid="uid://cwgeb2d5e3a24"]
 
 [ext_resource type="Texture2D" uid="uid://b15f5m2t6v21f" path="res://assets/images/game/SoloBackground.png" id="1_qbe7j"]
+[ext_resource type="Texture2D" uid="uid://bkidel8xvjsvt" path="res://assets/images/game/GameOverBackdrop.png" id="2_61b0a"]
 [ext_resource type="Texture2D" uid="uid://xt87hje080jt" path="res://assets/images/game/purin1.png" id="3_adfmv"]
 [ext_resource type="Texture2D" uid="uid://ds7ffculpywfr" path="res://assets/images/game/purin2.png" id="4_rf2y4"]
 [ext_resource type="Texture2D" uid="uid://d1l07juub21tt" path="res://assets/images/game/purin3.png" id="5_uhu2k"]
@@ -18,6 +19,7 @@
 [ext_resource type="Texture2D" uid="uid://brt7tyr0jdf2p" path="res://assets/images/Menu/ArrowDownBlack.png" id="17_awh0x"]
 [ext_resource type="Texture2D" uid="uid://vp0gkwodowi5" path="res://assets/images/Menu/ArrowUpBlue.png" id="18_aifih"]
 [ext_resource type="Texture2D" uid="uid://dhwsqd50q7ot5" path="res://assets/images/Menu/ArrowDownBlue.png" id="19_7bhyf"]
+[ext_resource type="PackedScene" uid="uid://w8nvtf1vct5n" path="res://assets/scenes/P5Menu/HighscoreLeaderboard.tscn" id="20_8wvcy"]
 [ext_resource type="Script" path="res://assets/scripts/ToggleVisibilityButton.gd" id="20_lgf5u"]
 
 [node name="Game" type="Node2D"]
@@ -25,6 +27,16 @@
 [node name="SoloBackground" type="Sprite2D" parent="."]
 position = Vector2(960, 540)
 texture = ExtResource("1_qbe7j")
+
+[node name="leaderboardBackground" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.466667)
+position = Vector2(489.5, 539)
+scale = Vector2(0.483854, 2.34444)
+texture = ExtResource("2_61b0a")
+
+[node name="HighscoreLeaderboard" parent="." instance=ExtResource("20_8wvcy")]
+process_mode = 3
+position = Vector2(27, 126)
 
 [node name="ProgressionIndicator" type="Node2D" parent="."]
 visible = false
@@ -86,19 +98,20 @@ position = Vector2(0, 1140)
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("13_bcewv")
 
-[node name="PlayAreaBowl" parent="." node_paths=PackedStringArray("purin_bag") instance=ExtResource("13_ohdrd")]
-position = Vector2(1002, -2)
-purin_bag = NodePath("../PurinBag")
-
 [node name="PurinBag" parent="." instance=ExtResource("14_xt01f")]
 position = Vector2(1849, 80)
+
+[node name="PlayAreaBowl" parent="." node_paths=PackedStringArray("leaderboard", "purin_bag") instance=ExtResource("13_ohdrd")]
+position = Vector2(1002, -2)
+leaderboard = NodePath("../HighscoreLeaderboard")
+purin_bag = NodePath("../PurinBag")
 
 [node name="PauseMenu" parent="." instance=ExtResource("16_4yt75")]
 
 [node name="TogglePause" type="TextureButton" parent="." node_paths=PackedStringArray("object_to_toggle")]
 process_mode = 3
-offset_right = 40.0
-offset_bottom = 40.0
+offset_right = 200.0
+offset_bottom = 200.0
 scale = Vector2(0.4, 0.279999)
 toggle_mode = true
 texture_normal = ExtResource("17_awh0x")

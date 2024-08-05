@@ -15,10 +15,15 @@ func init(player_controller:PlayerController):
 	self.held_purin_level = 0
 	self.next_purin_to_drop_level = 0
 	self.inputs = []
-	self.configurations = game.get_configurations_with_mutation("configurations", game.ai_mutation_rate, {"0":{}})
-	if game.training:
+	if game.training and game.rank >= 10:
+		self.configurations = game.get_configurations_with_mutation("configurations", game.ai_mutation_rate, {"0":{}})
 		var cross_breed_configuration = game.get_configurations_with_mutation("configurations", game.ai_mutation_rate, self.configurations)
 		self.configurations = cross_breed(self.configurations, cross_breed_configuration)
+	else:
+		if game.training:
+			self.configurations = game.get_configurations_with_mutation("configurations", game.ai_mutation_rate, {"0":{}}, false, game.rank)
+		else:
+			self.configurations = game.get_configurations_with_mutation("configurations", game.ai_mutation_rate, {"0":{}}, false, 0)
 	
 	if debug:
 		self.game.debug_label.text = "%s"%[self.configurations]

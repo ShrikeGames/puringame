@@ -22,7 +22,7 @@
 
 [node name="Game" type="Node2D" node_paths=PackedStringArray("ai_games_node", "camera")]
 script = ExtResource("1_doc3l")
-num_ai = 20
+num_ai = 100
 ai_games_node = NodePath("AIGames")
 camera = NodePath("Camera2D")
 

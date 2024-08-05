@@ -1,0 +1,159 @@
+[gd_scene load_steps=6 format=3 uid="uid://w8nvtf1vct5n"]
+
+[ext_resource type="Script" path="res://assets/scripts/P5Menu/HighscoreLeaderboard.gd" id="1_7de7n"]
+[ext_resource type="Texture2D" uid="uid://dow2wy4w0u0p7" path="res://assets/images/Menu/Highscores_en.png" id="2_8ffnr"]
+[ext_resource type="Texture2D" uid="uid://7m2byftq7sy1" path="res://assets/images/Menu/Highscores_jp.png" id="2_soju0"]
+[ext_resource type="FontFile" uid="uid://cdwb8ivskcjue" path="res://assets/fonts/NotoSansCJK-Regular.ttc" id="4_1x046"]
+[ext_resource type="FontFile" uid="uid://buytj31trs62" path="res://assets/fonts/NotoSansCJK-Bold.ttc" id="5_8e0m8"]
+
+[node name="HighscoreLeaderboard" type="Node2D" node_paths=PackedStringArray("scores_node", "rank_image_en", "rank_image_jp")]
+script = ExtResource("1_7de7n")
+scores_node = NodePath("Scores")
+rank_image_en = NodePath("HighscoresEn")
+rank_image_jp = NodePath("HighscoresJP")
+
+[node name="HighscoresEn" type="Sprite2D" parent="."]
+position = Vector2(150, 450)
+texture = ExtResource("2_8ffnr")
+
+[node name="HighscoresJP" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(150, 450)
+texture = ExtResource("2_soju0")
+
+[node name="Scores" type="Node2D" parent="."]
+
+[node name="1" type="RichTextLabel" parent="Scores"]
+offset_left = 156.0
+offset_top = 12.0
+offset_right = 1904.0
+offset_bottom = 105.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_fonts/normal_font = ExtResource("4_1x046")
+theme_override_fonts/bold_font = ExtResource("5_8e0m8")
+theme_override_font_sizes/normal_font_size = 60
+theme_override_font_sizes/bold_font_size = 60
+bbcode_enabled = true
+text = "Test Name That is long"
+scroll_active = false
+
+[node name="2" type="RichTextLabel" parent="Scores"]
+offset_left = 156.0
+offset_top = 97.0
+offset_right = 1914.0
+offset_bottom = 190.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_fonts/normal_font = ExtResource("4_1x046")
+theme_override_fonts/bold_font = ExtResource("5_8e0m8")
+theme_override_font_sizes/normal_font_size = 60
+theme_override_font_sizes/bold_font_size = 60
+bbcode_enabled = true
+text = "Test Name That is long"
+scroll_active = false
+
+[node name="3" type="RichTextLabel" parent="Scores"]
+offset_left = 156.0
+offset_top = 182.0
+offset_right = 1912.0
+offset_bottom = 275.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_fonts/normal_font = ExtResource("4_1x046")
+theme_override_fonts/bold_font = ExtResource("5_8e0m8")
+theme_override_font_sizes/normal_font_size = 60
+theme_override_font_sizes/bold_font_size = 60
+bbcode_enabled = true
+text = "Test Name That is long"
+scroll_active = false
+
+[node name="4" type="RichTextLabel" parent="Scores"]
+offset_left = 156.0
+offset_top = 266.0
+offset_right = 1921.0
+offset_bottom = 359.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_fonts/normal_font = ExtResource("4_1x046")
+theme_override_fonts/bold_font = ExtResource("5_8e0m8")
+theme_override_font_sizes/normal_font_size = 60
+theme_override_font_sizes/bold_font_size = 60
+bbcode_enabled = true
+text = "Test Name That is long"
+scroll_active = false
+
+[node name="5" type="RichTextLabel" parent="Scores"]
+offset_left = 156.0
+offset_top = 352.0
+offset_right = 1912.0
+offset_bottom = 445.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_fonts/normal_font = ExtResource("4_1x046")
+theme_override_fonts/bold_font = ExtResource("5_8e0m8")
+theme_override_font_sizes/normal_font_size = 60
+theme_override_font_sizes/bold_font_size = 60
+bbcode_enabled = true
+text = "Test Name That is long"
+scroll_active = false
+
+[node name="6" type="RichTextLabel" parent="Scores"]
+offset_left = 156.0
+offset_top = 438.0
+offset_right = 1915.0
+offset_bottom = 531.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_fonts/normal_font = ExtResource("4_1x046")
+theme_override_fonts/bold_font = ExtResource("5_8e0m8")
+theme_override_font_sizes/normal_font_size = 60
+theme_override_font_sizes/bold_font_size = 60
+bbcode_enabled = true
+text = "Test Name That is long"
+scroll_active = false
+
+[node name="7" type="RichTextLabel" parent="Scores"]
+offset_left = 156.0
+offset_top = 524.0
+offset_right = 1910.0
+offset_bottom = 617.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_fonts/normal_font = ExtResource("4_1x046")
+theme_override_fonts/bold_font = ExtResource("5_8e0m8")
+theme_override_font_sizes/normal_font_size = 60
+theme_override_font_sizes/bold_font_size = 60
+bbcode_enabled = true
+text = "Test Name That is long"
+scroll_active = false
+
+[node name="8" type="RichTextLabel" parent="Scores"]
+offset_left = 156.0
+offset_top = 608.0
+offset_right = 1917.0
+offset_bottom = 701.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_fonts/normal_font = ExtResource("4_1x046")
+theme_override_fonts/bold_font = ExtResource("5_8e0m8")
+theme_override_font_sizes/normal_font_size = 60
+theme_override_font_sizes/bold_font_size = 60
+bbcode_enabled = true
+text = "Test Name That is long"
+scroll_active = false
+
+[node name="9" type="RichTextLabel" parent="Scores"]
+offset_left = 156.0
+offset_top = 693.0
+offset_right = 1914.0
+offset_bottom = 786.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_fonts/normal_font = ExtResource("4_1x046")
+theme_override_fonts/bold_font = ExtResource("5_8e0m8")
+theme_override_font_sizes/normal_font_size = 60
+theme_override_font_sizes/bold_font_size = 60
+bbcode_enabled = true
+text = "Test Name That is long"
+scroll_active = false

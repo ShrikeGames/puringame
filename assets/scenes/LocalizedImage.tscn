@@ -9,3 +9,5 @@ image = NodePath("Image")
 
 [node name="Image" type="Sprite2D" parent="."]
 texture = ExtResource("2_mg2fo")
+
+[connection signal="ready" from="." to="." method="_on_ready"]

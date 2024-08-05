@@ -8,7 +8,7 @@ class_name LocalizedImage
 
 var texture:Texture2D
 # Called when the node enters the scene tree for the first time.
-func _ready():
+func _on_ready():
 	if language_toggle:
 		language_toggle.subscribe_image(self)
 	update(Global.language)
@@ -19,3 +19,4 @@ func update(toggled_language):
 	else:
 		texture = load(en)
 	image.texture = texture
+

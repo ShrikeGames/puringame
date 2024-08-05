@@ -11,7 +11,7 @@ var generation_ended:bool = false
 var generation_timer:float = 0.0
 
 var games:Array[PlayerController]
-var generation:int = 0
+@export var generation:int = 0
 var following_game:PlayerController
 func _on_ready() -> void:
 	init_ai_players();
@@ -32,13 +32,20 @@ func init_ai_players():
 		var game:PlayerController = play_package.instantiate()
 		game.ai_controlled = true
 		game.mute_sound = true
-		game.auto_retry = true
-		game.ai_mutation_rate = 0.05 + (i*0.01)
+		game.auto_retry = false
+		game.ai_mutation_rate = min(0.05 + (i*0.01), 0.1)
 		game.training = true
 		var player_name = "ai%s_%s"%[generation, i]
 		game.player_name = player_name
-		game.config_path = "user://ai.json"
-		game.default_config_path = "res://ai.json"
+		game.rank = i
+		# save to your own generation file
+		game.config_path = "user://ai%s.json"%[generation]
+		if generation <= 1:
+			game.default_config_path = "res://ai.json"
+		else:
+			# use previous generation
+			game.default_config_path = "user://ai%s.json"%[generation-1]
+		
 		game.position = Vector2(40 + (x_pos*1020), y_pos)
 		ai_games_node.add_child(game)
 		game.init()
@@ -49,6 +56,8 @@ func init_ai_players():
 			y_pos += 1080
 			x_pos = 0
 	following_game = games[0]
+	camera.position.x = 960
+	camera.position.y = following_game.position.y + 535
 func rank_ai_players_hs(player1:PlayerController, player2:PlayerController):
 	if player1.highscore > player2.highscore:
 		return true
@@ -67,7 +76,7 @@ func _process(delta):
 	if camera != null and not games.is_empty():
 		var updated:bool = false
 		for game in games:
-			if is_instance_valid(game) and game.score > 30000 and game.score > following_game.score and game.player_name != following_game.player_name:
+			if not is_instance_valid(following_game) or (is_instance_valid(game) and game.score > 30000 and game.score > following_game.score and game.player_name != following_game.player_name):
 				following_game = game
 				updated = true
 		if updated:

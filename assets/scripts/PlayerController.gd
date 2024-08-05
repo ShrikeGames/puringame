@@ -8,6 +8,7 @@ var initial_seed:String
 @export var default_config_path: String = "res://default.json"
 @export var ai_controlled: bool = false
 @export var auto_retry: bool = false
+@export var leaderboard:Leaderboard
 var ai_controller: AIController
 @export var noir: NoiR
 @export var purin_bag: PurinBag
@@ -93,13 +94,21 @@ func load_configs():
 	)
 	evil_purin_spawn_level_divider = get_config_value_or_default("evil_purin_spawn_level_divider", 0, 4)
 	
-func get_configurations_with_mutation(key: String, mutation_rate: float = 0.0, default_default_value = {}):
+func get_configurations_with_mutation(key: String, mutation_rate: float = 0.0, default_default_value = {}, random:bool=true, config_index:int=0):
 	var config_value = {}
 	var default_value = default_default_value
-	var default_history_run:Dictionary = default_config_json.get("history", [{}]).pick_random()
+	var default_history_run:Dictionary
+	if random:
+		default_history_run = default_config_json.get("history", [{}]).pick_random()
+	else:
+		default_history_run = default_config_json.get("history", [{}])[min(config_index, len(default_config_json.get("history", [{}]))-1)]
 	if default_history_run.has(key):
 		default_value = default_history_run.get(key)
-	var config_history_run:Dictionary = config_json.get("history", [{}]).pick_random()
+	var config_history_run:Dictionary 
+	if random:
+		config_history_run = config_json.get("history", [{}]).pick_random()
+	else:
+		config_history_run = config_json.get("history", [{}])[min(config_index, len(config_json.get("history", [{}]))-1)]
 	
 	if config_history_run != null and config_history_run.get("history", [{}]).has(key):
 		config_value = config_history_run.get(key, default_value)
@@ -251,7 +260,8 @@ func save_results():
 		
 	file_access.store_line(json_string)
 	file_access.close()
-	
+	if leaderboard:
+		leaderboard.update()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -268,6 +278,7 @@ func _process(delta: float) -> void:
 
 func check_game_over(delta):
 	if gameover_screen.visible == true:
+		
 		if Input.is_action_pressed("retry") or (ai_controlled and auto_retry):
 			#print("retry action pressed? ", Input.is_action_pressed("retry"))
 			#print("auto_retry? ", auto_retry)
@@ -298,6 +309,7 @@ func check_game_over(delta):
 			print("%s Game Over with a score of %s" % [player_name, score])
 			gameover_screen.visible = true
 			purin.game_over_timer_sec = game_over_threshold_sec
+			
 			if not ai_controlled:
 				get_tree().paused = true
 			return true
