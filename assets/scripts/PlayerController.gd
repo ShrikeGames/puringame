@@ -1,5 +1,7 @@
 extends Node2D
 class_name PlayerController
+# random number generator seed
+var initial_seed:String
 
 @export var player_name: String = "player"
 @export var config_path: String = "user://player.json"
@@ -29,7 +31,7 @@ var ai_controller: AIController
 @export var training: bool = false
 @export var move_speed: float = 450.0
 @export var last_mouse_pos:Vector2 = Vector2(0.0, 0.0)
-
+@export var max_score_history_length:int = 10
 var auto_drop:bool = false
 
 var rank: int = 0
@@ -38,7 +40,6 @@ var config_json
 var default_config_json
 
 var score: int = 0
-var highscore: int = 0
 var score_orb: Resource = load("res://assets/scenes/ScoreOrb.tscn")
 var evil_orb: Resource = load("res://assets/scenes/EvilOrb.tscn")
 
@@ -58,12 +59,10 @@ var drop_purin_cooldown_sec: float = 0.5
 
 var game_over_threshold_sec: float = 3
 
-var total_games:int = 0
-var lifetime_score:int = 0
-var average_score:float = 0
 func _on_ready():
 	# set game speed
-	Engine.time_scale = Global.game_speed
+	if not ai_controlled:
+		Engine.time_scale = Global.game_speed
 	# first time load the purin images/textures
 	load_purin()
 	if not training:
@@ -93,12 +92,40 @@ func load_configs():
 		"evil_purin_spawn_level_threshold", 0, 3
 	)
 	evil_purin_spawn_level_divider = get_config_value_or_default("evil_purin_spawn_level_divider", 0, 4)
-	highscore = get_config_value_or_default("highscore", 0, 0)
-	total_games = get_config_value_or_default("total_games", 0, 0)
-	lifetime_score = get_config_value_or_default("lifetime_score", 0, 0)
-	average_score = get_config_value_or_default("average_score", 0, 0)
-	#default_config.save(default_config_path)
 	
+func get_configurations_with_mutation(key: String, mutation_rate: float = 0.0, default_default_value = {}):
+	var config_value = {}
+	var default_value = default_default_value
+	var default_history_run:Dictionary = default_config_json.get("history", [{}]).pick_random()
+	if default_history_run.has(key):
+		default_value = default_history_run.get(key)
+	var config_history_run:Dictionary = config_json.get("history", [{}]).pick_random()
+	
+	if config_history_run != null and config_history_run.get("history", [{}]).has(key):
+		config_value = config_history_run.get(key, default_value)
+	else:
+		config_value = default_value
+	
+	if mutation_rate != 0.0:
+		for purin_level in range(0, highest_possible_purin_level+1):
+			var purin_config = config_value["%s"%[purin_level]]
+			purin_config["highscore_weights"] = mutate_array(purin_config["highscore_weights"], mutation_rate)
+			purin_config["highscore_biases"] = mutate_array(purin_config["highscore_biases"], mutation_rate)
+			config_value["%s"%[purin_level]] = purin_config
+	return config_value
+
+func mutate_array(list_floats:Array, mutation_rate:float):
+	var mutated_list:Array[float] = []
+	# should be an array so loop through each weight/bias
+	for i in range(0, len(list_floats)):
+		# individually give it a mutation chance
+		if randf() <= mutation_rate:
+			mutated_list.append(list_floats[i] + randf_range(-1.0, 1.0))
+			mutated_list[i] = min(mutated_list[i], 8.0)
+			mutated_list[i] = max(0.1, mutated_list[i])
+		else:
+			mutated_list.append(list_floats[i])
+	return mutated_list
 
 func get_config_value_or_default(key: String, mutation_rate: float = 0.0, default_default_value = 0):
 	var config_value = 0
@@ -115,9 +142,9 @@ func get_config_value_or_default(key: String, mutation_rate: float = 0.0, defaul
 		for i in range(0, len(config_value)):
 			# individually give it a mutation chance
 			if randf() <= mutation_rate:
-				config_value[i] += randf_range(-1.0, 1.0)
+				config_value[i] += randf_range(-2.0, 2.0)
 				config_value[i] = min(config_value[i], 8.0)
-				config_value[i] = max(0.1, config_value[i])
+				config_value[i] = max(0, config_value[i])
 	
 	return config_value
 
@@ -131,7 +158,10 @@ func load_purin():
 
 func set_up_game():
 	# setup a unique seed for the randomizer
-	randomize()
+	if not initial_seed:
+		randomize()
+	else:
+		seed(initial_seed.hash())
 	# clear the game of any dropped purin
 	remove_all_purin()
 	# reset progress
@@ -149,7 +179,7 @@ func set_up_game():
 	purin_bag.generate_purin_bag()
 	noir.change_held_purin(purin_bag.get_current_purin())
 	# if this is an AI player then create an AIController for it
-	if ai_controlled and not is_instance_valid(ai_controller):
+	if ai_controlled:
 		ai_controller = AIController.new()
 		ai_controller.init(self)
 
@@ -180,7 +210,11 @@ func get_board_state():
 		state = "%s_%s_%s,%s" % [purin_level, purin.position.x, purin.position.y, state]
 	return state
 
-
+func rank_history(run1:Dictionary, run2:Dictionary):
+	if run1.get("score", 0) > run2.get("score", 0):
+		return true
+	return false
+	
 func save_results():
 	# cannot save to read-only res:// location
 	if config_path.contains("res://"):
@@ -194,27 +228,19 @@ func save_results():
 		print("No config_json was loaded? ", config_path)
 		return
 	# update config
-	config_json["last_score"] = score
-	total_games += 1
-	config_json["total_games"] = total_games
-	lifetime_score += score
-	config_json["lifetime_score"] = lifetime_score
-	@warning_ignore("integer_division")
-	average_score = lifetime_score/total_games
-	config_json["average_score"] = average_score
-	
+	var history:Array = config_json.get("history", [])
+	var new_run:Dictionary = {
+		"score": score,
+		"board_state": get_board_state()
+	}
 	if ai_controlled:
-		config_json["weights"] = ai_controller.weights
-		config_json["biases"] = ai_controller.biases
-	if score > config_json["highscore"]:
-		print(player_name, " got a new personal highscore of ", score)
-		if training:
-			print("weights:", ai_controller.weights)
-		highscore = score
-		config_json["highscore"] = highscore
-		if ai_controlled:
-			config_json["highscore_weights"] = ai_controller.weights
-			config_json["highscore_biases"] = ai_controller.biases
+		new_run["configurations"] = ai_controller.configurations
+	history.append(new_run)
+	# sort history from best to worst
+	history.sort_custom(rank_history)
+	# only save the last 10 after sorting
+	config_json["history"] = history.slice(0, min(max_score_history_length+1, len(history)))
+	
 	# save the results
 	var json_string := JSON.stringify(config_json)
 	# We will need to open/create a new file for this data string
@@ -234,7 +260,8 @@ func _process(delta: float) -> void:
 
 	time_since_last_dropped_purin_sec += delta
 	if ai_controlled:
-		ai_controller.process_ai(delta)
+		if is_instance_valid(ai_controller):
+			ai_controller.process_ai(delta)
 	else:
 		process_player(delta)
 
@@ -256,6 +283,7 @@ func check_game_over(delta):
 			return false
 		if ai_controlled and not auto_retry and training:
 			#print("Delete AI player ", player_name, " because they lost, are not set to auto retry and are in training")
+			#print("%s Game Over with a score of %s" % [player_name, score])
 			save_results()
 			self.queue_free()
 		return true
@@ -273,6 +301,13 @@ func check_game_over(delta):
 			if not ai_controlled:
 				get_tree().paused = true
 			return true
+		if purin.position.x < left_edge.position.x:
+			purin.position.x = left_edge.position.x
+		elif purin.position.x > right_edge.position.x:
+			purin.position.x = right_edge.position.x
+		elif purin.position.y < top_edge.position.y:
+			purin.position.y = top_edge.position.y
+		
 		# if the purin is above the height threshold start increasing its conter
 		if (purin.position.y - purin.get_meta("radius") < top_edge.position.y 
 			or purin.position.x < left_edge.position.x
@@ -293,7 +328,27 @@ func check_game_over(delta):
 			purin.game_over_timer_sec = 0
 			purin.game_over_countdown.visible = false
 			purin.game_over_countdown.stop()
+	if ai_controlled and training and terminate_training_early():
+		print("%s is underperforming and terminated early with a score of %s at level %s" % [player_name, score, purin_bag.max_purin_level])
+		gameover_screen.visible = true
+		return true
+	return false
 
+func terminate_training_early():
+	# semi optimal merging should get close to these scores with some wiggle room
+	if purin_bag.max_purin_level < 5 and score >= 1500:
+		return true
+	if purin_bag.max_purin_level < 6 and score >= 4000:
+		return true
+	if purin_bag.max_purin_level < 7 and score >= 9000:
+		return true
+	if purin_bag.max_purin_level < 8 and score >= 35000:
+		return true
+	# more wiggle room for higher tier purin
+	if purin_bag.max_purin_level < 9 and score >= 65000:
+		return true
+	
+	
 	return false
 
 func process_player(delta):
@@ -336,7 +391,7 @@ func update_noir_position(delta):
 			noir.position.x = valid_x_pos(mouse_pos.x)
 	
 func valid_x_pos(x_pos: float):
-	return max(left_edge.position.x, min(x_pos, right_edge.position.x))
+	return max(left_edge.position.x + 20, min(x_pos, right_edge.position.x - 20))
 
 
 func spawn_purin(

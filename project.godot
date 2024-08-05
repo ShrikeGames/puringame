@@ -186,6 +186,7 @@ locale/locale_filter_mode=0
 [physics]
 
 2d/physics_engine="GodotPhysics2D"
+2d/solver/solver_iterations=20
 
 [rendering]
 

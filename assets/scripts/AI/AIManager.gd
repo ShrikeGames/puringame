@@ -6,109 +6,72 @@ var play_package: Resource = load("res://assets/scenes/PlayAreaBowl.tscn")
 @export var time_scale: float = 1.0
 @export var debug: bool = false
 @export var camera:Camera2D
-@export var generation_length_sec:float = 400
+
+var generation_ended:bool = false
 var generation_timer:float = 0.0
 
 var games:Array[PlayerController]
 var generation:int = 0
 var following_game:PlayerController
 func _on_ready() -> void:
-	Engine.time_scale = time_scale
 	init_ai_players();
 	
 func init_ai_players():
+	Engine.time_scale = time_scale
 	generation += 1
+	for game in ai_games_node.get_children():
+		ai_games_node.queue_free()
+		
+	games = []
 	print("Begin Generation %s"%[generation])
-	generation_timer = 0.0
 	var x_pos:float = 0
 	var y_pos:float = 0
-	var original_population = []
+	generation_ended = false
+	generation_timer = 0
 	for i in range(0, num_ai):
 		var game:PlayerController = play_package.instantiate()
 		game.ai_controlled = true
 		game.mute_sound = true
 		game.auto_retry = true
-		game.ai_mutation_rate = 0
+		game.ai_mutation_rate = 0.05 + (i*0.01)
 		game.training = true
-		var player_name = "ai%s"%[i]
+		var player_name = "ai%s_%s"%[generation, i]
 		game.player_name = player_name
-		# for now all save to the same file instead of individual
-		# working to improve just one result
-		# TODO change later
-		game.config_path = "user://ai%s.json"%[i]
+		game.config_path = "user://ai.json"
 		game.default_config_path = "res://ai.json"
 		game.position = Vector2(40 + (x_pos*1020), y_pos)
-		
+		ai_games_node.add_child(game)
 		game.init()
+		game.set_up_game()
+		games.append(game)
 		x_pos += 1
 		if i > 0 and (i+1) % 2 == 0:
 			y_pos += 1080
 			x_pos = 0
-		original_population.append(game)
-	original_population.sort_custom(rank_ai_players)
-	games = []
-	var rank:int = 0
-	for game in original_population:
-		rank += 1
-		game.rank = rank
-		if generation == 1:
-			game.ai_mutation_rate = 0
-		else:
-			if rank < num_ai * 0.25:
-				game.ai_mutation_rate = 0.15
-			elif rank < num_ai * 0.5:
-				game.ai_mutation_rate = 0.30
-				game.config_path = "user://ai%s.json"%[int(rank*0.5)]
-				game.default_config_path = "res://ai.json"
-			else:
-				game.ai_mutation_rate = 0.50
-				game.config_path = "user://ai%s.json"%[int(rank*0.25)]
-				game.default_config_path = "res://ai.json"
-		games.append(game)
-		
-	games.sort_custom(rank_ai_players)
-	for game in ai_games_node.get_children():
-		ai_games_node.queue_free()
-	
-	var weights = [[0,0,0,0,0,0],[0,0,0,0,0,1],[0,0,0,0,1,0],[0,0,0,0,1,1],[0,0,0,1,0,0],[0,0,0,1,0,1],[0,0,0,1,1,0],[0,0,0,1,1,1],[0,0,1,0,0,0],[0,0,1,0,0,1],[0,0,1,0,1,0],[0,0,1,0,1,1],[0,0,1,1,0,0],[0,0,1,1,0,1],[0,0,1,1,1,0],[0,0,1,1,1,1],[0,1,0,0,0,0],[0,1,0,0,0,1],[0,1,0,0,1,0],[0,1,0,0,1,1],[0,1,0,1,0,0],[0,1,0,1,0,1],[0,1,0,1,1,0],[0,1,0,1,1,1],[0,1,1,0,0,0],[0,1,1,0,0,1],[0,1,1,0,1,0],[0,1,1,0,1,1],[0,1,1,1,0,0],[0,1,1,1,0,1],[0,1,1,1,1,0],[0,1,1,1,1,1],[1,0,0,0,0,0],[1,0,0,0,0,1],[1,0,0,0,1,0],[1,0,0,0,1,1],[1,0,0,1,0,0],[1,0,0,1,0,1],[1,0,0,1,1,0],[1,0,0,1,1,1],[1,0,1,0,0,0],[1,0,1,0,0,1],[1,0,1,0,1,0],[1,0,1,0,1,1],[1,0,1,1,0,0],[1,0,1,1,0,1],[1,0,1,1,1,0],[1,0,1,1,1,1],[1,1,0,0,0,0],[1,1,0,0,0,1],[1,1,0,0,1,0],[1,1,0,0,1,1],[1,1,0,1,0,0],[1,1,0,1,0,1],[1,1,0,1,1,0],[1,1,0,1,1,1],[1,1,1,0,0,0],[1,1,1,0,0,1],[1,1,1,0,1,0],[1,1,1,0,1,1],[1,1,1,1,0,0],[1,1,1,1,0,1],[1,1,1,1,1,0],[1,1,1,1,1,1],[0,0,0,0,0,0],[0,0,0,0,0,2],[0,0,0,0,2,0],[0,0,0,0,2,2],[0,0,0,2,0,0],[0,0,0,2,0,2],[0,0,0,2,2,0],[0,0,0,2,2,2],[0,0,2,0,0,0],[0,0,2,0,0,2],[0,0,2,0,2,0],[0,0,2,0,2,2],[0,0,2,2,0,0],[0,0,2,2,0,2],[0,0,2,2,2,0],[0,0,2,2,2,2],[0,2,0,0,0,0],[0,2,0,0,0,2],[0,2,0,0,2,0],[0,2,0,0,2,2],[0,2,0,2,0,0],[0,2,0,2,0,2],[0,2,0,2,2,0],[0,2,0,2,2,2],[0,2,2,0,0,0],[0,2,2,0,0,2],[0,2,2,0,2,0],[0,2,2,0,2,2],[0,2,2,2,0,0],[0,2,2,2,0,2],[0,2,2,2,2,0],[0,2,2,2,2,2],[2,0,0,0,0,0],[2,0,0,0,0,2],[2,0,0,0,2,0],[2,0,0,0,2,2],[2,0,0,2,0,0],[2,0,0,2,0,2],[2,0,0,2,2,0],[2,0,0,2,2,2],[2,0,2,0,0,0],[2,0,2,0,0,2],[2,0,2,0,2,0],[2,0,2,0,2,2],[2,0,2,2,0,0],[2,0,2,2,0,2],[2,0,2,2,2,0],[2,0,2,2,2,2],[2,2,0,0,0,0],[2,2,0,0,0,2],[2,2,0,0,2,0],[2,2,0,0,2,2],[2,2,0,2,0,0],[2,2,0,2,0,2],[2,2,0,2,2,0],[2,2,0,2,2,2],[2,2,2,0,0,0],[2,2,2,0,0,2],[2,2,2,0,2,0],[2,2,2,0,2,2],[2,2,2,2,0,0],[2,2,2,2,0,2],[2,2,2,2,2,0],[2,2,2,2,2,2]]
-	for game in games:
-		ai_games_node.add_child(game)
-		game.init()
-		if generation == 1:
-			game.config_json["highscore_weights"] = weights.pick_random()
-			game.config_json["highscore_biases"] = [0,0,0,0,0,0]
-		game.set_up_game()
-	games.sort_custom(rank_ai_players)
-	for game in games:
-		game.average_score = game.lifetime_score / max(1, game.total_games)
-		print("%s. %s (%s avg %s) %s %s"%[game.rank, game.player_name, game.highscore, game.average_score, game.ai_controller.weights, game.ai_controller.biases])
-		
 	following_game = games[0]
-	camera.position.y = following_game.position.y + 535
-	
-func rank_ai_players(player1:PlayerController, player2:PlayerController):
-	if player1.average_score > player2.average_score:
+func rank_ai_players_hs(player1:PlayerController, player2:PlayerController):
+	if player1.highscore > player2.highscore:
 		return true
 	return false
-	
+		
+func rank_ai_players(player1:PlayerController, player2:PlayerController):
+	if player1.last_score > player2.last_score:
+		return true
+	return false
+
 func _process(delta):
 	generation_timer += delta
-	if generation_timer >= 100 and snappedi(generation_timer, 0) % 100 == 0:
-		print("Generation %s Age: %s"%[generation, generation_timer])
-	
-	# reached the end of the generation so toggle off retries
-	if generation_timer > generation_length_sec:
-		for game in games:
-			if is_instance_valid(game):
-				game.auto_retry = false
 	if ai_games_node.get_child_count() <= 0:
 		init_ai_players();
 	
-	if camera != null and not games.is_empty() and not is_instance_valid(following_game):
+	if camera != null and not games.is_empty():
+		var updated:bool = false
 		for game in games:
-			if is_instance_valid(game):
-				print("Now watching ", game.player_name)
-				camera.position.y = game.position.y + 535
+			if is_instance_valid(game) and game.score > 30000 and game.score > following_game.score and game.player_name != following_game.player_name:
 				following_game = game
-				break
+				updated = true
+		if updated:
+			camera.position.x = 960
+			camera.position.y = following_game.position.y + 535
+			
 	

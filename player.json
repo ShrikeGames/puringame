@@ -5,12 +5,10 @@
 	"drop_purin_cooldown_sec":0.25,
 	"evil_purin_spawn_level_threshold":3,
 	"evil_purin_spawn_level_divider":4,
-	"highscore":0,
-	"last_board_state":"",
-	"last_score":0,
-	"weights":[1, 1, 1, 1, 1, 1],
-	"biases":[0, 0, 0, 0, 0, 0],
-	"highscore_board_state":"",
-	"highscore_weights":[1, 1, 1, 1, 1, 1],
-	"highscore_biases":[0, 0, 0, 0.1, 0, 0],
+	"history": [
+		{
+			"score":0,
+			"board_state": [],
+		}
+	]
 }
