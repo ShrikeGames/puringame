@@ -2,7 +2,6 @@ extends Node2D
 class_name NoiR
 @export var drop_line: Line2D
 @export var held_purin: PurinIndicator
-@export var number_label: RichTextLabel
 var space_state
 
 
@@ -33,9 +32,6 @@ func _process(_delta):
 
 
 func change_held_purin(purin_info:Dictionary):
-	if Global.numbered_purin and number_label:
-		number_label.text = "[center][color=fff]%s[/color][/center]"%[purin_info["level"]]
-		number_label.visible = true
 	held_purin.set_frame(purin_info["level"])
 	held_purin.evil = purin_info["evil"]
 	held_purin.evil_visual.visible =held_purin.evil

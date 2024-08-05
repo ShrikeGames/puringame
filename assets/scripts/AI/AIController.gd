@@ -23,7 +23,7 @@ func init(player_controller:PlayerController):
 		if game.training:
 			self.configurations = game.get_configurations_with_mutation("configurations", game.ai_mutation_rate, {"0":{}}, false, game.rank)
 		else:
-			self.configurations = game.get_configurations_with_mutation("configurations", game.ai_mutation_rate, {"0":{}}, false, 0)
+			self.configurations = game.get_configurations_with_mutation("configurations", game.ai_mutation_rate, {"0":{}}, true)
 	
 	if debug:
 		self.game.debug_label.text = "%s"%[self.configurations]

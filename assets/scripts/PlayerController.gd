@@ -306,7 +306,7 @@ func check_game_over(delta):
 		if ( 
 			purin.game_over_timer_sec >= game_over_threshold_sec
 		):
-			print("%s Game Over with a score of %s" % [player_name, score])
+			print("GameOver / %s / %s / %s / %s / %s" % [player_name, score, purin_bag.max_purin_level, dropped_purin_count, purin_node.get_child_count()])
 			gameover_screen.visible = true
 			purin.game_over_timer_sec = game_over_threshold_sec
 			
@@ -341,18 +341,23 @@ func check_game_over(delta):
 			purin.game_over_countdown.visible = false
 			purin.game_over_countdown.stop()
 	if ai_controlled and training and terminate_training_early():
-		print("%s is underperforming and terminated early with a score of %s at level %s" % [player_name, score, purin_bag.max_purin_level])
+		print("Performance / %s / %s / %s / %s / %s" % [player_name, score, purin_bag.max_purin_level, dropped_purin_count, purin_node.get_child_count()])
 		gameover_screen.visible = true
 		return true
 	return false
 
 func terminate_training_early():
+	# Selection Pressure Rules
+	# kill those with excessive purin that aren't combined
+	if purin_node.get_child_count() >= 7 + (purin_bag.max_purin_level*2):
+		return true
+	
 	# semi optimal merging should get close to these scores with some wiggle room
 	if purin_bag.max_purin_level < 5 and score >= 1500:
 		return true
 	if purin_bag.max_purin_level < 6 and score >= 4000:
 		return true
-	if purin_bag.max_purin_level < 7 and score >= 9000:
+	if purin_bag.max_purin_level < 7 and score >= 12000:
 		return true
 	if purin_bag.max_purin_level < 8 and score >= 35000:
 		return true

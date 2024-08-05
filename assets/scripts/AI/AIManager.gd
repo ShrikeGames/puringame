@@ -18,6 +18,31 @@ func _on_ready() -> void:
 	
 func init_ai_players():
 	Engine.time_scale = time_scale
+	if generation > 1:
+		var config_json = Global.read_json("user://ai%s.json"%[generation])
+		var total_score:int = 0
+		var total_count:int = 0
+		var highest_score:int = 0
+		
+		for config in config_json.get("history"):
+			if total_count == 0:
+				highest_score = config.get("score")
+			total_score += config.get("score")
+			total_count += 1
+		var average:float = total_score / float(total_count)
+		print("Average Score for Generation %s was %s"%[generation, average])
+		print("Highest Score for Generation %s was %s"%[generation, highest_score])
+		
+		# save the results of the last generation to the generic named json file
+		var json_string := JSON.stringify(config_json)
+		var file_access := FileAccess.open("user://ai.json", FileAccess.WRITE)
+		if not file_access:
+			print("An error happened while saving data: ", FileAccess.get_open_error())
+			return
+			
+		file_access.store_line(json_string)
+		file_access.close()
+	
 	generation += 1
 	for game in ai_games_node.get_children():
 		ai_games_node.queue_free()
@@ -76,7 +101,7 @@ func _process(delta):
 	if camera != null and not games.is_empty():
 		var updated:bool = false
 		for game in games:
-			if not is_instance_valid(following_game) or (is_instance_valid(game) and game.score > 30000 and game.score > following_game.score and game.player_name != following_game.player_name):
+			if not is_instance_valid(following_game) or (is_instance_valid(game) and game.score > 30000 and game.score > following_game.score and game.purin_node.get_child_count() <= following_game.purin_node.get_child_count() and game.player_name != following_game.player_name):
 				following_game = game
 				updated = true
 		if updated:
