@@ -5,6 +5,7 @@ var play_package: Resource = load("res://assets/scenes/PlayAreaBowl.tscn")
 @export var ai_games_node: Node2D
 @export var time_scale: float = 1.0
 @export var debug: bool = false
+@export var auto_retry: bool = false
 @export var camera:Camera2D
 
 var generation_ended:bool = false
@@ -18,20 +19,21 @@ func _on_ready() -> void:
 	
 func init_ai_players():
 	Engine.time_scale = time_scale
-	if generation > 1:
+	if generation >= 1:
 		var config_json = Global.read_json("user://ai%s.json"%[generation])
-		var total_score:int = 0
-		var total_count:int = 0
-		var highest_score:int = 0
-		
-		for config in config_json.get("history"):
-			if total_count == 0:
-				highest_score = config.get("score")
-			total_score += config.get("score")
-			total_count += 1
-		var average:float = total_score / float(total_count)
-		print("Average Score for Generation %s was %s"%[generation, average])
-		print("Highest Score for Generation %s was %s"%[generation, highest_score])
+		if config_json:
+			var total_score:int = 0
+			var total_count:int = 0
+			var highest_score:int = 0
+			
+			for config in config_json.get("history"):
+				if total_count == 0:
+					highest_score = config.get("score")
+				total_score += config.get("score")
+				total_count += 1
+			var average:float = total_score / float(total_count)
+			print("Average Score for Generation %s was %s"%[generation, average])
+			print("Highest Score for Generation %s was %s"%[generation, highest_score])
 		
 		# save the results of the last generation to the generic named json file
 		var json_string := JSON.stringify(config_json)
@@ -57,15 +59,23 @@ func init_ai_players():
 		var game:PlayerController = play_package.instantiate()
 		game.ai_controlled = true
 		game.mute_sound = true
-		game.auto_retry = false
-		game.ai_mutation_rate = min(0.05 + (i*0.01), 0.1)
+		game.auto_retry = auto_retry
+		if i < num_ai * 0.5:
+			game.ai_mutation_rate = 0.03
+		else:
+			game.ai_mutation_rate = 0.1
 		game.training = true
 		var player_name = "ai%s_%s"%[generation, i]
 		game.player_name = player_name
 		game.rank = i
-		# save to your own generation file
-		game.config_path = "user://ai%s.json"%[generation]
-		if generation <= 1:
+		
+		if auto_retry:
+			# save to generic file
+			game.config_path = "user://ai.json"
+		else:
+			# save to your own generation file
+			game.config_path = "user://ai%s.json"%[generation]
+		if generation <= 1 or auto_retry:
 			game.default_config_path = "res://ai.json"
 		else:
 			# use previous generation
@@ -73,8 +83,10 @@ func init_ai_players():
 		
 		game.position = Vector2(40 + (x_pos*1020), y_pos)
 		ai_games_node.add_child(game)
+		game.debug = debug
 		game.init()
 		game.set_up_game()
+		game.ai_controller.debug = debug
 		games.append(game)
 		x_pos += 1
 		if i > 0 and (i+1) % 2 == 0:
@@ -101,7 +113,7 @@ func _process(delta):
 	if camera != null and not games.is_empty():
 		var updated:bool = false
 		for game in games:
-			if not is_instance_valid(following_game) or (is_instance_valid(game) and game.score > 30000 and game.score > following_game.score and game.purin_node.get_child_count() <= following_game.purin_node.get_child_count() and game.player_name != following_game.player_name):
+			if not is_instance_valid(following_game) or (is_instance_valid(game) and game.score > 30000 and game.score > following_game.score and game.player_name != following_game.player_name):
 				following_game = game
 				updated = true
 		if updated:

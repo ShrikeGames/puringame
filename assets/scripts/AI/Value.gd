@@ -26,14 +26,14 @@ func evaluate(player_controller:PlayerController, ai_controller:AIController, he
 		evaluated_cost += get_strength(weights, 1) * abs(held_purin_level - level) + get_strength(biases, 1)
 	
 	# punish it for being farther from the bottom
-	evaluated_cost += get_strength(weights, 2) * ((player_controller.bottom_edge.position.y - position.y)*0.001)  + get_strength(biases, 2)
+	evaluated_cost += get_strength(weights, 2) * (abs(player_controller.bottom_edge.position.y - position.y)*0.001)  + get_strength(biases, 2)
 	
 	# punish for being away from the left corner
 	evaluated_cost += get_strength(weights, 2) * (position.x*0.01)  + get_strength(biases, 2)
 	
 	if purin != null and is_instance_valid(purin):
 		if level != held_purin_level:
-			evaluated_cost += (get_strength(weights, 4) * purin.number_possible_combines()) + get_strength(biases, 4)
+			evaluated_cost *= (get_strength(weights, 4) * max(1,purin.number_possible_combines())) + get_strength(biases, 4)
 		# if it's above the height limit then reduce its penalty to nudging it
 		if purin.position.y - purin.get_meta("radius") < player_controller.top_edge.position.y:
 			if held_purin_level == purin.get_meta("level", 0):
@@ -41,6 +41,6 @@ func evaluate(player_controller:PlayerController, ai_controller:AIController, he
 			else:
 				evaluated_cost *= 0.25
 	if evaluated_cost > next_purin_cost:
-		evaluated_cost *= (get_strength(weights, 5) * (evaluated_cost-next_purin_cost)) + get_strength(biases, 5)
+		evaluated_cost *= (get_strength(weights, 5) * max(1,(evaluated_cost-next_purin_cost))) + get_strength(biases, 5)
 	
 	return snappedf(evaluated_cost, 0.01)

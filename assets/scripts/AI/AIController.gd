@@ -14,16 +14,14 @@ func init(player_controller:PlayerController):
 	self.game = player_controller
 	self.held_purin_level = 0
 	self.next_purin_to_drop_level = 0
+	self.debug = player_controller.debug
 	self.inputs = []
-	if game.training and game.rank >= 10:
-		self.configurations = game.get_configurations_with_mutation("configurations", game.ai_mutation_rate, {"0":{}})
+	if game.training:
+		self.configurations = game.get_configurations_with_mutation("configurations", game.ai_mutation_rate, {"0":{}}, true)
 		var cross_breed_configuration = game.get_configurations_with_mutation("configurations", game.ai_mutation_rate, self.configurations)
 		self.configurations = cross_breed(self.configurations, cross_breed_configuration)
 	else:
-		if game.training:
-			self.configurations = game.get_configurations_with_mutation("configurations", game.ai_mutation_rate, {"0":{}}, false, game.rank)
-		else:
-			self.configurations = game.get_configurations_with_mutation("configurations", game.ai_mutation_rate, {"0":{}}, true)
+		self.configurations = game.get_configurations_with_mutation("configurations", game.ai_mutation_rate, {"0":{}}, true)
 	
 	if debug:
 		self.game.debug_label.text = "%s"%[self.configurations]
@@ -90,21 +88,30 @@ func best_x_pos():
 			update_inputs()
 			var value:Value = input.value
 			if is_instance_valid(value):
-				if value.purin != null and is_instance_valid(value.purin):
-					var next_purin_cost = value.evaluate(game, self, game.purin_bag.get_current_purin()["level"])
-					value.cost = value.evaluate(game, self, held_purin_level, next_purin_cost)
-				else:
-					value.cost = 9999
+				var next_purin_cost = value.evaluate(game, self, game.purin_bag.get_current_purin()["level"])
+				value.cost = value.evaluate(game, self, held_purin_level, next_purin_cost)
+				
 				if debug:
 					input.debug_text.text = "[center]%s[/center]"%[value.cost]
-					input.debug_text.global_position = value.position
+					
+					input.debug_text.global_position.y = value.position.y
 					input.debug_text.visible = debug
+					var strength = max(0, min(9, snapped((0.5+abs(value.cost*0.005))*9, 1)))
+					#print(value.cost, " = ", strength)
+					strength = "%s%s"%[strength, strength]
+					if value.cost < 5:
+						input.debug_text.text = "[color=00%s00]%s[/color]"%[strength, input.debug_text.text]
+						input.drop_line.default_color = "00%s00"%[strength]
+					else:
+						input.debug_text.text = "[color=%s0000]%s[/color]"%[strength, input.debug_text.text]
+						input.drop_line.default_color = "%s0000"%[strength]
+					
 				values.append(value)
 	values.sort_custom(cost_function)
 	
 	if not values.is_empty():
 		return values
-		
+	
 	return null
 
 func update_noir_position():
@@ -113,6 +120,9 @@ func update_noir_position():
 		# don't allow dropping in the same spot unless it's the same purin level
 		if pos.position.x != last_x_pos or len(best_position) == 1 or held_purin_level == pos.level:
 			var next_best_x:Vector2 = Vector2(game.valid_x_pos(pos.position.x - game.position.x), game.noir.position.y)
+			if pos.purin and is_instance_valid(pos.purin):
+				var estimated_time_to_fall:float = abs(pos.purin.global_position.y - game.noir.global_position.y)*0.005
+				next_best_x.x += pos.purin.transform.x.normalized().x * estimated_time_to_fall
 			game.noir.position = next_best_x
 			last_x_pos = pos.position.x
 			break
@@ -120,11 +130,15 @@ func update_noir_position():
 	
 func process_ai(_delta):
 	var cool_down_sec = game.drop_purin_cooldown_sec
+	var emergency:bool = false
 	for purin in game.purin_node.get_children():
 		if purin.position.y - purin.get_meta("radius") < game.top_edge.position.y:
 			cool_down_sec = game.drop_purin_cooldown_sec * 0.75
+			emergency = true
 			break
-	if game.time_since_last_dropped_purin_sec >= cool_down_sec:
+	var time_elapsed:bool = game.time_since_last_dropped_purin_sec >= cool_down_sec
+	var last_purin_stopped:bool = game.last_dropped_purin and abs(game.last_dropped_purin.linear_velocity.x) <= 0.1 and game.time_since_last_dropped_purin_sec >= 0.25 and game.last_dropped_purin_touched_something
+	if (emergency and time_elapsed) or (time_elapsed and not last_purin_stopped) or last_purin_stopped:
 		var space_state = game.get_world_2d().direct_space_state
 		for input in inputs:
 			input.update(space_state)

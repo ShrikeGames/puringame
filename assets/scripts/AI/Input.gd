@@ -32,12 +32,21 @@ func update(space_state) -> void:
 	var result = space_state.intersect_ray(query)
 	if result and is_instance_valid(result.collider) and result.collider.get_instance_id() != self.get_instance_id():
 		drop_line.set_point_position(1, to_local(result.position))
-		value.position = result.position
+		
 		if is_instance_of(result.collider, Purin):
+			var target_pos:Vector2 = result.position# + (result.normal * result.collider.get_meta("radius", 0))
+			value.position = target_pos
 			value.level = result.collider.get_meta("level", 0)
 			value.purin = result.collider
 		else:
+			var target_pos:Vector2 = result.position
+			value.position = target_pos
 			value.level = -1
 			value.purin = null
-			
+	else:
+		var target_pos:Vector2 = Vector2(global_position.x, global_position.y + 800)
+		value.position = target_pos
+		value.level = -1
+		value.purin = null
 	disabled = true
+

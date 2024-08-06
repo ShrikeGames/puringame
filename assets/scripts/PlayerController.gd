@@ -34,7 +34,7 @@ var ai_controller: AIController
 @export var last_mouse_pos:Vector2 = Vector2(0.0, 0.0)
 @export var max_score_history_length:int = 10
 var auto_drop:bool = false
-
+var debug:bool = false
 var rank: int = 0
 
 var config_json
@@ -51,7 +51,8 @@ var highest_possible_purin_level: int
 const purin_file_path_root = "res://assets/images/game/"
 
 var dropped_purin_count: int = 0
-
+var last_dropped_purin:Purin
+var last_dropped_purin_touched_something:bool = false
 var evil_purin_spawn_level_threshold: float = 4
 var evil_purin_spawn_level_divider: float = 3
 
@@ -59,7 +60,7 @@ var time_since_last_dropped_purin_sec: float = 0
 var drop_purin_cooldown_sec: float = 0.5
 
 var game_over_threshold_sec: float = 3
-
+var skip_saving:bool = false
 func _on_ready():
 	# set game speed
 	if not ai_controlled:
@@ -129,9 +130,9 @@ func mutate_array(list_floats:Array, mutation_rate:float):
 	for i in range(0, len(list_floats)):
 		# individually give it a mutation chance
 		if randf() <= mutation_rate:
-			mutated_list.append(list_floats[i] + randf_range(-1.0, 1.0))
+			mutated_list.append(list_floats[i] + randf_range(-4.0, 4.0))
 			mutated_list[i] = min(mutated_list[i], 8.0)
-			mutated_list[i] = max(0.1, mutated_list[i])
+			mutated_list[i] = max(0, mutated_list[i])
 		else:
 			mutated_list.append(list_floats[i])
 	return mutated_list
@@ -151,7 +152,7 @@ func get_config_value_or_default(key: String, mutation_rate: float = 0.0, defaul
 		for i in range(0, len(config_value)):
 			# individually give it a mutation chance
 			if randf() <= mutation_rate:
-				config_value[i] += randf_range(-2.0, 2.0)
+				config_value[i] += randf_range(-4.0, 4.0)
 				config_value[i] = min(config_value[i], 8.0)
 				config_value[i] = max(0, config_value[i])
 	
@@ -177,7 +178,7 @@ func set_up_game():
 	score = 0
 	dropped_purin_count = 0
 	time_since_last_dropped_purin_sec = drop_purin_cooldown_sec
-	
+	skip_saving = false
 	# Generate a new bag of purin (what you get next to drop)
 	# for AI and such that don't need a visual representation of their bag shown
 	if purin_bag == null:
@@ -225,6 +226,8 @@ func rank_history(run1:Dictionary, run2:Dictionary):
 	return false
 	
 func save_results():
+	if skip_saving:
+		return
 	# cannot save to read-only res:// location
 	if config_path.contains("res://"):
 		return
@@ -343,13 +346,14 @@ func check_game_over(delta):
 	if ai_controlled and training and terminate_training_early():
 		print("Performance / %s / %s / %s / %s / %s" % [player_name, score, purin_bag.max_purin_level, dropped_purin_count, purin_node.get_child_count()])
 		gameover_screen.visible = true
+		skip_saving = true
 		return true
 	return false
 
 func terminate_training_early():
 	# Selection Pressure Rules
 	# kill those with excessive purin that aren't combined
-	if purin_node.get_child_count() >= 7 + (purin_bag.max_purin_level*2):
+	if purin_bag.max_purin_level < 9 and purin_node.get_child_count() >= 7 + (purin_bag.max_purin_level*2):
 		return true
 	
 	# semi optimal merging should get close to these scores with some wiggle room
@@ -364,7 +368,7 @@ func terminate_training_early():
 	# more wiggle room for higher tier purin
 	if purin_bag.max_purin_level < 9 and score >= 65000:
 		return true
-	
+#
 	
 	return false
 
@@ -388,7 +392,7 @@ func drop_purin():
 	spawn_purin()
 	noir.change_held_purin(purin_bag.get_current_purin())
 	time_since_last_dropped_purin_sec = 0
-
+	last_dropped_purin_touched_something = false
 
 func update_noir_position(delta):
 	
@@ -452,7 +456,7 @@ func spawn_purin(
 	
 	# keep track of how many total were spawned for scoring purposes
 	dropped_purin_count += 1
-
+	last_dropped_purin = purin
 	return purin
 
 func get_purin_radius(level: int):
@@ -482,7 +486,9 @@ func combine_purin(purin1: Purin, purin2: Purin):
 
 	# combined purin will be of 1 level higher up to the max
 	var new_level = min(purin1.get_meta("level") + 1, highest_possible_purin_level)
-
+	if is_instance_valid(last_dropped_purin) and (last_dropped_purin == purin1 or last_dropped_purin == purin2):
+		last_dropped_purin_touched_something = true
+		
 	# remove the two purin
 	purin1.queue_free()
 	purin2.queue_free()
@@ -537,6 +543,8 @@ func combine_purin(purin1: Purin, purin2: Purin):
 		scoreorb_node.add_child(scoreorb)
 		scoreorb.connect("scored", gain_score)
 	
+	last_dropped_purin = new_purin
+	last_dropped_purin_touched_something = false
 	return new_purin
 	
 func add_evil_purin(level, opponent):
@@ -547,8 +555,10 @@ func gain_score(score_amount:int):
 	score += score_amount
 	update_score_label()
 	
-func bonk_purin(_purin1: Purin, _purin2: Purin):
+func bonk_purin(purin1: Purin, purin2: Purin):
 	# TODO later maybe use the bodys to do something else
 	# for now just play audio file
 	if not mute_sound:
 		sfx_bonk_player.play()
+	if is_instance_valid(last_dropped_purin) and (last_dropped_purin == purin1 or last_dropped_purin == purin2):
+		last_dropped_purin_touched_something = true
