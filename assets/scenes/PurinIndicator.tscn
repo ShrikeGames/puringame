@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://csor0u1p34yq1"]
+[gd_scene load_steps=16 format=3 uid="uid://csor0u1p34yq1"]
 
 [ext_resource type="Texture2D" uid="uid://xt87hje080jt" path="res://assets/images/game/purin1.png" id="1_pbh4i"]
 [ext_resource type="Texture2D" uid="uid://ds7ffculpywfr" path="res://assets/images/game/purin2.png" id="2_etdgd"]
@@ -6,11 +6,10 @@
 [ext_resource type="Texture2D" uid="uid://r1wwvaqohtgs" path="res://assets/images/game/purin4.png" id="4_xu6xt"]
 [ext_resource type="Texture2D" uid="uid://cc26nt2jn3vxa" path="res://assets/images/game/purin5.png" id="5_yy4bp"]
 [ext_resource type="Texture2D" uid="uid://bsm8qt57ehuah" path="res://assets/images/game/purin6.png" id="6_gmuit"]
-[ext_resource type="Texture2D" uid="uid://cekg4y1brmpw5" path="res://assets/images/game/purin7.png" id="7_8d0yx"]
-[ext_resource type="Texture2D" uid="uid://djw85tem2f7me" path="res://assets/images/game/purin8.png" id="8_whnu1"]
-[ext_resource type="Texture2D" uid="uid://k1hduynp1pgw" path="res://assets/images/game/purin9.png" id="9_vs86u"]
-[ext_resource type="Texture2D" uid="uid://cwcmvy5fu6w86" path="res://assets/images/game/purin10.png" id="10_ou54y"]
-[ext_resource type="Texture2D" uid="uid://bja3p1ji46rhl" path="res://assets/images/game/purin11.png" id="11_shfep"]
+[ext_resource type="Texture2D" uid="uid://djw85tem2f7me" path="res://assets/images/game/purin7.png" id="7_8d0yx"]
+[ext_resource type="Texture2D" uid="uid://k1hduynp1pgw" path="res://assets/images/game/purin8.png" id="8_whnu1"]
+[ext_resource type="Texture2D" uid="uid://cwcmvy5fu6w86" path="res://assets/images/game/purin9.png" id="9_vs86u"]
+[ext_resource type="Texture2D" uid="uid://bja3p1ji46rhl" path="res://assets/images/game/purin10.png" id="10_ou54y"]
 [ext_resource type="Script" path="res://assets/scripts/PurinIndicator.gd" id="12_hys5f"]
 [ext_resource type="Texture2D" uid="uid://crra4gd3ck4vb" path="res://assets/images/game/evilge.png" id="13_nxjcp"]
 [ext_resource type="FontFile" uid="uid://cdwb8ivskcjue" path="res://assets/fonts/NotoSansCJK-Regular.ttc" id="14_wrqab"]
@@ -48,9 +47,6 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": ExtResource("10_ou54y")
-}, {
-"duration": 1.0,
-"texture": ExtResource("11_shfep")
 }],
 "loop": true,
 "name": &"default",
@@ -62,12 +58,6 @@ sprite_frames = SubResource("SpriteFrames_oxh1t")
 script = ExtResource("12_hys5f")
 evil_visual = NodePath("Evilge")
 number_label = NodePath("NumberLabel")
-
-[node name="Evilge" type="Sprite2D" parent="."]
-visible = false
-position = Vector2(-1, 7)
-scale = Vector2(0.24, 0.24)
-texture = ExtResource("13_nxjcp")
 
 [node name="NumberLabel" type="RichTextLabel" parent="."]
 visible = false
@@ -85,3 +75,9 @@ bbcode_enabled = true
 text = "[center][color=fff]1[/color][/center]"
 scroll_active = false
 shortcut_keys_enabled = false
+
+[node name="Evilge" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(-1, 7)
+scale = Vector2(0.24, 0.24)
+texture = ExtResource("13_nxjcp")

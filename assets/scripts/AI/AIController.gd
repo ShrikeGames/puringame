@@ -10,26 +10,29 @@ var configurations:Dictionary
 var debug:bool = false
 var last_x_pos:float = 0
 var last_purin_level_dropped:int = 0
+var parent_1_name:String = ""
+var parent_2_name:String = ""
+
 func init(player_controller:PlayerController):
 	self.game = player_controller
 	self.held_purin_level = 0
 	self.next_purin_to_drop_level = 0
 	self.debug = player_controller.debug
 	self.inputs = []
+	var parents:String = ""
 	if game.training:
 		self.configurations = game.get_configurations_with_mutation("configurations", game.ai_mutation_rate, {"0":{}}, true)
 		var cross_breed_configuration = game.get_configurations_with_mutation("configurations", game.ai_mutation_rate, self.configurations)
 		self.configurations = cross_breed(self.configurations, cross_breed_configuration)
+		parents = "(%s+%s)"%[parent_1_name, parent_2_name]
 	else:
 		self.configurations = game.get_configurations_with_mutation("configurations", game.ai_mutation_rate, {"0":{}}, true)
 	
 	if debug:
-		self.game.debug_label.text = "%s"%[self.configurations]
-	
+		self.game.debug_label.text = "%s %s"%[parents, game.ai_mutation_rate]
 	input_object = load("res://assets/scenes/AI/AIInput.tscn")
 	for input in game.ai_inputs_object.get_children():
 		input.queue_free()
-	var space_state = game.get_world_2d().direct_space_state
 	var radius =  self.game.get_purin_radius(0)
 	for x in range(0, ((game.right_edge.position.x - game.left_edge.position.x - (radius))/(radius))+1):
 		var input:AIInput = input_object.instantiate()
@@ -37,7 +40,6 @@ func init(player_controller:PlayerController):
 		input.disabled = true
 		input.drop_line.visible = debug
 		game.ai_inputs_object.add_child(input)
-		input.update(space_state)
 		self.inputs.append(input)
 
 func cross_breed(config1:Dictionary, config2:Dictionary):
@@ -45,7 +47,12 @@ func cross_breed(config1:Dictionary, config2:Dictionary):
 		return config2
 	if not config2:
 		return config1
-	for purin_level in range(0, game.highest_possible_purin_level+1):
+	var username_key:String = "username"
+	if Global.language == "jp":
+		username_key = "username_jp"
+	parent_1_name = config1.get(username_key, "")
+	parent_2_name = config2.get(username_key, "")
+	for purin_level in range(0, Global.highest_possible_purin_level+1):
 		var purin_config1:Dictionary = config1.get("%s"%[purin_level])
 		var purin_config2:Dictionary = config2.get("%s"%[purin_level])
 		if not purin_config1:
@@ -53,16 +60,18 @@ func cross_breed(config1:Dictionary, config2:Dictionary):
 		if not purin_config2:
 			return purin_config1
 		var new_config = purin_config1
-		var split_point:int = randi_range(0,6)
-		new_config["highscore_weights"] = purin_config1["highscore_weights"].slice(0,split_point) + purin_config2["highscore_weights"].slice(split_point,6)
-		new_config["highscore_biases"] = purin_config1["highscore_biases"].slice(0,split_point) + purin_config2["highscore_biases"].slice(split_point,6)
+		for i in range(0, len(purin_config1["highscore_weights"])):
+			# 50% chance for any weight to be taken from the other parent instead
+			if randf() < 0.5:
+				new_config["highscore_weights"][i] = purin_config2["highscore_weights"][i]
+				new_config["highscore_biases"][i] = purin_config2["highscore_biases"][i]
+			
 	return config1
 
 func update_inputs():
 	# clear the game of any dropped purin
 	remove_all_inputs()
 	
-	var space_state = game.get_world_2d().direct_space_state
 	var radius =  self.game.get_purin_radius(self.game.purin_bag.get_current_purin()["level"])
 	for x in range(0, ((game.right_edge.position.x - game.left_edge.position.x - (radius))/(radius))+1):
 		var input:AIInput = self.inputs[x]
@@ -70,8 +79,7 @@ func update_inputs():
 		input.disabled = false
 		input.drop_line.visible = debug
 		input.debug_text.visible = debug
-		input.update(space_state)
-	
+		
 func remove_all_inputs():
 	for input in game.ai_inputs_object.get_children():
 		#input.queue_free()
@@ -83,30 +91,29 @@ func remove_all_inputs():
 func best_x_pos():
 	held_purin_level = game.purin_bag.get_current_purin()["level"]
 	var values:Array[Value] = []
+	var space_state = game.get_world_2d().direct_space_state
+	var radius =  self.game.get_purin_radius(self.game.purin_bag.get_current_purin()["level"])
 	if not inputs.is_empty():
+		update_inputs()
 		for input in inputs:
-			update_inputs()
-			var value:Value = input.value
-			if is_instance_valid(value):
-				var next_purin_cost = value.evaluate(game, self, game.purin_bag.get_current_purin()["level"])
-				value.cost = value.evaluate(game, self, held_purin_level, next_purin_cost)
+			var next_purin_cost:float = Value.new().evaluate(game, self, game.purin_bag.get_next_purin_level())
+			input.update(space_state, radius, game, self, game.purin_bag.get_current_purin()["level"], next_purin_cost)
+			values.append(input.value)
+			if debug:
+				input.debug_text.text = "[center]%s[/center]"%[input.value.cost]
 				
-				if debug:
-					input.debug_text.text = "[center]%s[/center]"%[value.cost]
-					
-					input.debug_text.global_position.y = value.position.y
-					input.debug_text.visible = debug
-					var strength = max(0, min(9, snapped((0.5+abs(value.cost*0.005))*9, 1)))
-					#print(value.cost, " = ", strength)
-					strength = "%s%s"%[strength, strength]
-					if value.cost < 5:
-						input.debug_text.text = "[color=00%s00]%s[/color]"%[strength, input.debug_text.text]
-						input.drop_line.default_color = "00%s00"%[strength]
-					else:
-						input.debug_text.text = "[color=%s0000]%s[/color]"%[strength, input.debug_text.text]
-						input.drop_line.default_color = "%s0000"%[strength]
-					
-				values.append(value)
+				input.debug_text.global_position.y = input.value.position.y
+				input.debug_text.visible = debug
+				var strength = max(0, min(9, snapped((0.5+abs(input.value.cost*0.005))*9, 1)))
+				#print(value.cost, " = ", strength)
+				strength = "%s%s"%[strength, strength]
+				if input.value.cost < 5:
+					input.debug_text.text = "[color=00%s00]%s[/color]"%[strength, input.debug_text.text]
+					input.drop_line.default_color = "00%s00"%[strength]
+				else:
+					input.debug_text.text = "[color=%s0000]%s[/color]"%[strength, input.debug_text.text]
+					input.drop_line.default_color = "%s0000"%[strength]
+				
 	values.sort_custom(cost_function)
 	
 	if not values.is_empty():
@@ -117,15 +124,13 @@ func best_x_pos():
 func update_noir_position():
 	var best_position:Array[Value] = best_x_pos()
 	for pos in best_position:
-		# don't allow dropping in the same spot unless it's the same purin level
-		if pos.position.x != last_x_pos or len(best_position) == 1 or held_purin_level == pos.level:
-			var next_best_x:Vector2 = Vector2(game.valid_x_pos(pos.position.x - game.position.x), game.noir.position.y)
-			if pos.purin and is_instance_valid(pos.purin):
-				var estimated_time_to_fall:float = abs(pos.purin.global_position.y - game.noir.global_position.y)*0.005
-				next_best_x.x += pos.purin.transform.x.normalized().x * estimated_time_to_fall
-			game.noir.position = next_best_x
-			last_x_pos = pos.position.x
-			break
+		var next_best_x:Vector2 = Vector2(game.valid_x_pos(pos.position.x - game.position.x), game.noir.position.y)
+#			if pos.purin and is_instance_valid(pos.purin):
+#				var estimated_time_to_fall:float = abs(pos.purin.global_position.y - game.noir.global_position.y)*0.005
+#				next_best_x.x += pos.purin.transform.x.normalized().x * estimated_time_to_fall
+		game.noir.position = next_best_x
+		last_x_pos = pos.position.x
+		break
 	
 	
 func process_ai(_delta):
@@ -137,18 +142,14 @@ func process_ai(_delta):
 			emergency = true
 			break
 	var time_elapsed:bool = game.time_since_last_dropped_purin_sec >= cool_down_sec
-	var last_purin_stopped:bool = game.last_dropped_purin and abs(game.last_dropped_purin.linear_velocity.x) <= 0.1 and game.time_since_last_dropped_purin_sec >= 0.25 and game.last_dropped_purin_touched_something
-	if (emergency and time_elapsed) or (time_elapsed and not last_purin_stopped) or last_purin_stopped:
-		var space_state = game.get_world_2d().direct_space_state
-		for input in inputs:
-			input.update(space_state)
+	var last_purin_stopped:bool = is_instance_valid(game.last_dropped_purin) and abs(game.last_dropped_purin.linear_velocity.x) <= 0.01 and abs(game.last_dropped_purin.linear_velocity.y) <= 0.01 and game.time_since_last_dropped_purin_sec >= 0.5 and game.last_dropped_purin_touched_something
+	if (game.can_drop_early and game.time_since_last_dropped_purin_sec >= 1) or (emergency and time_elapsed) or (time_elapsed and not last_purin_stopped) or last_purin_stopped:
 		# reposition the player
 		update_noir_position()
 		game.drop_purin()
 		last_purin_level_dropped = held_purin_level
+		game.can_drop_early = false
 		
-		
-
 func cost_function(value1:Value, value2:Value):
 	if value1.cost < value2.cost:
 		return true

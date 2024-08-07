@@ -6,11 +6,11 @@
 [ext_resource type="Texture2D" uid="uid://r1wwvaqohtgs" path="res://assets/images/game/purin4.png" id="5_mqtht"]
 [ext_resource type="Texture2D" uid="uid://cc26nt2jn3vxa" path="res://assets/images/game/purin5.png" id="6_txklj"]
 [ext_resource type="Texture2D" uid="uid://bsm8qt57ehuah" path="res://assets/images/game/purin6.png" id="7_7j80a"]
-[ext_resource type="Texture2D" uid="uid://cekg4y1brmpw5" path="res://assets/images/game/purin7.png" id="8_h4aak"]
-[ext_resource type="Texture2D" uid="uid://djw85tem2f7me" path="res://assets/images/game/purin8.png" id="9_qoyht"]
-[ext_resource type="Texture2D" uid="uid://k1hduynp1pgw" path="res://assets/images/game/purin9.png" id="10_codve"]
-[ext_resource type="Texture2D" uid="uid://cwcmvy5fu6w86" path="res://assets/images/game/purin10.png" id="11_i2u1v"]
-[ext_resource type="Texture2D" uid="uid://bja3p1ji46rhl" path="res://assets/images/game/purin11.png" id="12_hc0wc"]
+[ext_resource type="Texture2D" uid="uid://djw85tem2f7me" path="res://assets/images/game/purin7.png" id="8_h4aak"]
+[ext_resource type="Texture2D" uid="uid://cekg4y1brmpw5" path="res://assets/images/game/purin7_removed.png" id="8_rp3fg"]
+[ext_resource type="Texture2D" uid="uid://k1hduynp1pgw" path="res://assets/images/game/purin8.png" id="9_qoyht"]
+[ext_resource type="Texture2D" uid="uid://cwcmvy5fu6w86" path="res://assets/images/game/purin9.png" id="10_codve"]
+[ext_resource type="Texture2D" uid="uid://bja3p1ji46rhl" path="res://assets/images/game/purin10.png" id="11_i2u1v"]
 [ext_resource type="PackedScene" uid="uid://con8stx2et0ea" path="res://assets/scenes/PlayAreaBowl.tscn" id="13_3k2pk"]
 [ext_resource type="PackedScene" uid="uid://dm83ybcd6qyvo" path="res://assets/scenes/PauseMenu.tscn" id="14_10evg"]
 [ext_resource type="PackedScene" uid="uid://cudqnnw8oypk1" path="res://assets/scenes/PurinBag.tscn" id="14_gsn0q"]
@@ -64,27 +64,27 @@ texture = ExtResource("7_7j80a")
 [node name="Purin7" type="Sprite2D" parent="ProgressionIndicator"]
 position = Vector2(0, 520)
 scale = Vector2(0.5, 0.5)
-texture = ExtResource("8_h4aak")
+texture = ExtResource("8_rp3fg")
 
 [node name="Purin8" type="Sprite2D" parent="ProgressionIndicator"]
 position = Vector2(0, 650)
 scale = Vector2(0.5, 0.5)
-texture = ExtResource("9_qoyht")
+texture = ExtResource("8_h4aak")
 
 [node name="Purin9" type="Sprite2D" parent="ProgressionIndicator"]
 position = Vector2(0, 800)
 scale = Vector2(0.5, 0.5)
-texture = ExtResource("10_codve")
+texture = ExtResource("9_qoyht")
 
 [node name="Purin10" type="Sprite2D" parent="ProgressionIndicator"]
 position = Vector2(0, 960)
 scale = Vector2(0.5, 0.5)
-texture = ExtResource("11_i2u1v")
+texture = ExtResource("10_codve")
 
 [node name="Purin11" type="Sprite2D" parent="ProgressionIndicator"]
 position = Vector2(0, 1140)
 scale = Vector2(0.5, 0.5)
-texture = ExtResource("12_hc0wc")
+texture = ExtResource("11_i2u1v")
 
 [node name="AI" parent="." node_paths=PackedStringArray("purin_bag", "opponents") instance=ExtResource("13_3k2pk")]
 position = Vector2(1073, -2)

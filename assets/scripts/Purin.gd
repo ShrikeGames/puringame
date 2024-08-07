@@ -91,12 +91,17 @@ func ray_cast(direction: Vector2, index: int, target_level: int = -1, show_lines
 
 func number_possible_combines():
 	reset_lines()
-	var target_level = self.get_meta("level", 0)
-	var search_radius: int = get_meta("radius", 200) * 1.25
-	var count: int = (
-		ray_cast(Vector2(search_radius, 0), 6, target_level, true)
-		+ ray_cast(Vector2(-search_radius, 0), 8, target_level, true)
-		+ ray_cast(Vector2(search_radius, search_radius), 10, target_level, true)
-		+ ray_cast(Vector2(-search_radius, search_radius), 12, target_level, true)
-	)
+	var target_level = self.get_meta("level", 0) + 1
+	var count = 0
+	for body in get_colliding_bodies():
+		if is_instance_valid(body) and is_instance_of(body, Purin):
+			var level_diff = target_level - body.get_meta("level", 0)
+			count += 1 - abs(level_diff*0.1)
+#	var search_radius: int = get_meta("radius", 200) * 1.25
+#	var count: int = (
+#		ray_cast(Vector2(search_radius, 0), 6, target_level, true)
+#		+ ray_cast(Vector2(-search_radius, 0), 8, target_level, true)
+#		+ ray_cast(Vector2(search_radius, search_radius), 10, target_level, true)
+#		+ ray_cast(Vector2(-search_radius, search_radius), 12, target_level, true)
+#	)
 	return count

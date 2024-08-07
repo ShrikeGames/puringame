@@ -94,7 +94,7 @@ func add_evil_purin(level:int) -> void:
 	var i:int = 0
 	for indicator in bag:
 		if not indicator.evil and i > 0:
-			indicator.level = min(level, int(max_purin_level*0.5))
+			#indicator.level = min(level, int(max_purin_level*0.5))
 			indicator.set_frame(indicator.level)
 			indicator.evil = true
 			indicator.evil_visual.visible = true

@@ -33,12 +33,13 @@ var ai_controller: AIController
 @export var move_speed: float = 450.0
 @export var last_mouse_pos:Vector2 = Vector2(0.0, 0.0)
 @export var max_score_history_length:int = 10
+var can_drop_early: bool =false
 var auto_drop:bool = false
 var debug:bool = false
 var rank: int = 0
 
-var config_json
-var default_config_json
+var config_json:Dictionary
+var default_config_json:Dictionary
 
 var score: int = 0
 var score_orb: Resource = load("res://assets/scenes/ScoreOrb.tscn")
@@ -46,20 +47,15 @@ var evil_orb: Resource = load("res://assets/scenes/EvilOrb.tscn")
 
 var purin_object: Resource = load("res://assets/scenes/Purin.tscn")
 var purin_textures: Array[Texture2D] = []
-var purin_sizes: Array = [50, 100, 125, 156, 175, 195, 220, 250, 275, 300, 343]
-var highest_possible_purin_level: int
 const purin_file_path_root = "res://assets/images/game/"
 
 var dropped_purin_count: int = 0
 var last_dropped_purin:Purin
 var last_dropped_purin_touched_something:bool = false
-var evil_purin_spawn_level_threshold: float = 4
-var evil_purin_spawn_level_divider: float = 3
 
 var time_since_last_dropped_purin_sec: float = 0
-var drop_purin_cooldown_sec: float = 0.5
+var drop_purin_cooldown_sec: float = 2
 
-var game_over_threshold_sec: float = 3
 var skip_saving:bool = false
 func _on_ready():
 	# set game speed
@@ -84,16 +80,7 @@ func load_configs():
 	if config_json == null:
 		config_json = default_config_json
 	# get values from config file (player's save, or from default config)
-	highest_possible_purin_level = get_config_value_or_default("highest_possible_purin_level", 0, 10)
-	game_over_threshold_sec = get_config_value_or_default("game_over_threshold_sec", 0, 6)
-	var hacky_workaround = 0.25
-	if player_name != "player":
-		hacky_workaround = 1.25
-	drop_purin_cooldown_sec = get_config_value_or_default("drop_purin_cooldown_sec", 0, hacky_workaround)
-	evil_purin_spawn_level_threshold = get_config_value_or_default(
-		"evil_purin_spawn_level_threshold", 0, 3
-	)
-	evil_purin_spawn_level_divider = get_config_value_or_default("evil_purin_spawn_level_divider", 0, 4)
+	drop_purin_cooldown_sec = get_config_value_or_default("drop_purin_cooldown_sec", 0, 1)
 	
 func get_configurations_with_mutation(key: String, mutation_rate: float = 0.0, default_default_value = {}, random:bool=true, config_index:int=0):
 	var config_value = {}
@@ -103,21 +90,23 @@ func get_configurations_with_mutation(key: String, mutation_rate: float = 0.0, d
 		default_history_run = default_config_json.get("history", [{}]).pick_random()
 	else:
 		default_history_run = default_config_json.get("history", [{}])[min(config_index, len(default_config_json.get("history", [{}]))-1)]
+	
 	if default_history_run.has(key):
 		default_value = default_history_run.get(key)
+	
 	var config_history_run:Dictionary 
 	if random:
 		config_history_run = config_json.get("history", [{}]).pick_random()
 	else:
 		config_history_run = config_json.get("history", [{}])[min(config_index, len(config_json.get("history", [{}]))-1)]
 	
-	if config_history_run != null and config_history_run.get("history", [{}]).has(key):
+	if config_history_run.has(key):
 		config_value = config_history_run.get(key, default_value)
 	else:
 		config_value = default_value
 	
 	if mutation_rate != 0.0:
-		for purin_level in range(0, highest_possible_purin_level+1):
+		for purin_level in range(0, Global.highest_possible_purin_level+1):
 			var purin_config = config_value["%s"%[purin_level]]
 			purin_config["highscore_weights"] = mutate_array(purin_config["highscore_weights"], mutation_rate)
 			purin_config["highscore_biases"] = mutate_array(purin_config["highscore_biases"], mutation_rate)
@@ -161,7 +150,7 @@ func get_config_value_or_default(key: String, mutation_rate: float = 0.0, defaul
 
 func load_purin():
 	purin_textures = []
-	for i in range(1, len(purin_sizes) + 1):
+	for i in range(1, len(Global.purin_sizes) + 1):
 		var image_path = "%spurin%d.png" % [purin_file_path_root, i]
 		purin_textures.append(load(image_path))
 
@@ -179,6 +168,7 @@ func set_up_game():
 	dropped_purin_count = 0
 	time_since_last_dropped_purin_sec = drop_purin_cooldown_sec
 	skip_saving = false
+	can_drop_early = false
 	# Generate a new bag of purin (what you get next to drop)
 	# for AI and such that don't need a visual representation of their bag shown
 	if purin_bag == null:
@@ -243,10 +233,15 @@ func save_results():
 	var history:Array = config_json.get("history", [])
 	var new_run:Dictionary = {
 		"score": score,
-		"board_state": get_board_state()
+		"board_state": get_board_state(),
 	}
 	if ai_controlled:
 		new_run["configurations"] = ai_controller.configurations
+		new_run["configurations"]["username"] = player_name
+		new_run["configurations"]["username_jp"] = player_name
+		new_run["configurations"]["parent1"] = ai_controller.parent_1_name
+		new_run["configurations"]["parent2"] = ai_controller.parent_2_name
+		
 	history.append(new_run)
 	# sort history from best to worst
 	history.sort_custom(rank_history)
@@ -307,11 +302,11 @@ func check_game_over(delta):
 			continue
 		# if the purin's game over time reaches the threshold you lose
 		if ( 
-			purin.game_over_timer_sec >= game_over_threshold_sec
+			purin.game_over_timer_sec >= Global.game_over_threshold_sec
 		):
 			print("GameOver / %s / %s / %s / %s / %s" % [player_name, score, purin_bag.max_purin_level, dropped_purin_count, purin_node.get_child_count()])
 			gameover_screen.visible = true
-			purin.game_over_timer_sec = game_over_threshold_sec
+			purin.game_over_timer_sec = Global.game_over_threshold_sec
 			
 			if not ai_controlled:
 				get_tree().paused = true
@@ -320,18 +315,18 @@ func check_game_over(delta):
 			purin.position.x = left_edge.position.x
 		elif purin.position.x > right_edge.position.x:
 			purin.position.x = right_edge.position.x
-		elif purin.position.y < top_edge.position.y:
-			purin.position.y = top_edge.position.y
+#		elif purin.position.y < top_edge.position.y:
+#			purin.position.y = top_edge.position.y
 		
 		# if the purin is above the height threshold start increasing its conter
-		if (purin.position.y - purin.get_meta("radius") < top_edge.position.y 
-			or purin.position.x < left_edge.position.x
-			or purin.position.x > right_edge.position.x
-			):
+		if (purin.position.y - purin.get_meta("radius") < top_edge.position.y):
 			purin.game_over_timer_sec += delta
+			#completely off screen
+			if purin.position.y+purin.get_meta("radius") < 0:
+				purin.game_over_timer_sec = Global.game_over_threshold_sec
 			# if the counter is under 3 sec then start the 3sec countdown animation too
 			# allows longer count downs even though the animation only counts down from 3
-			if purin.game_over_timer_sec > game_over_threshold_sec - 3:
+			if purin.game_over_timer_sec > Global.game_over_threshold_sec - 3:
 				purin.game_over_countdown.visible = true
 				if not purin.game_over_countdown.is_playing():
 					purin.game_over_countdown.play()
@@ -346,28 +341,28 @@ func check_game_over(delta):
 	if ai_controlled and training and terminate_training_early():
 		print("Performance / %s / %s / %s / %s / %s" % [player_name, score, purin_bag.max_purin_level, dropped_purin_count, purin_node.get_child_count()])
 		gameover_screen.visible = true
-		skip_saving = true
+		#skip_saving = true
 		return true
 	return false
 
 func terminate_training_early():
 	# Selection Pressure Rules
 	# kill those with excessive purin that aren't combined
-	if purin_bag.max_purin_level < 9 and purin_node.get_child_count() >= 7 + (purin_bag.max_purin_level*2):
+	if purin_bag.max_purin_level < 9 and purin_bag.max_purin_level > 2 and purin_node.get_child_count() >= 5 + (purin_bag.max_purin_level*2.5):
 		return true
 	
 	# semi optimal merging should get close to these scores with some wiggle room
-	if purin_bag.max_purin_level < 5 and score >= 1500:
-		return true
-	if purin_bag.max_purin_level < 6 and score >= 4000:
-		return true
-	if purin_bag.max_purin_level < 7 and score >= 12000:
-		return true
-	if purin_bag.max_purin_level < 8 and score >= 35000:
-		return true
-	# more wiggle room for higher tier purin
-	if purin_bag.max_purin_level < 9 and score >= 65000:
-		return true
+#	if purin_bag.max_purin_level < 5 and score >= 1500:
+#		return true
+#	if purin_bag.max_purin_level < 6 and score >= 4000:
+#		return true
+#	if purin_bag.max_purin_level < 7 and score >= 12000:
+#		return true
+#	if purin_bag.max_purin_level < 8 and score >= 35000:
+#		return true
+#	# more wiggle room for higher tier purin
+#	if purin_bag.max_purin_level < 9 and score >= 65000:
+#		return true
 #
 	
 	return false
@@ -393,6 +388,12 @@ func drop_purin():
 	noir.change_held_purin(purin_bag.get_current_purin())
 	time_since_last_dropped_purin_sec = 0
 	last_dropped_purin_touched_something = false
+	if opponents and not opponents.is_empty():
+		for opponent in opponents:
+			if is_instance_valid(opponent):
+				opponent.can_drop_early = true
+			else:
+				remove_dead_opponents()
 
 func update_noir_position(delta):
 	
@@ -460,7 +461,7 @@ func spawn_purin(
 	return purin
 
 func get_purin_radius(level: int):
-	return (purin_sizes[level] * 0.5) * 1.17 * self.scale.x
+	return (Global.purin_sizes[level] * 0.5) * 1.17 * self.scale.x
 
 
 func combine_purin(purin1: Purin, purin2: Purin):
@@ -485,7 +486,7 @@ func combine_purin(purin1: Purin, purin2: Purin):
 	var evil = purin1.evil.visible == true and purin2.evil.visible == true
 
 	# combined purin will be of 1 level higher up to the max
-	var new_level = min(purin1.get_meta("level") + 1, highest_possible_purin_level)
+	var new_level = min(purin1.get_meta("level") + 1, Global.highest_possible_purin_level)
 	if is_instance_valid(last_dropped_purin) and (last_dropped_purin == purin1 or last_dropped_purin == purin2):
 		last_dropped_purin_touched_something = true
 		
@@ -502,7 +503,8 @@ func combine_purin(purin1: Purin, purin2: Purin):
 	if evil:
 		# if it's evil then make have more mass than normal
 		new_purin.mass = pow(1.2, new_level+2)
-	elif not opponents.is_empty() and new_level >= evil_purin_spawn_level_threshold:
+	elif not opponents.is_empty() and new_level >= Global.evil_purin_spawn_level_threshold:
+		remove_dead_opponents()
 		# if it's not evil then depending on level it could spawn an evil purin in opponent's game
 		var opponent: PlayerController = opponents.pick_random()
 		if is_instance_valid(opponent) and opponent.player_name != player_name:
@@ -548,6 +550,9 @@ func combine_purin(purin1: Purin, purin2: Purin):
 	return new_purin
 	
 func add_evil_purin(level, opponent):
+	if not is_instance_valid(opponent):
+		remove_dead_opponents()
+		return
 	opponent.purin_bag.add_evil_purin(level)
 	opponent.noir.change_held_purin(opponent.purin_bag.get_current_purin())
 	
@@ -562,3 +567,12 @@ func bonk_purin(purin1: Purin, purin2: Purin):
 		sfx_bonk_player.play()
 	if is_instance_valid(last_dropped_purin) and (last_dropped_purin == purin1 or last_dropped_purin == purin2):
 		last_dropped_purin_touched_something = true
+
+func remove_dead_opponents():
+	if opponents.is_empty():
+		return
+	var updated_opponents:Array[PlayerController] = []
+	for opponent in opponents:
+		if is_instance_valid(opponent):
+			updated_opponents.append(opponent)
+	opponents = updated_opponents

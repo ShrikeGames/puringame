@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bja3p1ji46rhl"
-path="res://.godot/imported/purin11.png-69d22d5fa4818782c1d0affe74c945e4.ctex"
+uid="uid://cekg4y1brmpw5"
+path="res://.godot/imported/purin7_removed.png-85973c63dbab1cea9dcfa168c662a757.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/images/game/purin11.png"
-dest_files=["res://.godot/imported/purin11.png-69d22d5fa4818782c1d0affe74c945e4.ctex"]
+source_file="res://assets/images/game/purin7_removed.png"
+dest_files=["res://.godot/imported/purin7_removed.png-85973c63dbab1cea9dcfa168c662a757.ctex"]
 
 [params]
 

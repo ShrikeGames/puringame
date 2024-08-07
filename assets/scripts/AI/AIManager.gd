@@ -7,7 +7,7 @@ var play_package: Resource = load("res://assets/scenes/PlayAreaBowl.tscn")
 @export var debug: bool = false
 @export var auto_retry: bool = false
 @export var camera:Camera2D
-
+@export var battle_mode:bool = false
 var generation_ended:bool = false
 var generation_timer:float = 0.0
 
@@ -21,20 +21,65 @@ func init_ai_players():
 	Engine.time_scale = time_scale
 	if generation >= 1:
 		var config_json = Global.read_json("user://ai%s.json"%[generation])
+		
+		var stats:Dictionary ={
+			"0":{},
+			"1":{},
+			"2":{},
+			"3":{},
+			"4":{},
+			"5":{},
+			"6":{},
+			"7":{},
+			"8":{},
+			"9":{},
+			"10":{}
+		}
 		if config_json:
 			var total_score:int = 0
 			var total_count:int = 0
 			var highest_score:int = 0
+			
 			
 			for config in config_json.get("history"):
 				if total_count == 0:
 					highest_score = config.get("score")
 				total_score += config.get("score")
 				total_count += 1
+				var configurations:Dictionary = config.get("configurations")
+				if configurations:
+					for purin_level in range(0, Global.highest_possible_purin_level+1):
+						var total_weights:Array = stats.get("%s"%[purin_level]).get("total_weights", [0,0,0,0,0,0])
+						var total_biases:Array = stats.get("%s"%[purin_level]).get("total_biases", [0,0,0,0,0,0])
+						
+						var purin_config:Dictionary = configurations.get("%s"%[purin_level])
+						if purin_config:
+							var purin_weights = purin_config.get("highscore_weights")
+							for i in range(0, len(total_weights)):
+								total_weights[i] += purin_weights[i]
+							var purin_biases = purin_config.get("highscore_biases")
+							for i in range(0, len(total_biases)):
+								total_biases[i] += purin_biases[i]
+						stats["%s"%[purin_level]]["total_weights"] = total_weights
+						stats["%s"%[purin_level]]["total_biases"] = total_biases
+						
+			
+			for purin_level in range(0, Global.highest_possible_purin_level+1):
+				var total_weights:Array = stats["%s"%[purin_level]].get("total_weights", [0,0,0,0,0,0])
+				var total_biases:Array = stats["%s"%[purin_level]].get("total_biases", [0,0,0,0,0,0])
+				var average_weights:Array = stats["%s"%[purin_level]].get("average_weights", [0,0,0,0,0,0])
+				var average_biases:Array = stats["%s"%[purin_level]].get("average_biases", [0,0,0,0,0,0])
+				for i in range(0, 6):
+					average_weights[i] = total_weights[i]/float(total_count)
+					average_biases[i] = total_biases[i]/float(total_count)
+				print("Average Weights for Generation %s's %s-purin was %s"%[generation, purin_level, average_weights])
+				print("Average Biases for Generation %s's %s-purin was %s"%[generation, purin_level, average_biases])
+			
 			var average:float = total_score / float(total_count)
 			print("Average Score for Generation %s was %s"%[generation, average])
 			print("Highest Score for Generation %s was %s"%[generation, highest_score])
-		
+			
+			
 		# save the results of the last generation to the generic named json file
 		var json_string := JSON.stringify(config_json)
 		var file_access := FileAccess.open("user://ai.json", FileAccess.WRITE)
@@ -63,7 +108,7 @@ func init_ai_players():
 		if i < num_ai * 0.5:
 			game.ai_mutation_rate = 0.03
 		else:
-			game.ai_mutation_rate = 0.1
+			game.ai_mutation_rate = 0.5
 		game.training = true
 		var player_name = "ai%s_%s"%[generation, i]
 		game.player_name = player_name
@@ -90,11 +135,18 @@ func init_ai_players():
 		games.append(game)
 		x_pos += 1
 		if i > 0 and (i+1) % 2 == 0:
-			y_pos += 1080
+			y_pos += 1280
 			x_pos = 0
+	if battle_mode:
+		for game in games:
+			var opponents:Array[PlayerController] = []
+			for game_opponent in games:
+				opponents.append(game_opponent)
+			game.opponents = opponents
 	following_game = games[0]
 	camera.position.x = 960
 	camera.position.y = following_game.position.y + 535
+	
 func rank_ai_players_hs(player1:PlayerController, player2:PlayerController):
 	if player1.highscore > player2.highscore:
 		return true

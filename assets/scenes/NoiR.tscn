@@ -16,6 +16,5 @@ position = Vector2(0, -54)
 texture = ExtResource("1_caifl")
 
 [node name="Purin" parent="." instance=ExtResource("3_tmiyj")]
-frame = 1
 
 [connection signal="ready" from="." to="." method="_on_ready"]

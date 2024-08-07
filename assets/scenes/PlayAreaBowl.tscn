@@ -59,8 +59,10 @@ position = Vector2(399.5, 775)
 shape = SubResource("RectangleShape2D_a48te")
 
 [node name="TopCollider" type="CollisionShape2D" parent="Bowl"]
+visible = false
 position = Vector2(399, -185)
 shape = SubResource("RectangleShape2D_a48te")
+disabled = true
 
 [node name="LeftCollider" type="CollisionShape2D" parent="Bowl"]
 position = Vector2(-13, 295)

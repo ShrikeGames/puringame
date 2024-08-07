@@ -2,6 +2,10 @@ extends Node
 # This class is always available
 var settings_config_location:String = "user://settings.json"
 var default_settings_config_location:String = "res://settings.json"
+var purin_sizes = [50, 100, 125, 156, 175, 195, 250, 275, 300, 343]
+var highest_possible_purin_level = 9
+var game_over_threshold_sec = 6
+var evil_purin_spawn_level_threshold = 3
 
 # audio sliders 0.0 - 1.0
 var volume_master:float = 0.5
