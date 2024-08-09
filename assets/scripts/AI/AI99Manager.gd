@@ -26,8 +26,8 @@ func init_ai_players():
 		game.ai_mutation_rate = 0
 		var player_name = "ai%s"%(i)
 		game.player_name = player_name
-		game.config_path = "res://ai.json"
-		game.default_config_path = "res://ai.json"
+		game.config_path = "res://ai_v2.json"
+		game.default_config_path = "res://ai_v2.json"
 		game.scale.x = 0.3
 		game.scale.y = 0.3
 		game.position = Vector2(x_pos, y_pos)

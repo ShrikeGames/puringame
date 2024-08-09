@@ -5,7 +5,7 @@ var default_settings_config_location:String = "res://settings.json"
 var purin_sizes = [50, 100, 125, 156, 175, 195, 250, 275, 300, 343]
 var highest_possible_purin_level = 9
 var game_over_threshold_sec = 6
-var evil_purin_spawn_level_threshold = 3
+var evil_purin_spawn_level_threshold = 9
 
 # audio sliders 0.0 - 1.0
 var volume_master:float = 0.5
@@ -60,6 +60,12 @@ var training_number_of_ai:int = 2
 var training_generation_lifetime_sec:int = 600
 # how fast the game should play when training 1.0-3.0
 var training_game_speed:float = 1
+
+var ai_input_scene:Resource = load("res://assets/scenes/AI/AIInput.tscn")
+var score_orb_scene: Resource = load("res://assets/scenes/ScoreOrb.tscn")
+var evil_orb_scene: Resource = load("res://assets/scenes/EvilOrb.tscn")
+
+var purin_object_scene: Resource = load("res://assets/scenes/Purin.tscn")
 
 func read_json(path:String) -> Dictionary:
 	if not FileAccess.file_exists(path):

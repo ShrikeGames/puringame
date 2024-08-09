@@ -20,7 +20,7 @@ func _on_ready() -> void:
 func init_ai_players():
 	Engine.time_scale = time_scale
 	if generation >= 1:
-		var config_json = Global.read_json("user://ai%s.json"%[generation])
+		var config_json = Global.read_json("user://ai_v2%s.json"%[generation])
 		
 		var stats:Dictionary ={
 			"0":{},
@@ -42,7 +42,7 @@ func init_ai_players():
 			
 			
 			for config in config_json.get("history"):
-				if total_count == 0:
+				if config.get("score") > highest_score:
 					highest_score = config.get("score")
 				total_score += config.get("score")
 				total_count += 1
@@ -82,7 +82,7 @@ func init_ai_players():
 			
 		# save the results of the last generation to the generic named json file
 		var json_string := JSON.stringify(config_json)
-		var file_access := FileAccess.open("user://ai.json", FileAccess.WRITE)
+		var file_access := FileAccess.open("user://ai_v2.json", FileAccess.WRITE)
 		if not file_access:
 			print("An error happened while saving data: ", FileAccess.get_open_error())
 			return
@@ -92,7 +92,7 @@ func init_ai_players():
 	
 	generation += 1
 	for game in ai_games_node.get_children():
-		ai_games_node.queue_free()
+		ai_games_node.free()
 		
 	games = []
 	print("Begin Generation %s"%[generation])
@@ -116,15 +116,15 @@ func init_ai_players():
 		
 		if auto_retry:
 			# save to generic file
-			game.config_path = "user://ai.json"
+			game.config_path = "user://ai_v2.json"
 		else:
 			# save to your own generation file
-			game.config_path = "user://ai%s.json"%[generation]
+			game.config_path = "user://ai_v2_%s.json"%[generation]
 		if generation <= 1 or auto_retry:
-			game.default_config_path = "res://ai.json"
+			game.default_config_path = "res://ai_v2.json"
 		else:
 			# use previous generation
-			game.default_config_path = "user://ai%s.json"%[generation-1]
+			game.default_config_path = "user://ai_v2_%s.json"%[generation-1]
 		
 		game.position = Vector2(40 + (x_pos*1020), y_pos)
 		ai_games_node.add_child(game)
@@ -138,11 +138,11 @@ func init_ai_players():
 			y_pos += 1280
 			x_pos = 0
 	if battle_mode:
-		for game in games:
-			var opponents:Array[PlayerController] = []
-			for game_opponent in games:
-				opponents.append(game_opponent)
-			game.opponents = opponents
+		# set them as opponents in pairs
+		for i in range(0, len(games), 2):
+			games[i+1].opponents = [games[i]]
+			games[i].opponents = [games[i+1]]
+			
 	following_game = games[0]
 	camera.position.x = 960
 	camera.position.y = following_game.position.y + 535

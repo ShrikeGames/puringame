@@ -89,8 +89,8 @@ texture = ExtResource("11_i2u1v")
 [node name="AI" parent="." node_paths=PackedStringArray("purin_bag", "opponents") instance=ExtResource("13_3k2pk")]
 position = Vector2(1073, -2)
 player_name = "ai"
-config_path = "user://ai.json"
-default_config_path = "res://ai.json"
+config_path = "user://ai_v2.json"
+default_config_path = "res://ai_v2.json"
 ai_controlled = true
 purin_bag = NodePath("../PurinBagAI")
 opponents = [NodePath("../Player")]

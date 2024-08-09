@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://csor0u1p34yq1"]
+[gd_scene load_steps=25 format=3 uid="uid://csor0u1p34yq1"]
 
 [ext_resource type="Texture2D" uid="uid://xt87hje080jt" path="res://assets/images/game/purin1.png" id="1_pbh4i"]
 [ext_resource type="Texture2D" uid="uid://ds7ffculpywfr" path="res://assets/images/game/purin2.png" id="2_etdgd"]
@@ -10,10 +10,19 @@
 [ext_resource type="Texture2D" uid="uid://k1hduynp1pgw" path="res://assets/images/game/purin8.png" id="8_whnu1"]
 [ext_resource type="Texture2D" uid="uid://cwcmvy5fu6w86" path="res://assets/images/game/purin9.png" id="9_vs86u"]
 [ext_resource type="Texture2D" uid="uid://bja3p1ji46rhl" path="res://assets/images/game/purin10.png" id="10_ou54y"]
+[ext_resource type="Texture2D" uid="uid://bg3f3ic7dyl3u" path="res://assets/images/game/purin1_evil.png" id="11_2wo3p"]
+[ext_resource type="Texture2D" uid="uid://bq466wttk3lfe" path="res://assets/images/game/purin2_evil.png" id="12_akvf6"]
 [ext_resource type="Script" path="res://assets/scripts/PurinIndicator.gd" id="12_hys5f"]
-[ext_resource type="Texture2D" uid="uid://crra4gd3ck4vb" path="res://assets/images/game/evilge.png" id="13_nxjcp"]
+[ext_resource type="Texture2D" uid="uid://c1bq7a1jo8pvw" path="res://assets/images/game/purin3_evil.png" id="13_14hqr"]
+[ext_resource type="Texture2D" uid="uid://nl07odt18dfs" path="res://assets/images/game/purin4_evil.png" id="14_0b2mo"]
 [ext_resource type="FontFile" uid="uid://cdwb8ivskcjue" path="res://assets/fonts/NotoSansCJK-Regular.ttc" id="14_wrqab"]
+[ext_resource type="Texture2D" uid="uid://bd72ua14v5dnm" path="res://assets/images/game/purin5_evil.png" id="15_4dkpd"]
 [ext_resource type="FontFile" uid="uid://buytj31trs62" path="res://assets/fonts/NotoSansCJK-Bold.ttc" id="15_38q5d"]
+[ext_resource type="Texture2D" uid="uid://sykka4g8q46h" path="res://assets/images/game/purin6_evil.png" id="16_8mcke"]
+[ext_resource type="Texture2D" uid="uid://neyphm3qb24" path="res://assets/images/game/purin7_evil.png" id="17_6xb0j"]
+[ext_resource type="Texture2D" uid="uid://dfxhdg5ukpp0x" path="res://assets/images/game/purin8_evil.png" id="18_736sc"]
+[ext_resource type="Texture2D" uid="uid://de5wi8xw3beb5" path="res://assets/images/game/purin9_evil.png" id="19_txsvr"]
+[ext_resource type="Texture2D" uid="uid://csii3nm7lwwib" path="res://assets/images/game/purin10_evil.png" id="20_goba7"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_oxh1t"]
 animations = [{
@@ -51,12 +60,46 @@ animations = [{
 "loop": true,
 "name": &"default",
 "speed": 1.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("11_2wo3p")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_akvf6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_14hqr")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_0b2mo")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_4dkpd")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16_8mcke")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17_6xb0j")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_736sc")
+}, {
+"duration": 1.0,
+"texture": ExtResource("19_txsvr")
+}, {
+"duration": 1.0,
+"texture": ExtResource("20_goba7")
+}],
+"loop": true,
+"name": &"evil",
+"speed": 5.0
 }]
 
-[node name="PurinIndicator" type="AnimatedSprite2D" node_paths=PackedStringArray("evil_visual", "number_label")]
+[node name="PurinIndicator" type="AnimatedSprite2D" node_paths=PackedStringArray("number_label")]
 sprite_frames = SubResource("SpriteFrames_oxh1t")
 script = ExtResource("12_hys5f")
-evil_visual = NodePath("Evilge")
 number_label = NodePath("NumberLabel")
 
 [node name="NumberLabel" type="RichTextLabel" parent="."]
@@ -75,9 +118,3 @@ bbcode_enabled = true
 text = "[center][color=fff]1[/color][/center]"
 scroll_active = false
 shortcut_keys_enabled = false
-
-[node name="Evilge" type="Sprite2D" parent="."]
-visible = false
-position = Vector2(-1, 7)
-scale = Vector2(0.24, 0.24)
-texture = ExtResource("13_nxjcp")

@@ -10,7 +10,7 @@ var show_debug_info: bool = false
 @export var number_label: RichTextLabel
 @export var debug_text: RichTextLabel
 @export var debug_line: Line2D
-@export var evil: Sprite2D
+@export var evil: bool
 @export var game_over_countdown: AnimatedSprite2D
 @export var particle_system: GPUParticles2D
 var game_over_timer_sec: float

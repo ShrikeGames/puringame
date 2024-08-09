@@ -81,6 +81,12 @@ func get_current_purin() -> Dictionary:
 	update_bag_visuals()
 	return {"level": first_purin.level, "evil": first_purin.evil}
 
+func get_next_purin() -> Dictionary:
+	#print("get_current_purin_level: ", max_level)
+	restock_bag()
+	var second_purin:PurinIndicator = bag[0]
+	return {"level": second_purin.level, "evil": second_purin.evil}
+
 
 func get_next_purin_level() -> int:
 	#print("get_next_purin_level: ", max_level)
@@ -97,7 +103,6 @@ func add_evil_purin(level:int) -> void:
 			#indicator.level = min(level, int(max_purin_level*0.5))
 			indicator.set_frame(indicator.level)
 			indicator.evil = true
-			indicator.evil_visual.visible = true
 			indicator.pause()
 			var indicator_scale:float = scales[indicator.level]
 			indicator.scale = Vector2(indicator_scale, indicator_scale)

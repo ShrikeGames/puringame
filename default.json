@@ -6,42 +6,47 @@
 		{
 			"username": "Rookie",
 			"username_jp": "ルーキー",
-			"score": 25000
+			"score": 2500
 		},
 		{
 			"username": "Beginner",
 			"username_jp": "初心者",
-			"score": 50000
+			"score": 5000
 		},
 		{
-			"username": "NoiR's First Attempt",
-			"username_jp": "NoiRの初挑戦",
-			"score": 87399
+			"username": "20000",
+			"username_jp": "20000",
+			"score": 20000
 		},
 		{
 			"username": "Evolution",
 			"username_jp": "進化",
-			"score": 100000
+			"score": 30000
 		},
 		{
 			"username": "Rainbow Purin",
 			"username_jp": "虹のプリン",
-			"score": 125000
+			"score": 55000
 		},
 		{
-			"username": "Shrike",
-			"username_jp": "シュライク",
-			"score": 150000
+			"username": "75000",
+			"username_jp": "75000",
+			"score": 75000
+		},
+		{
+			"username": "100000",
+			"username_jp": "100000",
+			"score": 100000
 		},
 		{
 			"username": "Ascended",
 			"username_jp": "昇天した",
-			"score": 250000
+			"score": 150000
 		},
 		{
 			"username": "God Gamer",
 			"username_jp": "神らしいゲーマー",
-			"score": 350000
+			"score": 250000
 		}
 	],
 	"history": [

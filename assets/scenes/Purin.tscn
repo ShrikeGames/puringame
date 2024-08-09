@@ -1,10 +1,9 @@
-[gd_scene load_steps=17 format=3 uid="uid://cvukodgckovgx"]
+[gd_scene load_steps=16 format=3 uid="uid://cvukodgckovgx"]
 
 [ext_resource type="Script" path="res://assets/scripts/Purin.gd" id="1_edqf4"]
 [ext_resource type="Texture2D" uid="uid://xt87hje080jt" path="res://assets/images/game/purin1.png" id="2_p0kjq"]
 [ext_resource type="FontFile" uid="uid://cdwb8ivskcjue" path="res://assets/fonts/NotoSansCJK-Regular.ttc" id="3_iu71o"]
 [ext_resource type="FontFile" uid="uid://buytj31trs62" path="res://assets/fonts/NotoSansCJK-Bold.ttc" id="4_6u3s5"]
-[ext_resource type="Texture2D" uid="uid://crra4gd3ck4vb" path="res://assets/images/game/evilge.png" id="5_2sr17"]
 [ext_resource type="Texture2D" uid="uid://dgdj0nsw86rr0" path="res://assets/images/game/GameOverCountDownSpriteSheet.png" id="6_7do40"]
 [ext_resource type="PackedScene" uid="uid://cec6ypkfmkvbs" path="res://assets/scenes/PurinComboParticle.tscn" id="7_en3i3"]
 
@@ -68,7 +67,7 @@ animations = [{
 "speed": 2.0
 }]
 
-[node name="Purin" type="RigidBody2D" node_paths=PackedStringArray("image", "collider", "number_label", "debug_text", "debug_line", "evil", "game_over_countdown", "particle_system")]
+[node name="Purin" type="RigidBody2D" node_paths=PackedStringArray("image", "collider", "number_label", "debug_text", "debug_line", "game_over_countdown", "particle_system")]
 collision_layer = 3
 collision_mask = 3
 physics_material_override = SubResource("PhysicsMaterial_7y5xc")
@@ -81,7 +80,6 @@ collider = NodePath("Collider")
 number_label = NodePath("NumberLabel")
 debug_text = NodePath("DebugText")
 debug_line = NodePath("DebugLine")
-evil = NodePath("Evil")
 game_over_countdown = NodePath("GameOverCountDown")
 particle_system = NodePath("PurinComboParticle")
 
@@ -127,12 +125,6 @@ bbcode_enabled = true
 text = "[center][color=fff]1[/color][/center]"
 scroll_active = false
 shortcut_keys_enabled = false
-
-[node name="Evil" type="Sprite2D" parent="."]
-visible = false
-position = Vector2(-1, 7)
-scale = Vector2(0.227528, 0.227528)
-texture = ExtResource("5_2sr17")
 
 [node name="GameOverCountDown" type="AnimatedSprite2D" parent="."]
 visible = false

@@ -32,10 +32,14 @@ func _process(_delta):
 
 
 func change_held_purin(purin_info:Dictionary):
-	held_purin.set_frame(purin_info["level"])
+	
 	held_purin.evil = purin_info["evil"]
-	held_purin.evil_visual.visible = held_purin.evil
+	if held_purin.evil:
+		held_purin.set_animation("evil")
+	else:
+		held_purin.set_animation("default")
 	if Global.numbered_purin and held_purin.number_label:
 		held_purin.number_label.text = "[center][color=fff]%s[/color][/center]"%[purin_info["level"]]
 		held_purin.number_label.visible = true
+	held_purin.set_frame(purin_info["level"])
 	held_purin.pause()
