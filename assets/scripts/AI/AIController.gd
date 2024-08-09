@@ -14,6 +14,7 @@ var last_x_pos:float = 0
 var last_purin_level_dropped:int = 0
 var parent_1_name:String = ""
 var parent_2_name:String = ""
+var parents:String = ""
 func init(player_controller:PlayerController):
 	self.game = player_controller
 	self.held_purin_level = 0
@@ -22,7 +23,7 @@ func init(player_controller:PlayerController):
 	self.next_purin_is_evil = false
 	self.debug = player_controller.debug
 	self.inputs = []
-	var parents:String = ""
+	
 	if game.training:
 		if game.rank < 10:
 			self.configurations = game.get_configurations_with_mutation("configurations", game.ai_mutation_rate, {"0":{}}, false, game.rank)
@@ -105,6 +106,8 @@ func best_x_pos():
 	var values:Array[Value] = []
 	var space_state = game.get_world_2d().direct_space_state
 	var radius =  self.game.get_purin_radius(self.game.purin_bag.get_current_purin()["level"])
+	if debug:
+		self.game.debug_label.text = "Attempt #%s %s %s %s"%[game.attempts+1, parents, game.ai_mutation_rate, configurations.get("%s"%[held_purin_level], "")]
 	if not inputs.is_empty():
 		update_inputs()
 		for input in inputs:

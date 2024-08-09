@@ -23,9 +23,12 @@
 script = ExtResource("1_doc3l")
 num_ai = 80
 ai_games_node = NodePath("AIGames")
+time_scale = 2.0
 debug = true
+auto_retry = true
+max_retry_attempts = 2
 camera = NodePath("Camera2D")
-battle_mode = true
+generation = 1
 
 [node name="ProgressionIndicator" type="Node2D" parent="."]
 position = Vector2(949, 25)

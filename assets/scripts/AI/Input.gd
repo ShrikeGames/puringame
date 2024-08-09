@@ -132,5 +132,4 @@ func update(space_state, radius, game, ai_controller, held_purin_level:int, held
 			bounce_line.set_point_position(0, to_local(bounce_start_pos))
 			bounce_line.set_point_position(1, to_local(bounce_value.position))
 		else:
-			if value.cost > 0:
-				value.cost += 2
+			value.cost += 100

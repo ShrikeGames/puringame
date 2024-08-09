@@ -8,6 +8,8 @@ var initial_seed:String
 @export var default_config_path: String = "res://default.json"
 @export var ai_controlled: bool = false
 @export var auto_retry: bool = false
+@export var max_retry_attempts: int = 999
+var attempts:int = 0
 @export var leaderboard:Leaderboard
 var ai_controller: AIController
 @export var noir: NoiR
@@ -115,9 +117,9 @@ func mutate_array(list_floats:Array, mutation_rate:float):
 	for i in range(0, len(list_floats)):
 		# individually give it a mutation chance
 		if randf() <= mutation_rate:
-			mutated_list.append(list_floats[i] + randi_range(-1,1)*8.0)
-			mutated_list[i] = min(mutated_list[i], 8.0)
-			mutated_list[i] = max(0, mutated_list[i])
+			mutated_list.append(list_floats[i] + randi_range(-10,10))
+			mutated_list[i] = min(mutated_list[i], 100)
+			mutated_list[i] = max(-100, mutated_list[i])
 		else:
 			mutated_list.append(list_floats[i])
 	return mutated_list
@@ -137,9 +139,9 @@ func get_config_value_or_default(key: String, mutation_rate: float = 0.0, defaul
 		for i in range(0, len(config_value)):
 			# individually give it a mutation chance
 			if randf() <= mutation_rate:
-				config_value[i] += randi_range(-1,1)*8.0
-				config_value[i] = min(config_value[i], 8.0)
-				config_value[i] = max(0, config_value[i])
+				config_value[i] += randi_range(-10,10)
+				config_value[i] = min(config_value[i], 100)
+				config_value[i] = max(-100, config_value[i])
 	
 	return config_value
 
@@ -154,11 +156,16 @@ func load_purin():
 		evil_purin_textures.append(load(evil_image_path))
 
 func restart_game():
+	attempts += 1
+	
 	if training and purin_bag:
 		purin_bag.queue_free()
 		purin_bag = null
 	if ai_controller:
 		ai_controller.queue_free()
+	if auto_retry and attempts > max_retry_attempts:
+		self.queue_free()
+		return
 	set_up_game()
 	
 func set_up_game():
@@ -240,6 +247,7 @@ func save_results():
 	}
 	if ai_controlled:
 		new_run["configurations"] = ai_controller.configurations
+		new_run["configurations"]["attempts"] = attempts
 		new_run["configurations"]["username"] = player_name
 		new_run["configurations"]["username_jp"] = player_name
 		new_run["configurations"]["parent1"] = ai_controller.parent_1_name
@@ -355,7 +363,7 @@ func terminate_training_early():
 	# Selection Pressure Rules
 	var current_purin_count:int = purin_node.get_child_count()
 	# kill those with excessive purin that aren't combined
-	if is_instance_valid(purin_bag) and purin_bag.max_purin_level < 9 and current_purin_count > 26:
+	if is_instance_valid(purin_bag) and purin_bag.max_purin_level < 9 and current_purin_count > 20:
 		return true
 	
 	# semi optimal merging should get close to these scores with some wiggle room
@@ -526,19 +534,20 @@ func combine_purin(purin1: Purin, purin2: Purin):
 			new_purin.mass = pow(1.2, new_level+2)
 		elif not opponents.is_empty() and new_level >= Global.evil_purin_spawn_level_threshold:
 			remove_dead_opponents()
-			# if it's not evil then depending on level it could spawn an evil purin in opponent's game
-			var opponent: PlayerController = opponents.pick_random()
-			if is_instance_valid(opponent) and opponent.player_name != player_name:
-				var evilorb: EvilOrb = Global.evil_orb_scene.instantiate()
-				evilorb.purin_level = new_level
-				evilorb.position = to_global(new_purin.position)
-				evilorb.opponent = opponent
-				if opponent.purin_bag.visible == true:
-					evilorb.target_position = opponent.purin_bag.position
-				else:
-					evilorb.target_position = opponent.position
-				evilorb.connect("evilguh", add_evil_purin)
-				get_tree().root.add_child(evilorb)
+			if not opponents.is_empty():
+				# if it's not evil then depending on level it could spawn an evil purin in opponent's game
+				var opponent: PlayerController = opponents.pick_random()
+				if is_instance_valid(opponent) and opponent.player_name != player_name:
+					var evilorb: EvilOrb = Global.evil_orb_scene.instantiate()
+					evilorb.purin_level = new_level
+					evilorb.position = to_global(new_purin.position)
+					evilorb.opponent = opponent
+					if opponent.purin_bag.visible == true:
+						evilorb.target_position = opponent.purin_bag.position
+					else:
+						evilorb.target_position = opponent.position
+					evilorb.connect("evilguh", add_evil_purin)
+					get_tree().root.add_child(evilorb)
 		new_purin.angular_velocity = spawn_angular_velocity
 		new_purin.linear_velocity = spawn_linear_velocity
 		if not training:

@@ -6,6 +6,7 @@ var play_package: Resource = load("res://assets/scenes/PlayAreaBowl.tscn")
 @export var time_scale: float = 1.0
 @export var debug: bool = false
 @export var auto_retry: bool = false
+@export var max_retry_attempts: int = 999
 @export var camera:Camera2D
 @export var battle_mode:bool = false
 var generation_ended:bool = false
@@ -20,7 +21,7 @@ func _on_ready() -> void:
 func init_ai_players():
 	Engine.time_scale = time_scale
 	if generation >= 1:
-		var config_json = Global.read_json("user://ai_v2%s.json"%[generation])
+		var config_json = Global.read_json("user://ai_v2_%s.json"%[generation])
 		
 		var stats:Dictionary ={
 			"0":{},
@@ -105,6 +106,7 @@ func init_ai_players():
 		game.ai_controlled = true
 		game.mute_sound = true
 		game.auto_retry = auto_retry
+		game.max_retry_attempts = max_retry_attempts
 		if i < num_ai * 0.5:
 			game.ai_mutation_rate = 0.03
 		else:
@@ -114,13 +116,9 @@ func init_ai_players():
 		game.player_name = player_name
 		game.rank = i
 		
-		if auto_retry:
-			# save to generic file
-			game.config_path = "user://ai_v2.json"
-		else:
-			# save to your own generation file
-			game.config_path = "user://ai_v2_%s.json"%[generation]
-		if generation <= 1 or auto_retry:
+		# save to your own generation file
+		game.config_path = "user://ai_v2_%s.json"%[generation]
+		if generation <= 1:
 			game.default_config_path = "res://ai_v2.json"
 		else:
 			# use previous generation
