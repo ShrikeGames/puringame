@@ -5,16 +5,31 @@
 				"purin": []
 			},
 			"configurations": {
-				"weights": [
-					2,2,2,2,2,2
-				],
 				"attempts": 0,
-				"parent1": "ai9_63",
-				"parent2": "ai9_62",
-				"username": "ai10_68",
-				"username_jp": "ai10_68"
+				"mvp_weight": 0,
+				"parent1": "ai6_47",
+				"parent2": "ai6_27",
+				"score": 232024,
+				"username": "ai7_72",
+				"username_jp": "ai7_72",
+				"weight_proportions": [
+					0.289156626506024,
+					0.108433734939759,
+					0.168674698795181,
+					0.180722891566265,
+					0.180722891566265,
+					0.072289156626506
+				],
+				"weights": [
+					4.8,
+					1.8,
+					2.8,
+					3,
+					3,
+					1.2
+				]
 			},
-			"score": 0
+			"score": 232024
 		}
 	]
 }

@@ -35,8 +35,11 @@ var ai_controller: AIController
 @export var move_speed: float = 450.0
 @export var last_mouse_pos:Vector2 = Vector2(0.0, 0.0)
 @export var max_score_history_length:int = 10
+var weight_proportions:Array[float]=[]
+var mvp_weight:int = 0
 var can_drop_early: bool =false
 var auto_drop:bool = false
+var target_score:float = 150000
 @export var debug:bool = false
 var rank: int = 0
 
@@ -106,10 +109,10 @@ func mutate_array(list_floats:Array, mutation_rate:float):
 	for i in range(0, len(list_floats)):
 		# individually give it a mutation chance
 		if randf() <= mutation_rate:
-			mutated_list.append(list_floats[i] + randf_range(-1,1))
+			mutated_list.append(list_floats[i] + randf_range(-4,4))
 		else:
 			mutated_list.append(list_floats[i])
-		mutated_list[i] = min(mutated_list[i], 4)
+		mutated_list[i] = min(mutated_list[i], 16)
 		mutated_list[i] = max(0, mutated_list[i])
 		mutated_list[i] = snapped(mutated_list[i], 0.2)
 	return mutated_list
@@ -129,8 +132,8 @@ func get_config_value_or_default(key: String, mutation_rate: float = 0.0, defaul
 		for i in range(0, len(config_value)):
 			# individually give it a mutation chance
 			if randf() <= mutation_rate:
-				config_value[i] += randf_range(-1,1)
-			config_value[i] = min(config_value[i], 4)
+				config_value[i] += randf_range(-4,4)
+			config_value[i] = min(config_value[i], 16)
 			config_value[i] = max(0, config_value[i])
 			config_value[i] = snapped(config_value[i], 0.2)
 	return config_value
@@ -211,6 +214,7 @@ func get_board_state():
 			"evil": purin.evil
 		}
 		purin_list.append(purin_info)
+	state["purin"] = purin_list
 	return state
 
 func rank_history(run1:Dictionary, run2:Dictionary):
@@ -245,13 +249,18 @@ func save_results():
 		new_run["configurations"]["username_jp"] = player_name
 		new_run["configurations"]["parent1"] = ai_controller.parent_1_name
 		new_run["configurations"]["parent2"] = ai_controller.parent_2_name
+		new_run["configurations"]["score"] = score
+		
+		new_run["configurations"]["weight_proportions"] = weight_proportions
+		new_run["configurations"]["mvp_weight"] = mvp_weight
+		new_run["configurations"]["replay"] = ai_controller.move_history
 		
 	history.append(new_run)
 	# sort history from best to worst
 	history.sort_custom(rank_history)
 	if training:
-		#  keep top half
-		config_json["history"] = history.slice(0, min(40, len(history)))
+		#  keep all
+		config_json["history"] = history#.slice(0, min(40, len(history)))
 	else:
 		# only save the last 10 after sorting
 		config_json["history"] = history.slice(0, min(max_score_history_length+1, len(history)))
@@ -313,8 +322,24 @@ func check_game_over(delta):
 			purin.game_over_timer_sec >= Global.game_over_threshold_sec
 		):
 			if ai_controlled:
+				var weight_total:float = 0
+				var highest_weight:float = 0
+				
+				var weights:Array[float] = ai_controller.configurations.get("weights")
+				for i in range(0, 6):
+					weight_total += weights[i]
+					if weights[i] > highest_weight:
+						highest_weight = weights[i]
+						mvp_weight = i
+						
+				for weight in weights:
+					if weight_total> 0:
+						weight_proportions.append(weight/weight_total)
+					else:
+						weight_proportions.append(0)
 				var parents = "(%s+%s)"%[ai_controller.parent_1_name, ai_controller.parent_2_name]
 				print("GameOver / %s %s / %s / %s / %s / %s / %s" % [player_name, parents, score, purin_bag.max_purin_level, dropped_purin_count, purin_node.get_child_count(), ai_controller.configurations["weights"]])
+		
 			gameover_screen.visible = true
 			purin.game_over_timer_sec = Global.game_over_threshold_sec
 			

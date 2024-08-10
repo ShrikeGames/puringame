@@ -61,7 +61,7 @@ func init_ai_players():
 					for i in range(0, len(total_weights)):
 						total_weights[i] += purin_weights[i]
 					stats["total_weights"] = total_weights
-						
+					
 			
 			var total_weights:Array = stats["total_weights"]
 			var average_weights:Array = [0,0,0,0,0,0]
@@ -104,10 +104,13 @@ func init_ai_players():
 		game.mute_sound = true
 		game.auto_retry = auto_retry
 		game.max_retry_attempts = max_retry_attempts
-		if i < num_ai * 0.5:
-			game.ai_mutation_rate = 0.15
+		if generation == 1 and i > 9:
+			game.ai_mutation_rate = 1
 		else:
-			game.ai_mutation_rate = 0.25
+			if i < num_ai * 0.5:
+				game.ai_mutation_rate = 0.1
+			else:
+				game.ai_mutation_rate = 0.2
 		game.training = true
 		var player_name = "ai%s_%s"%[generation, i]
 		game.player_name = player_name
@@ -167,7 +170,7 @@ func _process(delta):
 	if camera != null and not games.is_empty():
 		var updated:bool = false
 		for game in games:
-			if not is_instance_valid(following_game) or (is_instance_valid(game) and game.score > 30000 and game.score > following_game.score and game.player_name != following_game.player_name):
+			if not is_instance_valid(following_game) or (is_instance_valid(game) and game.score > 90000 and game.score > following_game.score and game.player_name != following_game.player_name):
 				following_game = game
 				updated = true
 		if updated:
