@@ -74,9 +74,12 @@ func init_ai_players():
 			print("[Stats] Average Score for Generation %s was %s"%[generation, average])
 			print("[Stats] Highest Score for Generation %s was %s"%[generation, highest_score])
 			
-			
-		# save the results of the last generation to the generic named json file
+		
+		var history:Array = config_json.get("history", [])
+		config_json["history"] = history.slice(0, round(num_ai*0.5))
+		# save the results
 		var json_string := JSON.stringify(config_json)
+		# We will need to open/create a new file for this data string
 		var file_access := FileAccess.open("user://ai_v2.json", FileAccess.WRITE)
 		if not file_access:
 			print("An error happened while saving data: ", FileAccess.get_open_error())
@@ -102,9 +105,9 @@ func init_ai_players():
 		game.auto_retry = auto_retry
 		game.max_retry_attempts = max_retry_attempts
 		if i < num_ai * 0.5:
-			game.ai_mutation_rate = 0.03
+			game.ai_mutation_rate = 0.15
 		else:
-			game.ai_mutation_rate = 0.10
+			game.ai_mutation_rate = 0.25
 		game.training = true
 		var player_name = "ai%s_%s"%[generation, i]
 		game.player_name = player_name
@@ -138,6 +141,8 @@ func init_ai_players():
 	following_game = games[0]
 	camera.position.x = 960
 	camera.position.y = following_game.position.y + 535
+	
+	
 	
 func rank_history(run1:Dictionary, run2:Dictionary):
 	if run1.get("score", 0) > run2.get("score", 0):

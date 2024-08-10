@@ -88,11 +88,19 @@ func ray_cast(direction: Vector2, index: int, target_level: int = -1, show_lines
 		return 1
 	return 0
 
-
+func number_above_purin():
+	var count: int = 0
+	for body in get_colliding_bodies():
+		if is_instance_valid(body) and is_instance_of(body, Purin):
+			if body.position.y + body.get_meta("radius") <= position.y:
+				count += 1
+				
+	return count
+	
 func number_possible_combines():
 	reset_lines()
 	var target_level = self.get_meta("level", 0) + 1
-	var count = 0
+	var count:int = 0
 	for body in get_colliding_bodies():
 		if is_instance_valid(body) and is_instance_of(body, Purin):
 			var level_diff = target_level - body.get_meta("level", 0)

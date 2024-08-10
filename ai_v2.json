@@ -1,5 +1,4 @@
 {
-	"drop_purin_cooldown_sec": 2.5,
 	"history": [
 		{
 			"board_state": {
@@ -7,7 +6,7 @@
 			},
 			"configurations": {
 				"weights": [
-					1,1,1,0,0,0
+					2,2,2,2,2,2
 				],
 				"attempts": 0,
 				"parent1": "ai9_63",

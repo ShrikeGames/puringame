@@ -106,11 +106,12 @@ func mutate_array(list_floats:Array, mutation_rate:float):
 	for i in range(0, len(list_floats)):
 		# individually give it a mutation chance
 		if randf() <= mutation_rate:
-			mutated_list.append(list_floats[i] + randi_range(-10,10))
+			mutated_list.append(list_floats[i] + randf_range(-1,1))
 		else:
 			mutated_list.append(list_floats[i])
-		mutated_list[i] = min(mutated_list[i], 10)
+		mutated_list[i] = min(mutated_list[i], 4)
 		mutated_list[i] = max(0, mutated_list[i])
+		mutated_list[i] = snapped(mutated_list[i], 0.2)
 	return mutated_list
 
 func get_config_value_or_default(key: String, mutation_rate: float = 0.0, default_default_value = 0):
@@ -128,10 +129,10 @@ func get_config_value_or_default(key: String, mutation_rate: float = 0.0, defaul
 		for i in range(0, len(config_value)):
 			# individually give it a mutation chance
 			if randf() <= mutation_rate:
-				config_value[i] += randi_range(-10,10)
-			config_value[i] = min(config_value[i], 10)
+				config_value[i] += randf_range(-1,1)
+			config_value[i] = min(config_value[i], 4)
 			config_value[i] = max(0, config_value[i])
-	
+			config_value[i] = snapped(config_value[i], 0.2)
 	return config_value
 
 
@@ -154,10 +155,13 @@ func set_up_game():
 	# reset progress
 	score = 0
 	dropped_purin_count = 0
-	drop_purin_cooldown_sec = get_config_value_or_default("drop_purin_cooldown_sec", 0, 1)
+	if ai_controlled:
+		drop_purin_cooldown_sec= 2.5
+	else:
+		drop_purin_cooldown_sec = 0.25
 	time_since_last_dropped_purin_sec = drop_purin_cooldown_sec
 	skip_saving = false
-	can_drop_early = true
+	can_drop_early = false
 	# Generate a new bag of purin (what you get next to drop)
 	# for AI and such that don't need a visual representation of their bag shown
 		
@@ -172,6 +176,7 @@ func set_up_game():
 	# if this is an AI player then create an AIController for it
 	if ai_controlled:
 		ai_controller = AIController.new()
+		self.add_child(ai_controller)
 		ai_controller.init(self)
 	
 	player_label.text = player_name
@@ -309,7 +314,7 @@ func check_game_over(delta):
 		):
 			if ai_controlled:
 				var parents = "(%s+%s)"%[ai_controller.parent_1_name, ai_controller.parent_2_name]
-				print("GameOver / %s %s / %s / %s / %s / %s" % [player_name, parents, score, purin_bag.max_purin_level, dropped_purin_count, purin_node.get_child_count()])
+				print("GameOver / %s %s / %s / %s / %s / %s / %s" % [player_name, parents, score, purin_bag.max_purin_level, dropped_purin_count, purin_node.get_child_count(), ai_controller.configurations["weights"]])
 			gameover_screen.visible = true
 			purin.game_over_timer_sec = Global.game_over_threshold_sec
 			
@@ -345,7 +350,7 @@ func check_game_over(delta):
 			purin.game_over_countdown.stop()
 	if ai_controlled and training and terminate_training_early():
 		var parents = "(%s+%s)"%[ai_controller.parent_1_name, ai_controller.parent_2_name]
-		print("Performance / %s %s / %s / %s / %s / %s" % [player_name, parents, score, purin_bag.max_purin_level, dropped_purin_count, purin_node.get_child_count()])
+		print("Performance / %s %s / %s / %s / %s / %s / %s" % [player_name, parents, score, purin_bag.max_purin_level, dropped_purin_count, purin_node.get_child_count(), ai_controller.configurations["weights"]])
 		gameover_screen.visible = true
 		#skip_saving = true
 		return true
@@ -475,6 +480,8 @@ func spawn_purin(
 func get_purin_radius(level: int):
 	return (Global.purin_sizes[level] * 0.5) * 1.17 * self.scale.x
 
+func score_by_level(level:int):
+	return int(pow(level, 2)) * int(1 + (dropped_purin_count * 0.1))
 
 func combine_purin(purin1: Purin, purin2: Purin):
 	# if they were already freed then we have nothing to do
@@ -557,7 +564,7 @@ func combine_purin(purin1: Purin, purin2: Purin):
 	# give the player score based on the size of the purin that was combined into
 	# and give a multiplier that increases the more purin they have placed
 	# so the value goes up the longer they play giving it a non-linear curve
-	var score_increase = int(pow(new_level, 2)) * int(1 + (dropped_purin_count * 0.1))
+	var score_increase = score_by_level(new_level)
 	if training:
 		gain_score(score_increase)
 	else:
