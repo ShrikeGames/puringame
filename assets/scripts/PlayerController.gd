@@ -45,10 +45,6 @@ var default_config_json:Dictionary
 
 var score: int = 0
 
-var purin_textures: Array[Texture2D] = []
-var evil_purin_textures: Array[Texture2D] = []
-const purin_file_path_root = "res://assets/images/game/"
-
 var dropped_purin_count: int = 0
 var last_dropped_purin:Purin
 var last_dropped_purin_touched_something:bool = false
@@ -61,15 +57,12 @@ func _on_ready():
 	# set game speed
 	if not ai_controlled:
 		Engine.time_scale = Global.game_speed
-	# first time load the purin images/textures
-	load_purin()
 	if not training:
 		init()
 
 
 func init():
 	load_configs()
-	
 	if not training:
 		# set up the game, can be called to restart at anytime
 		set_up_game()
@@ -104,11 +97,7 @@ func get_configurations_with_mutation(key: String, mutation_rate: float = 0.0, d
 		config_value = default_value
 	
 	if mutation_rate != 0.0:
-		for purin_level in range(0, Global.highest_possible_purin_level+1):
-			var purin_config = config_value["%s"%[purin_level]]
-			purin_config["highscore_weights"] = mutate_array(purin_config["highscore_weights"], mutation_rate)
-			purin_config["highscore_biases"] = mutate_array(purin_config["highscore_biases"], mutation_rate)
-			config_value["%s"%[purin_level]] = purin_config
+		config_value["weights"] = mutate_array(config_value["weights"], mutation_rate)
 	return config_value
 
 func mutate_array(list_floats:Array, mutation_rate:float):
@@ -118,10 +107,10 @@ func mutate_array(list_floats:Array, mutation_rate:float):
 		# individually give it a mutation chance
 		if randf() <= mutation_rate:
 			mutated_list.append(list_floats[i] + randi_range(-10,10))
-			mutated_list[i] = min(mutated_list[i], 100)
-			mutated_list[i] = max(-100, mutated_list[i])
 		else:
 			mutated_list.append(list_floats[i])
+		mutated_list[i] = min(mutated_list[i], 10)
+		mutated_list[i] = max(0, mutated_list[i])
 	return mutated_list
 
 func get_config_value_or_default(key: String, mutation_rate: float = 0.0, default_default_value = 0):
@@ -140,20 +129,11 @@ func get_config_value_or_default(key: String, mutation_rate: float = 0.0, defaul
 			# individually give it a mutation chance
 			if randf() <= mutation_rate:
 				config_value[i] += randi_range(-10,10)
-				config_value[i] = min(config_value[i], 100)
-				config_value[i] = max(-100, config_value[i])
+			config_value[i] = min(config_value[i], 10)
+			config_value[i] = max(0, config_value[i])
 	
 	return config_value
 
-
-func load_purin():
-	purin_textures = []
-	evil_purin_textures = []
-	for i in range(1, len(Global.purin_sizes) + 1):
-		var image_path = "%spurin%d.png" % [purin_file_path_root, i]
-		purin_textures.append(load(image_path))
-		var evil_image_path = "%spurin%d_evil.png" % [purin_file_path_root, i]
-		evil_purin_textures.append(load(evil_image_path))
 
 func restart_game():
 	attempts += 1
@@ -184,6 +164,7 @@ func set_up_game():
 	if purin_bag == null:
 		purin_bag = PurinBag.new()
 		purin_bag.visible = false
+		self.add_child(purin_bag)
 	purin_bag.max_purin_level = 0
 	purin_bag.bag = []
 	purin_bag.generate_purin_bag()
@@ -214,10 +195,17 @@ func update_score_label():
 
 
 func get_board_state():
-	var state: String = ""
+	var state: Dictionary = {"purin":[]}
+	var purin_list:Array[Dictionary] = []
 	for purin in purin_node.get_children():
 		var purin_level = purin.get_meta("level")
-		state = "%s_%s_%s,%s" % [purin_level, purin.position.x, purin.position.y, state]
+		var purin_info:Dictionary = {
+			"level": purin_level,
+			"x": purin.position.x,
+			"y": purin.position.y,
+			"evil": purin.evil
+		}
+		purin_list.append(purin_info)
 	return state
 
 func rank_history(run1:Dictionary, run2:Dictionary):
@@ -256,8 +244,12 @@ func save_results():
 	history.append(new_run)
 	# sort history from best to worst
 	history.sort_custom(rank_history)
-	# only save the last 10 after sorting
-	config_json["history"] = history.slice(0, min(max_score_history_length+1, len(history)))
+	if training:
+		#  keep top half
+		config_json["history"] = history.slice(0, min(40, len(history)))
+	else:
+		# only save the last 10 after sorting
+		config_json["history"] = history.slice(0, min(max_score_history_length+1, len(history)))
 	
 	# save the results
 	var json_string := JSON.stringify(config_json)
@@ -361,10 +353,10 @@ func check_game_over(delta):
 
 func terminate_training_early():
 	# Selection Pressure Rules
-	var current_purin_count:int = purin_node.get_child_count()
+	# var current_purin_count:int = purin_node.get_child_count()
 	# kill those with excessive purin that aren't combined
-	if is_instance_valid(purin_bag) and purin_bag.max_purin_level < 9 and current_purin_count > 20:
-		return true
+#	if is_instance_valid(purin_bag) and purin_bag.max_purin_level < 9 and current_purin_count > 20:
+#		return true
 	
 	# semi optimal merging should get close to these scores with some wiggle room
 #	if purin_bag.max_purin_level < 5 and score >= 1500:
@@ -445,9 +437,9 @@ func spawn_purin(
 	purin.set_meta("level", level)
 	purin.set_meta("combined", false)
 	if evil:
-		purin.image.texture = evil_purin_textures[level]
+		purin.image.texture = Global.evil_purin_textures[level]
 	else:
-		purin.image.texture = purin_textures[level]
+		purin.image.texture = Global.purin_textures[level]
 	purin.image.scale = self.scale
 	purin.mass = pow(1.4, level)
 	# update collider shape to be appropriate size
@@ -609,3 +601,4 @@ func remove_dead_opponents():
 		if is_instance_valid(opponent):
 			updated_opponents.append(opponent)
 	opponents = updated_opponents
+

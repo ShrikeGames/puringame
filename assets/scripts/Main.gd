@@ -15,7 +15,8 @@ func _on_ready():
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
 	else:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
-		
+	Global.load_purin()
+	
 func update_menu():
 	for child in menu_container.get_children():
 		child.queue_free()

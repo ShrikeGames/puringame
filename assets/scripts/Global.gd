@@ -1,4 +1,5 @@
 extends Node
+
 # This class is always available
 var settings_config_location:String = "user://settings.json"
 var default_settings_config_location:String = "res://settings.json"
@@ -61,7 +62,6 @@ var training_generation_lifetime_sec:int = 600
 # how fast the game should play when training 1.0-3.0
 var training_game_speed:float = 1
 
-var ai_input_scene:Resource = load("res://assets/scenes/AI/AIInput.tscn")
 var score_orb_scene: Resource = load("res://assets/scenes/ScoreOrb.tscn")
 var evil_orb_scene: Resource = load("res://assets/scenes/EvilOrb.tscn")
 
@@ -211,3 +211,20 @@ func update_all_volumes():
 	update_volume(AudioServer.get_bus_index("Game"), Global.volume_game_sfx * 100)
 	update_volume(AudioServer.get_bus_index("Voice"), Global.volume_voices * 100)
 	update_volume(AudioServer.get_bus_index("Music"), Global.volume_music * 100)
+	
+
+
+var purin_textures: Array[Texture2D] = []
+var evil_purin_textures: Array[Texture2D] = []
+const purin_file_path_root = "res://assets/images/game/"
+
+func load_purin():
+	if not purin_textures.is_empty():
+		return
+	purin_textures = []
+	evil_purin_textures = []
+	for i in range(1, len(Global.purin_sizes) + 1):
+		var image_path = "%spurin%d.png" % [purin_file_path_root, i]
+		purin_textures.append(load(image_path))
+		var evil_image_path = "%spurin%d_evil.png" % [purin_file_path_root, i]
+		evil_purin_textures.append(load(evil_image_path))

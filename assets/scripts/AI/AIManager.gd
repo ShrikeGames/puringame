@@ -20,6 +20,7 @@ func _on_ready() -> void:
 	
 func init_ai_players():
 	Engine.time_scale = time_scale
+	
 	if generation >= 1:
 		var config_json = Global.read_json("user://ai_v2_%s.json"%[generation])
 		
@@ -37,48 +38,41 @@ func init_ai_players():
 			"10":{}
 		}
 		if config_json:
+			var history:Array = config_json.get("history", [])
+			history.sort_custom(rank_history)
+			# only save the top 50%
+			history = history.slice(0, round(num_ai*0.5))
 			var total_score:int = 0
 			var total_count:int = 0
 			var highest_score:int = 0
+			var minimum:int = 9999999
 			
-			
-			for config in config_json.get("history"):
+			for config in history:
 				if config.get("score") > highest_score:
 					highest_score = config.get("score")
+				if config.get("score") < minimum:
+					minimum = config.get("score")
 				total_score += config.get("score")
 				total_count += 1
 				var configurations:Dictionary = config.get("configurations")
 				if configurations:
-					for purin_level in range(0, Global.highest_possible_purin_level+1):
-						var total_weights:Array = stats.get("%s"%[purin_level]).get("total_weights", [0,0,0,0,0,0])
-						var total_biases:Array = stats.get("%s"%[purin_level]).get("total_biases", [0,0,0,0,0,0])
-						
-						var purin_config:Dictionary = configurations.get("%s"%[purin_level])
-						if purin_config:
-							var purin_weights = purin_config.get("highscore_weights")
-							for i in range(0, len(total_weights)):
-								total_weights[i] += purin_weights[i]
-							var purin_biases = purin_config.get("highscore_biases")
-							for i in range(0, len(total_biases)):
-								total_biases[i] += purin_biases[i]
-						stats["%s"%[purin_level]]["total_weights"] = total_weights
-						stats["%s"%[purin_level]]["total_biases"] = total_biases
+					var total_weights:Array = stats.get("total_weights", [0,0,0,0,0,0])
+					var purin_weights:Array = configurations.get("weights")
+					for i in range(0, len(total_weights)):
+						total_weights[i] += purin_weights[i]
+					stats["total_weights"] = total_weights
 						
 			
-			for purin_level in range(0, Global.highest_possible_purin_level+1):
-				var total_weights:Array = stats["%s"%[purin_level]].get("total_weights", [0,0,0,0,0,0])
-				var total_biases:Array = stats["%s"%[purin_level]].get("total_biases", [0,0,0,0,0,0])
-				var average_weights:Array = stats["%s"%[purin_level]].get("average_weights", [0,0,0,0,0,0])
-				var average_biases:Array = stats["%s"%[purin_level]].get("average_biases", [0,0,0,0,0,0])
-				for i in range(0, 6):
-					average_weights[i] = total_weights[i]/float(total_count)
-					average_biases[i] = total_biases[i]/float(total_count)
-				print("Average Weights for Generation %s's %s-purin was %s"%[generation, purin_level, average_weights])
-				print("Average Biases for Generation %s's %s-purin was %s"%[generation, purin_level, average_biases])
+			var total_weights:Array = stats["total_weights"]
+			var average_weights:Array = [0,0,0,0,0,0]
+			for i in range(0, 6):
+				average_weights[i] = total_weights[i]/float(total_count)
+			print("Average Weights for Generation %s's was %s"%[generation, average_weights])
 			
 			var average:float = total_score / float(total_count)
-			print("Average Score for Generation %s was %s"%[generation, average])
-			print("Highest Score for Generation %s was %s"%[generation, highest_score])
+			print("[Stats] Minimum Score for Generation %s was %s"%[generation, minimum])
+			print("[Stats] Average Score for Generation %s was %s"%[generation, average])
+			print("[Stats] Highest Score for Generation %s was %s"%[generation, highest_score])
 			
 			
 		# save the results of the last generation to the generic named json file
@@ -93,7 +87,7 @@ func init_ai_players():
 	
 	generation += 1
 	for game in ai_games_node.get_children():
-		ai_games_node.free()
+		ai_games_node.queue_free()
 		
 	games = []
 	print("Begin Generation %s"%[generation])
@@ -110,7 +104,7 @@ func init_ai_players():
 		if i < num_ai * 0.5:
 			game.ai_mutation_rate = 0.03
 		else:
-			game.ai_mutation_rate = 0.5
+			game.ai_mutation_rate = 0.10
 		game.training = true
 		var player_name = "ai%s_%s"%[generation, i]
 		game.player_name = player_name
@@ -145,6 +139,11 @@ func init_ai_players():
 	camera.position.x = 960
 	camera.position.y = following_game.position.y + 535
 	
+func rank_history(run1:Dictionary, run2:Dictionary):
+	if run1.get("score", 0) > run2.get("score", 0):
+		return true
+	return false
+		
 func rank_ai_players_hs(player1:PlayerController, player2:PlayerController):
 	if player1.highscore > player2.highscore:
 		return true

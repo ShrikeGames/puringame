@@ -178,7 +178,7 @@ position = Vector2(0, 138)
 [node name="PurinObjects" type="Node2D" parent="."]
 
 [node name="AIInputs" type="Node2D" parent="."]
-position = Vector2(0, -68)
+position = Vector2(23, 1)
 
 [node name="GameOverScreen" parent="." instance=ExtResource("10_vwbcx")]
 position = Vector2(64, 186)
