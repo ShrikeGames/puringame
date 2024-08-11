@@ -103,8 +103,10 @@ position = Vector2(1849, 80)
 
 [node name="PlayAreaBowl" parent="." node_paths=PackedStringArray("leaderboard", "purin_bag") instance=ExtResource("13_ohdrd")]
 position = Vector2(1002, -2)
+neural_training = true
 leaderboard = NodePath("../HighscoreLeaderboard")
 purin_bag = NodePath("../PurinBag")
+debug = true
 
 [node name="PauseMenu" parent="." instance=ExtResource("16_4yt75")]
 

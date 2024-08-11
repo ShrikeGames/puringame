@@ -8,6 +8,7 @@ var initial_seed:String
 @export var default_config_path: String = "res://default.json"
 @export var ai_controlled: bool = false
 @export var auto_retry: bool = false
+@export var neural_training: bool = false
 @export var max_retry_attempts: int = 999
 var attempts:int = 0
 @export var leaderboard:Leaderboard
@@ -21,6 +22,7 @@ var ai_controller: AIController
 @export var purin_node: Node2D
 @export var scoreorb_node: Node2D
 @export var scoreorb_target: Node2D
+@export var prediction_icon: Sprite2D
 @export var sfx_pop_player: AudioStreamPlayer
 @export var sfx_bonk_player: AudioStreamPlayer
 @export var mute_sound: bool = false
@@ -42,6 +44,8 @@ var auto_drop:bool = false
 var target_score:float = 150000
 @export var debug:bool = false
 var rank: int = 0
+
+var source_network:NeuralNetworkAdvanced
 
 var config_json:Dictionary
 var default_config_json:Dictionary
@@ -66,6 +70,8 @@ func _on_ready():
 
 func init():
 	load_configs()
+	if prediction_icon:
+		prediction_icon.visible = neural_training
 	if not training:
 		# set up the game, can be called to restart at anytime
 		set_up_game()
@@ -186,6 +192,10 @@ func set_up_game():
 	update_score_label()
 
 	gameover_screen.visible = false
+	debug_label.visible = debug
+	
+	if neural_training and not neural_training:
+		source_network = Global.load_ml()
 	
 	# for testing
 	#spawn_purin(Vector2(350,400),{"level": 2, "evil": false})
@@ -201,7 +211,22 @@ func update_score_label():
 	if score_label != null:
 		score_label.text = "[center]%s[/center]" % [score]
 
-
+func get_state():
+	
+	var state:Array[float] = []
+	state.append(purin_bag.get_current_purin()["level"]/float(Global.highest_possible_purin_level))
+	state.append(purin_bag.get_next_purin()["level"]/float(Global.highest_possible_purin_level))
+	# 64 purin * 3 each = 192 + 2 = 194 total size
+	for purin in purin_node.get_children():
+		state.append(purin.position.x/800.0)
+		state.append(purin.position.y/800.0)
+		state.append(purin.get_meta("level")/float(Global.highest_possible_purin_level))
+	if len(state) < 194:
+		for i in range(len(state), 195):
+			state.append(0)
+	
+	return state.slice(0, min(195, len(state)))
+	
 func get_board_state():
 	var state: Dictionary = {"purin":[]}
 	var purin_list:Array[Dictionary] = []
@@ -254,8 +279,9 @@ func save_results():
 		new_run["configurations"]["weight_proportions"] = weight_proportions
 		new_run["configurations"]["mvp_weight"] = mvp_weight
 		new_run["configurations"]["replay"] = ai_controller.move_history
-		
+	
 	history.append(new_run)
+	
 	# sort history from best to worst
 	history.sort_custom(rank_history)
 	if training:
@@ -325,7 +351,7 @@ func check_game_over(delta):
 				var weight_total:float = 0
 				var highest_weight:float = 0
 				
-				var weights:Array[float] = ai_controller.configurations.get("weights")
+				var weights:Array = ai_controller.configurations.get("weights")
 				for i in range(0, 6):
 					weight_total += weights[i]
 					if weights[i] > highest_weight:
@@ -338,8 +364,14 @@ func check_game_over(delta):
 					else:
 						weight_proportions.append(0)
 				var parents = "(%s+%s)"%[ai_controller.parent_1_name, ai_controller.parent_2_name]
+					
+				if training and source_network:
+					# tell it the state when we lost
+					var actuals = [int(noir.position.x)/800.0]
+					source_network.train(get_state(), actuals)
+				
 				print("GameOver / %s %s / %s / %s / %s / %s / %s" % [player_name, parents, score, purin_bag.max_purin_level, dropped_purin_count, purin_node.get_child_count(), ai_controller.configurations["weights"]])
-		
+			
 			gameover_screen.visible = true
 			purin.game_over_timer_sec = Global.game_over_threshold_sec
 			
@@ -381,6 +413,13 @@ func check_game_over(delta):
 		return true
 	return false
 
+func mean_squared_error(actual, predicted):
+	var sum_square_error = 0.0
+	for i in range(len(actual)):
+		sum_square_error += (actual[i] - predicted[i])**2.0
+	var mean_square_error = 1.0 / len(actual) * sum_square_error
+	return mean_square_error
+	
 func terminate_training_early():
 	# Selection Pressure Rules
 	# var current_purin_count:int = purin_node.get_child_count()
@@ -421,6 +460,21 @@ func process_player(delta):
 		or (Global.drop_troggle and auto_drop  and time_since_last_dropped_purin_sec >= max(drop_purin_cooldown_sec, Global.auto_drop_cooldown_sec))
 	):
 		drop_purin()
+		
+		if neural_training and source_network:
+			var actuals = [int(noir.position.x)/800.0]
+			# get state of the game before anything is done
+			var input = get_state()
+			# tell it to predict to see what it's already learned if anything
+			var predictions = source_network.predict(input)
+			
+			if prediction_icon:
+				prediction_icon.position.x = predictions[0]*800
+			
+			#game.noir.position.x = predictions[0]
+			# show us how close it was
+			self.debug_label.text = "[Prediction] %s vs %s. MSE: %s"%[predictions, actuals, mean_squared_error(actuals, predictions)]
+		
 	
 func drop_purin():
 	spawn_purin()
@@ -506,7 +560,7 @@ func get_purin_radius(level: int):
 	return (Global.purin_sizes[level] * 0.5) * 1.17 * self.scale.x
 
 func score_by_level(level:int):
-	return int(pow(level, 2)) * int(1 + (dropped_purin_count * 0.1))
+	return int(pow(level+1, 3))
 
 func combine_purin(purin1: Purin, purin2: Purin):
 	# if they were already freed then we have nothing to do

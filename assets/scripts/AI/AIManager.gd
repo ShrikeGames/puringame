@@ -6,6 +6,7 @@ var play_package: Resource = load("res://assets/scenes/PlayAreaBowl.tscn")
 @export var time_scale: float = 1.0
 @export var debug: bool = false
 @export var auto_retry: bool = false
+@export var neural_training: bool = false
 @export var max_retry_attempts: int = 999
 @export var camera:Camera2D
 @export var battle_mode:bool = false
@@ -15,7 +16,11 @@ var generation_timer:float = 0.0
 var games:Array[PlayerController]
 @export var generation:int = 0
 var following_game:PlayerController
+var source_network:NeuralNetworkAdvanced
+
 func _on_ready() -> void:
+	source_network = Global.load_ml()
+	Global.save_ml_file()
 	init_ai_players();
 	
 func init_ai_players():
@@ -98,19 +103,24 @@ func init_ai_players():
 	var y_pos:float = 0
 	generation_ended = false
 	generation_timer = 0
+	
 	for i in range(0, num_ai):
 		var game:PlayerController = play_package.instantiate()
 		game.ai_controlled = true
 		game.mute_sound = true
 		game.auto_retry = auto_retry
+		game.neural_training = neural_training
 		game.max_retry_attempts = max_retry_attempts
-		if generation == 1 and i > 9:
-			game.ai_mutation_rate = 1
+		if neural_training:
+			game.ai_mutation_rate = 0
 		else:
-			if i < num_ai * 0.5:
-				game.ai_mutation_rate = 0.1
+			if generation == 1 and i > 9:
+				game.ai_mutation_rate = 1
 			else:
-				game.ai_mutation_rate = 0.2
+				if i < num_ai * 0.5:
+					game.ai_mutation_rate = 0.1
+				else:
+					game.ai_mutation_rate = 0.2
 		game.training = true
 		var player_name = "ai%s_%s"%[generation, i]
 		game.player_name = player_name
@@ -127,6 +137,7 @@ func init_ai_players():
 		game.position = Vector2(40 + (x_pos*1020), y_pos)
 		ai_games_node.add_child(game)
 		game.debug = debug
+		game.source_network = source_network
 		game.init()
 		game.set_up_game()
 		game.ai_controller.debug = debug
@@ -145,8 +156,9 @@ func init_ai_players():
 	camera.position.x = 960
 	camera.position.y = following_game.position.y + 535
 	
+	Global.save_ml_file()
 	
-	
+
 func rank_history(run1:Dictionary, run2:Dictionary):
 	if run1.get("score", 0) > run2.get("score", 0):
 		return true

@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://con8stx2et0ea"]
+[gd_scene load_steps=14 format=3 uid="uid://con8stx2et0ea"]
 
 [ext_resource type="Script" path="res://assets/scripts/PlayerController.gd" id="1_anyjf"]
 [ext_resource type="AudioStream" uid="uid://borrrahqop0te" path="res://assets/audio/sfx/pop.wav" id="2_tn86m"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://d3mm5neerbgqy" path="res://assets/scenes/NoiR.tscn" id="4_tleir"]
 [ext_resource type="PackedScene" uid="uid://buaytyuaj2i6p" path="res://assets/scenes/LocalizedImage.tscn" id="5_ca7jp"]
 [ext_resource type="FontFile" uid="uid://cdwb8ivskcjue" path="res://assets/fonts/NotoSansCJK-Regular.ttc" id="7_xor5u"]
+[ext_resource type="Texture2D" uid="uid://dhwsqd50q7ot5" path="res://assets/images/Menu/ArrowDownBlue.png" id="10_4b5rc"]
 [ext_resource type="PackedScene" uid="uid://digt3ya6lodli" path="res://assets/scenes/GameOverScreen.tscn" id="10_vwbcx"]
 [ext_resource type="FontFile" uid="uid://buytj31trs62" path="res://assets/fonts/NotoSansCJK-Bold.ttc" id="12_dx1lx"]
 
@@ -19,8 +20,9 @@ size = Vector2(70, 890)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_u6thl"]
 size = Vector2(69, 890)
 
-[node name="PlayAreaBowl" type="Node2D" node_paths=PackedStringArray("noir", "top_edge", "left_edge", "right_edge", "bottom_edge", "purin_node", "scoreorb_node", "scoreorb_target", "sfx_pop_player", "sfx_bonk_player", "gameover_screen", "player_label", "debug_label", "score_label", "ai_inputs_object")]
+[node name="PlayAreaBowl" type="Node2D" node_paths=PackedStringArray("noir", "top_edge", "left_edge", "right_edge", "bottom_edge", "purin_node", "scoreorb_node", "scoreorb_target", "prediction_icon", "sfx_pop_player", "sfx_bonk_player", "gameover_screen", "player_label", "debug_label", "score_label", "ai_inputs_object")]
 script = ExtResource("1_anyjf")
+default_config_path = "res://player.json"
 noir = NodePath("NoiR")
 top_edge = NodePath("TopEdge")
 left_edge = NodePath("Bowl/LeftEdge")
@@ -29,6 +31,7 @@ bottom_edge = NodePath("Bowl/BottomEdge")
 purin_node = NodePath("PurinObjects")
 scoreorb_node = NodePath("ScoreOrbs")
 scoreorb_target = NodePath("ScoreOrbs/ScoreTarget")
+prediction_icon = NodePath("Prediction")
 sfx_pop_player = NodePath("Pop")
 sfx_bonk_player = NodePath("Bonk")
 gameover_screen = NodePath("GameOverScreen")
@@ -136,17 +139,6 @@ text = "[center]99999[/center]"
 scroll_active = false
 shortcut_keys_enabled = false
 
-[node name="DebugText" type="RichTextLabel" parent="."]
-offset_left = 6.0
-offset_top = 4.0
-offset_right = 796.0
-offset_bottom = 152.0
-theme_override_fonts/normal_font = ExtResource("7_xor5u")
-theme_override_fonts/bold_font = ExtResource("12_dx1lx")
-theme_override_font_sizes/normal_font_size = 24
-theme_override_font_sizes/bold_font_size = 16
-bbcode_enabled = true
-
 [node name="Control" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 0
@@ -188,5 +180,22 @@ scale = Vector2(0.42, 0.482)
 
 [node name="ScoreTarget" type="Node2D" parent="ScoreOrbs"]
 position = Vector2(399, 1019)
+
+[node name="DebugText" type="RichTextLabel" parent="."]
+offset_left = 6.0
+offset_top = 4.0
+offset_right = 796.0
+offset_bottom = 152.0
+theme_override_fonts/normal_font = ExtResource("7_xor5u")
+theme_override_fonts/bold_font = ExtResource("12_dx1lx")
+theme_override_font_sizes/normal_font_size = 24
+theme_override_font_sizes/bold_font_size = 16
+bbcode_enabled = true
+text = "test"
+
+[node name="Prediction" type="Sprite2D" parent="."]
+position = Vector2(410, 117)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("10_4b5rc")
 
 [connection signal="ready" from="." to="." method="_on_ready"]

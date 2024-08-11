@@ -228,3 +228,59 @@ func load_purin():
 		purin_textures.append(load(image_path))
 		var evil_image_path = "%spurin%d_evil.png" % [purin_file_path_root, i]
 		evil_purin_textures.append(load(evil_image_path))
+
+var max_input_size:int = 195
+var source_network:NeuralNetworkAdvanced
+func load_ml():
+	var default_ml_json = Global.read_json("res://ai_ml.json")
+	var ml_json = Global.read_json("user://ai_ml.json")
+	if not ml_json:
+		ml_json = default_ml_json
+	if not ml_json.get("ml", []).is_empty():
+		source_network = NeuralNetworkAdvanced.new()
+		
+		for layer_data in ml_json.get("ml"):
+			var weights = layer_data["weights"]
+			var col_size = layer_data["cols"]
+			var bias = layer_data["bias"]
+			var activation_name = layer_data["activation_name"]
+			if activation_name == "relu":
+				source_network.add_layer(layer_data["size"], source_network.ACTIVATIONS.RELU, weights, bias, col_size)
+			elif activation_name == "linear":
+				source_network.add_layer(layer_data["size"], source_network.ACTIVATIONS.LINEAR, weights, bias, col_size)
+			elif activation_name == "sigmoid":
+				source_network.add_layer(layer_data["size"], source_network.ACTIVATIONS.SIGMOID, weights, bias, col_size)
+		
+	else:
+		source_network = NeuralNetworkAdvanced.new()
+		source_network.add_layer(max_input_size, source_network.ACTIVATIONS.RELU)
+		source_network.add_layer(64, source_network.ACTIVATIONS.RELU)
+		source_network.add_layer(1, source_network.ACTIVATIONS.SIGMOID)
+	return source_network
+	
+func save_ml_file(input_file:String="user://ai_ml.json", output_file="user://ai_ml.json"):
+	var ml_json = Global.read_json(input_file)
+	if not ml_json:
+		ml_json = {}
+	var layers:Array[Dictionary] = []
+	for layer in source_network.layers:
+		var layer_data: Dictionary = {
+			"weights": Matrix.to_array(layer["weights"]),
+			"bias": Matrix.to_array(layer["bias"]),
+			"activation_name": layer["activation_name"],
+			"size": layer["size"],
+			"rows": layer["rows"],
+			"cols": layer["cols"]
+		}
+		layers.append(layer_data)
+	ml_json["ml"] = layers
+	var json_string := JSON.stringify(ml_json)
+	# We will need to open/create a new file for this data string
+	var file_access := FileAccess.open(output_file, FileAccess.WRITE)
+	if not file_access:
+		print("An error happened while saving data: ", FileAccess.get_open_error())
+		return
+		
+	file_access.store_line(json_string)
+	file_access.close()
+	

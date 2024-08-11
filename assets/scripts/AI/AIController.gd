@@ -24,6 +24,8 @@ var proportions:Array[float] = []
 var highest_proportion_by_level:int = 0
 var move_history:Array[Dictionary] = []
 var temp_debug_text:String = ""
+
+
 func init(player_controller:PlayerController):
 	self.game = player_controller
 	self.held_purin_level = 0
@@ -34,16 +36,23 @@ func init(player_controller:PlayerController):
 	self.left_corner = Vector2(player_controller.left_edge.position.x, player_controller.bottom_edge.position.y)
 	self.right_corner = Vector2(player_controller.right_edge.position.x, player_controller.bottom_edge.position.y)
 	self.mid_update = false
-	self.space_state = get_world_2d().direct_space_state
+	
 	self.temp_debug_text = ""
 	if game.training:
-		if game.rank < 10:
-			self.configurations = game.get_configurations_with_mutation("configurations", game.ai_mutation_rate, {"0":{}}, false, game.rank)
+		if game.neural_training:
+			# we're training the real neural network id
+			# only use the best old AI
+			self.configurations = game.get_configurations_with_mutation("configurations", game.ai_mutation_rate, {"0":{}}, false, 0)
 		else:
-			self.configurations = game.get_configurations_with_mutation("configurations", game.ai_mutation_rate, {"0":{}}, false, game.rank%10)
-			var cross_breed_configuration = game.get_configurations_with_mutation("configurations", game.ai_mutation_rate, self.configurations, true)
-			self.configurations = cross_breed(self.configurations, cross_breed_configuration)
+			if game.rank < 10:
+				self.configurations = game.get_configurations_with_mutation("configurations", game.ai_mutation_rate, {"0":{}}, false, game.rank)
+			else:
+				self.configurations = game.get_configurations_with_mutation("configurations", game.ai_mutation_rate, {"0":{}}, false, game.rank%10)
+				var cross_breed_configuration = game.get_configurations_with_mutation("configurations", game.ai_mutation_rate, self.configurations, true)
+				self.configurations = cross_breed(self.configurations, cross_breed_configuration)
+		
 		parents = "(%s+%s)"%[parent_1_name, parent_2_name]
+		
 	else:
 		self.configurations = game.get_configurations_with_mutation("configurations", game.ai_mutation_rate, {"0":{}}, true)
 	
@@ -176,6 +185,7 @@ func get_best_for_level(level:int, max_length:int = 2):
 	var field_purin:Array = game.purin_node.get_children()
 	var results:Array[Dictionary] = []
 	if not field_purin.is_empty():
+		self.space_state = get_world_2d().direct_space_state
 		field_purin.sort_custom(priority_purin)
 		for i in range(0, min(max_length, len(field_purin))):
 			var offset_bias:float = field_purin[i].get_meta("offset_to_reach", 0)
@@ -191,7 +201,8 @@ func get_best_for_level(level:int, max_length:int = 2):
 				"x": field_purin[i].position.x + offset_bias,
 				"score": score,
 				"level": level,
-				"details": scored_purin
+				"details": scored_purin,
+				"purin": field_purin[i]
 			})
 	return results
 	
@@ -214,11 +225,13 @@ func calc_level_distribution():
 			if proportion > highest_proportion_by_level:
 				highest_proportion_by_level = level
 			level += 1
-	
+var selected_purin:Purin = null
+var best_score:float = 0
 func update_noir_position():
 	calc_level_distribution()
 	var best_for_level:Array[Dictionary] = get_best_for_level(game.purin_bag.get_current_purin()["level"], 2)
-	var best_score:float = 0
+	var new_x_pos:float = 0
+	
 	if not best_for_level.is_empty():
 		#print("current: %s"%[best_for_level])
 		var next_level:int = game.purin_bag.bag[1]["level"]
@@ -231,46 +244,66 @@ func update_noir_position():
 			if abs(best_for_next_level[0]["x"]-best_for_level[0]["x"]) <= Global.purin_sizes[best_for_level[0]["level"]]*2:
 				if  current_best_score >= best_next_score:
 					# we want the same spot but my spot is better so I get it
-					game.noir.position.x = game.valid_x_pos(best_for_level[0]["x"])
+					new_x_pos = game.valid_x_pos(best_for_level[0]["x"])
 					best_score = current_best_score
+					selected_purin = best_for_level[0]["purin"]
 				elif len(best_for_level) > 1:
 					# we want the same spot but my score is worse
 					# use my 2nd best spot instead
-					game.noir.position.x = game.valid_x_pos(best_for_level[1]["x"])
+					new_x_pos = game.valid_x_pos(best_for_level[1]["x"])
 					best_score = best_for_level[1]["score"]
+					selected_purin = best_for_level[1]["purin"]
 				else:
 					# we want the same spot but my score is worse
 					# but I have no alternative so use default position
-					game.noir.position.x = game.valid_x_pos(0)
+					new_x_pos = game.valid_x_pos(0)
+					selected_purin = null
 			else:
 				# we don't want the same spot, no conflict, so use my best option
-				game.noir.position.x = game.valid_x_pos(best_for_level[0]["x"])
+				new_x_pos = game.valid_x_pos(best_for_level[0]["x"])
 				best_score = current_best_score
+				selected_purin = best_for_level[0]["purin"]
 		else:
 			# there's no next purin so I get my best choice
 			var current_best_score:float = best_for_level[0]["score"]
-			game.noir.position.x = game.valid_x_pos(best_for_level[0]["x"])
+			new_x_pos = game.valid_x_pos(best_for_level[0]["x"])
 			best_score = current_best_score
+			selected_purin = best_for_level[0]["purin"]
 	else:
-		game.noir.position.x = game.valid_x_pos(0)
-	if debug:
+		new_x_pos = game.valid_x_pos(0)
+		selected_purin = null
+	
+	# if neuro training use its prediction instead
+	if game.neural_training and game.source_network and predictions:
+		actuals = [int(new_x_pos)/800.0]
+		game.noir.position.x = game.valid_x_pos(int(predictions[0]*800))
+	else:
+		game.noir.position.x = game.valid_x_pos(new_x_pos)
+	
+	if debug and game.training:
 		self.game.debug_label.text = "Attempt #%s %s %s %s %s %s %s"%[game.attempts+1, parents, game.ai_mutation_rate, configurations.get("weights", []), best_score, temp_debug_text, purin_distribution_by_level]
 	held_purin_level = game.purin_bag.get_current_purin()["level"]
+
+func process_ai(_delta):
+	# do old AI
+	execute_action(0)
+	
+	
 	
 func purin_is_moving(purin:Purin):
 	if (abs(purin.linear_velocity.x) >= 5 or abs(purin.linear_velocity.y) >= 5):
 		return true
 	return false
-	
-func process_ai(_delta):
+var input:Array
+var predictions:Array
+var prev_score:float
+var actuals: Array[float]
+func execute_action(_action:int):
 	if game.gameover_screen.visible:
 		return
 	var cool_down_sec = game.drop_purin_cooldown_sec
 	var emergency:bool = false
-	
 	var all_purin_stopped:bool = true
-	#var current_purin_count:int = game.purin_node.get_child_count()
-	
 	for purin in game.purin_node.get_children():
 		if is_instance_valid(purin) and is_instance_of(purin, Purin):
 			if purin.game_over_countdown.visible:
@@ -282,21 +315,42 @@ func process_ai(_delta):
 	var time_elapsed:bool = game.time_since_last_dropped_purin_sec >= cool_down_sec
 	var double_time_elapsed:bool = game.time_since_last_dropped_purin_sec >= 2*cool_down_sec
 	
-	if (game.can_drop_early and game.time_since_last_dropped_purin_sec >= cool_down_sec*0.5 and all_purin_stopped) or (emergency and time_elapsed) or (time_elapsed and all_purin_stopped) or double_time_elapsed:
 		
-		# reposition the player
+	if (game.can_drop_early and game.time_since_last_dropped_purin_sec >= cool_down_sec*0.5 and all_purin_stopped) or (emergency and time_elapsed) or (time_elapsed and all_purin_stopped) or double_time_elapsed:
+		# see where the old AI moved us to, treat that as good for now
+		
+		if game.neural_training and game.source_network:
+			# get state of the game before anything is done
+			input = game.get_state()
+			# tell it to predict to see what it's already learned if anything
+			predictions = game.source_network.predict(input)
+			
+			if game.prediction_icon:
+				game.prediction_icon.position.x = predictions[0]*800
+			
+			#game.noir.position.x = predictions[0]
+			# show us how close it was
+			temp_debug_text = "[Prediction] %s vs %s. MSE: %s"%[predictions, actuals, game.mean_squared_error(actuals, predictions)]
+			
+			
+		# reposition the player based on old AI logic
 		update_noir_position()
+		
+		if input and game.neural_training and game.source_network:
+			# train the neural network that the original input results in moving to here
+			game.source_network.train(input, actuals)
+			#temp_debug_text = "[Prediction] %s vs %s. MSE: %s"%[predictions, actuals, game.mean_squared_error(actuals, predictions)]
+			
+			
+		game.drop_purin()
+		held_purin_level = game.purin_bag.get_current_purin()["level"]
+		last_purin_level_dropped = held_purin_level
+		last_x_pos = game.noir.position.x
+		
 		move_history.append(
 			{
 				"x": game.noir.position.x,
-				"level": held_purin_level
+				"level": held_purin_level,
+				"score": game.score
 			}
 		)
-		game.drop_purin()
-		last_purin_level_dropped = held_purin_level
-		game.can_drop_early = false
-		last_x_pos = game.noir.position.x
-		mid_update = true
-	elif game.time_since_last_dropped_purin_sec >= cool_down_sec*0.5 and mid_update:
-		#update_noir_position()
-		mid_update = false
