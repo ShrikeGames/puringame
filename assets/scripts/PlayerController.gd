@@ -110,42 +110,6 @@ func get_configurations(key: String, default_default_value = {}, random:bool=tru
 	
 	return config_value
 
-func mutate_array(list_floats:Array, mutation_rate:float):
-	var mutated_list:Array[float] = []
-	# should be an array so loop through each weight/bias
-	for i in range(0, len(list_floats)):
-		# individually give it a mutation chance
-		if randf() <= mutation_rate:
-			mutated_list.append(list_floats[i] + randf_range(-4,4))
-		else:
-			mutated_list.append(list_floats[i])
-		mutated_list[i] = min(mutated_list[i], 16)
-		mutated_list[i] = max(0, mutated_list[i])
-		mutated_list[i] = snapped(mutated_list[i], 0.2)
-	return mutated_list
-
-func get_config_value_or_default(key: String, mutation_rate: float = 0.0, default_default_value = 0):
-	var config_value = 0
-	var default_value = default_default_value
-	
-	if default_config_json.has(key):
-		default_value = default_config_json.get(key)
-	if config_json != null and config_json.has(key):
-		config_value = config_json.get(key, default_value)
-	else:
-		config_value = default_value
-	if mutation_rate != 0.0:
-		# should be an array so loop through each weight/bias
-		for i in range(0, len(config_value)):
-			# individually give it a mutation chance
-			if randf() <= mutation_rate:
-				config_value[i] += randf_range(-4,4)
-			config_value[i] = min(config_value[i], 16)
-			config_value[i] = max(0, config_value[i])
-			config_value[i] = snapped(config_value[i], 0.2)
-	return config_value
-
-
 func restart_game():
 	attempts += 1
 	
@@ -195,8 +159,9 @@ func set_up_game():
 	gameover_screen.visible = false
 	debug_label.visible = debug
 	
-	if neural_training and not neural_training:
-		source_network = Global.load_ml()
+	# player driven neural training
+	if neural_training and not training:
+		source_network = Global.load_ml(false)
 	
 	# for testing
 	#spawn_purin(Vector2(350,400),{"level": 2, "evil": false})
@@ -428,12 +393,11 @@ func process_player(delta):
 			var input = get_state()
 			# tell it to predict to see what it's already learned if anything
 			var predictions = source_network.predict(input)
-			
 			if prediction_icon:
 				prediction_icon.position.x = predictions[0]*800
 			
 			#game.noir.position.x = predictions[0]
-			# show us how close it was
+			# show us how close it was to what you did
 			self.debug_label.text = "[Prediction] %s vs %s. MSE: %s"%[predictions, actuals, mean_squared_error(actuals, predictions)]
 		
 	
