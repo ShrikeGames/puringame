@@ -48,6 +48,18 @@ static func rand(matrix: Matrix) -> Matrix:
 			result.data[row][col] = randf_range(-1, 1)
 	return result
 
+static func mutate(a: Matrix, mutation_rate:float, mutation_min_range:float, mutation_max_range:float) -> Matrix:
+	var result = Matrix.new(a.rows, a.cols)
+
+	for row in range(result.rows):
+		for col in range(result.cols):
+			if randf() < mutation_rate:
+				result.data[row][col] = a.data[row][col] + randf_range(mutation_min_range, mutation_max_range)
+			else:
+				result.data[row][col] = a.data[row][col]
+
+	return result
+	
 static func add(a: Matrix, b: Matrix) -> Matrix:
 	assert(a.rows == b.rows and a.cols == b.cols)
 	
@@ -105,6 +117,14 @@ static func dot_divide(a: Matrix, b: Matrix) -> Matrix:
 
 	return result
 
+static func square(a: Matrix) -> Matrix:
+	var result = Matrix.new(a.rows, a.cols)
+	
+	for row in range(result.rows):
+		for col in range(result.cols):
+			result.data[row][col] = pow(a.data[row][col], 2)
+	
+	return result
 
 
 

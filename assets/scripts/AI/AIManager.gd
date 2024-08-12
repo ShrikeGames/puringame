@@ -16,11 +16,11 @@ var generation_timer:float = 0.0
 var games:Array[PlayerController]
 @export var generation:int = 0
 var following_game:PlayerController
-var source_network:NeuralNetworkAdvanced
+var nna:NeuralNetworkAdvanced
 
 func _on_ready() -> void:
-	source_network = Global.load_ml()
-	Global.save_ml_file()
+	nna = Global.load_ml(false)
+	Global.save_ml_file(nna)
 	init_ai_players();
 	
 func init_ai_players():
@@ -29,24 +29,9 @@ func init_ai_players():
 	if generation >= 1:
 		var config_json = Global.read_json("user://ai_v2_%s.json"%[generation])
 		
-		var stats:Dictionary ={
-			"0":{},
-			"1":{},
-			"2":{},
-			"3":{},
-			"4":{},
-			"5":{},
-			"6":{},
-			"7":{},
-			"8":{},
-			"9":{},
-			"10":{}
-		}
 		if config_json:
 			var history:Array = config_json.get("history", [])
 			history.sort_custom(rank_history)
-			# only save the top 50%
-			history = history.slice(0, round(num_ai*0.5))
 			var total_score:int = 0
 			var total_count:int = 0
 			var highest_score:int = 0
@@ -59,27 +44,12 @@ func init_ai_players():
 					minimum = config.get("score")
 				total_score += config.get("score")
 				total_count += 1
-				var configurations:Dictionary = config.get("configurations")
-				if configurations:
-					var total_weights:Array = stats.get("total_weights", [0,0,0,0,0,0])
-					var purin_weights:Array = configurations.get("weights")
-					for i in range(0, len(total_weights)):
-						total_weights[i] += purin_weights[i]
-					stats["total_weights"] = total_weights
-					
-			
-			var total_weights:Array = stats["total_weights"]
-			var average_weights:Array = [0,0,0,0,0,0]
-			for i in range(0, 6):
-				average_weights[i] = total_weights[i]/float(total_count)
-			print("Average Weights for Generation %s's was %s"%[generation, average_weights])
-			
+				
 			var average:float = total_score / float(total_count)
 			print("[Stats] Minimum Score for Generation %s was %s"%[generation, minimum])
 			print("[Stats] Average Score for Generation %s was %s"%[generation, average])
 			print("[Stats] Highest Score for Generation %s was %s"%[generation, highest_score])
 			
-		
 		var history:Array = config_json.get("history", [])
 		config_json["history"] = history.slice(0, round(num_ai*0.5))
 		# save the results
@@ -92,7 +62,19 @@ func init_ai_players():
 			
 		file_access.store_line(json_string)
 		file_access.close()
-	
+		# take best NN and use that going forward
+		if not Global.neural_training_models.is_empty():
+			# sort the trained models
+			Global.neural_training_models.sort_custom(best_nna_sort)
+			# take only the best one
+			nna = Global.neural_training_models[0]
+			print("Generation %s Best Results:"%[generation])
+			print("Total Loss: %s"%nna.total_loss)
+			print("Total Score: %s"%nna.total_score)
+			Global.save_ml_file(nna)
+			# clear the list
+			Global.neural_training_models = []
+		
 	generation += 1
 	for game in ai_games_node.get_children():
 		ai_games_node.queue_free()
@@ -111,20 +93,10 @@ func init_ai_players():
 		game.auto_retry = auto_retry
 		game.neural_training = neural_training
 		game.max_retry_attempts = max_retry_attempts
-		if neural_training:
-			game.ai_mutation_rate = 0
-		else:
-			if generation == 1 and i > 9:
-				game.ai_mutation_rate = 1
-			else:
-				if i < num_ai * 0.5:
-					game.ai_mutation_rate = 0.1
-				else:
-					game.ai_mutation_rate = 0.2
+		
 		game.training = true
 		var player_name = "ai%s_%s"%[generation, i]
 		game.player_name = player_name
-		game.rank = i
 		
 		# save to your own generation file
 		game.config_path = "user://ai_v2_%s.json"%[generation]
@@ -137,7 +109,10 @@ func init_ai_players():
 		game.position = Vector2(40 + (x_pos*1020), y_pos)
 		ai_games_node.add_child(game)
 		game.debug = debug
-		game.source_network = source_network
+		# make own copy of the best NN (with mutations)
+		game.source_network = Global.load_ml(true)
+		# give it a reference to the current best one as well
+		game.best_nna = nna
 		game.init()
 		game.set_up_game()
 		game.ai_controller.debug = debug
@@ -156,7 +131,6 @@ func init_ai_players():
 	camera.position.x = 960
 	camera.position.y = following_game.position.y + 535
 	
-	Global.save_ml_file()
 	
 
 func rank_history(run1:Dictionary, run2:Dictionary):
@@ -190,3 +164,8 @@ func _process(delta):
 			camera.position.y = following_game.position.y + 535
 			
 	
+func best_nna_sort(nna1:NeuralNetworkAdvanced, nna2:NeuralNetworkAdvanced):
+	#nna1.total_loss < nna2.total_loss and 
+	if nna1.total_score > nna2.total_score:
+		return true
+	return false

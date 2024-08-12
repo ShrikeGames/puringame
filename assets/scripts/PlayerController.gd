@@ -23,6 +23,7 @@ var ai_controller: AIController
 @export var scoreorb_node: Node2D
 @export var scoreorb_target: Node2D
 @export var prediction_icon: Sprite2D
+@export var best_icon: Sprite2D
 @export var sfx_pop_player: AudioStreamPlayer
 @export var sfx_bonk_player: AudioStreamPlayer
 @export var mute_sound: bool = false
@@ -31,36 +32,35 @@ var ai_controller: AIController
 @export var player_label: RichTextLabel
 @export var debug_label: RichTextLabel
 @export var score_label: RichTextLabel
-@export var ai_inputs_object: Node2D
-@export var ai_mutation_rate: float
+
 @export var training: bool = false
 @export var move_speed: float = 450.0
 @export var last_mouse_pos:Vector2 = Vector2(0.0, 0.0)
 @export var max_score_history_length:int = 10
-var weight_proportions:Array[float]=[]
-var mvp_weight:int = 0
+
 var can_drop_early: bool =false
 var auto_drop:bool = false
 var target_score:float = 150000
 @export var debug:bool = false
-var rank: int = 0
 
 var source_network:NeuralNetworkAdvanced
+var best_nna:NeuralNetworkAdvanced
 
 var config_json:Dictionary
 var default_config_json:Dictionary
 
 var score: int = 0
-
 var dropped_purin_count: int = 0
 var last_dropped_purin:Purin
 var last_dropped_purin_touched_something:bool = false
 
 var time_since_last_dropped_purin_sec: float = 0
-var drop_purin_cooldown_sec: float = 2
+var drop_purin_cooldown_sec: float = 2.5
 
 var skip_saving:bool = false
 func _on_ready():
+	if initial_seed:
+		seed(initial_seed.hash())
 	# set game speed
 	if not ai_controlled:
 		Engine.time_scale = Global.game_speed
@@ -72,6 +72,9 @@ func init():
 	load_configs()
 	if prediction_icon:
 		prediction_icon.visible = neural_training
+	if best_icon:
+		best_icon.visible = neural_training
+	
 	if not training:
 		# set up the game, can be called to restart at anytime
 		set_up_game()
@@ -82,7 +85,7 @@ func load_configs():
 	if config_json == null:
 		config_json = default_config_json
 	
-func get_configurations_with_mutation(key: String, mutation_rate: float = 0.0, default_default_value = {}, random:bool=true, config_index:int=0):
+func get_configurations(key: String, default_default_value = {}, random:bool=true, config_index:int=0):
 	var config_value = {}
 	var default_value = default_default_value
 	var default_history_run:Dictionary
@@ -105,8 +108,6 @@ func get_configurations_with_mutation(key: String, mutation_rate: float = 0.0, d
 	else:
 		config_value = default_value
 	
-	if mutation_rate != 0.0:
-		config_value["weights"] = mutate_array(config_value["weights"], mutation_rate)
 	return config_value
 
 func mutate_array(list_floats:Array, mutation_rate:float):
@@ -272,25 +273,22 @@ func save_results():
 		new_run["configurations"]["attempts"] = attempts
 		new_run["configurations"]["username"] = player_name
 		new_run["configurations"]["username_jp"] = player_name
-		new_run["configurations"]["parent1"] = ai_controller.parent_1_name
-		new_run["configurations"]["parent2"] = ai_controller.parent_2_name
 		new_run["configurations"]["score"] = score
-		
-		new_run["configurations"]["weight_proportions"] = weight_proportions
-		new_run["configurations"]["mvp_weight"] = mvp_weight
 		new_run["configurations"]["replay"] = ai_controller.move_history
 	
 	history.append(new_run)
+	source_network.total_score = score
+	Global.neural_training_models.append(source_network)
 	
 	# sort history from best to worst
 	history.sort_custom(rank_history)
 	if training:
-		#  keep all
-		config_json["history"] = history#.slice(0, min(40, len(history)))
+		# save all for training
+		config_json["history"] = history
 	else:
 		# only save the last 10 after sorting
 		config_json["history"] = history.slice(0, min(max_score_history_length+1, len(history)))
-	
+		
 	# save the results
 	var json_string := JSON.stringify(config_json)
 	# We will need to open/create a new file for this data string
@@ -348,29 +346,7 @@ func check_game_over(delta):
 			purin.game_over_timer_sec >= Global.game_over_threshold_sec
 		):
 			if ai_controlled:
-				var weight_total:float = 0
-				var highest_weight:float = 0
-				
-				var weights:Array = ai_controller.configurations.get("weights")
-				for i in range(0, 6):
-					weight_total += weights[i]
-					if weights[i] > highest_weight:
-						highest_weight = weights[i]
-						mvp_weight = i
-						
-				for weight in weights:
-					if weight_total> 0:
-						weight_proportions.append(weight/weight_total)
-					else:
-						weight_proportions.append(0)
-				var parents = "(%s+%s)"%[ai_controller.parent_1_name, ai_controller.parent_2_name]
-					
-				if training and source_network:
-					# tell it the state when we lost
-					var actuals = [int(noir.position.x)/800.0]
-					source_network.train(get_state(), actuals)
-				
-				print("GameOver / %s %s / %s / %s / %s / %s / %s" % [player_name, parents, score, purin_bag.max_purin_level, dropped_purin_count, purin_node.get_child_count(), ai_controller.configurations["weights"]])
+				print("GameOver / %s / %s / %s / %s / %s" % [player_name, score, purin_bag.max_purin_level, dropped_purin_count, purin_node.get_child_count()])
 			
 			gameover_screen.visible = true
 			purin.game_over_timer_sec = Global.game_over_threshold_sec
@@ -406,8 +382,7 @@ func check_game_over(delta):
 			purin.game_over_countdown.visible = false
 			purin.game_over_countdown.stop()
 	if ai_controlled and training and terminate_training_early():
-		var parents = "(%s+%s)"%[ai_controller.parent_1_name, ai_controller.parent_2_name]
-		print("Performance / %s %s / %s / %s / %s / %s / %s" % [player_name, parents, score, purin_bag.max_purin_level, dropped_purin_count, purin_node.get_child_count(), ai_controller.configurations["weights"]])
+		print("Performance / %s / %s / %s / %s / %s" % [player_name, score, purin_bag.max_purin_level, dropped_purin_count, purin_node.get_child_count()])
 		gameover_screen.visible = true
 		#skip_saving = true
 		return true
@@ -416,30 +391,16 @@ func check_game_over(delta):
 func mean_squared_error(actual, predicted):
 	var sum_square_error = 0.0
 	for i in range(len(actual)):
-		sum_square_error += (actual[i] - predicted[i])**2.0
+		sum_square_error += pow((actual[i] - predicted[i]), 2)
 	var mean_square_error = 1.0 / len(actual) * sum_square_error
 	return mean_square_error
 	
 func terminate_training_early():
 	# Selection Pressure Rules
-	# var current_purin_count:int = purin_node.get_child_count()
+	var current_purin_count:int = purin_node.get_child_count()
 	# kill those with excessive purin that aren't combined
-#	if is_instance_valid(purin_bag) and purin_bag.max_purin_level < 9 and current_purin_count > 20:
-#		return true
-	
-	# semi optimal merging should get close to these scores with some wiggle room
-#	if purin_bag.max_purin_level < 5 and score >= 1500:
-#		return true
-#	if purin_bag.max_purin_level < 6 and score >= 4000:
-#		return true
-#	if purin_bag.max_purin_level < 7 and score >= 12000:
-#		return true
-#	if purin_bag.max_purin_level < 8 and score >= 35000:
-#		return true
-#	# more wiggle room for higher tier purin
-#	if purin_bag.max_purin_level < 9 and score >= 65000:
-#		return true
-#
+	if is_instance_valid(purin_bag) and purin_bag.max_purin_level < 9 and current_purin_count > 20:
+		return true
 	
 	return false
 

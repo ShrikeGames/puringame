@@ -2,6 +2,15 @@ class_name NeuralNetworkAdvanced
 # source: https://github.com/ryash072007/Godot-AI-Kit
 # Date: 2024-08-11
 var network: Array
+var learning_rate: float = 0.1
+var layer_structure: Array[int] = []
+var layers: Array[Dictionary] = []
+
+var mutation_rate:float = 0.03
+var mutation_min_range:float = -0.15
+var mutation_max_range:float = -0.15
+var total_score:float = 0
+var total_loss:float = 0
 
 var ACTIVATIONS: Dictionary = {
 	"SIGMOID": {
@@ -46,14 +55,7 @@ var ACTIVATIONS: Dictionary = {
 	}
 }
 
-
-var learning_rate: float = 0.5
-
-var layer_structure: Array[int] = []
-var layers: Array[Dictionary] = []
-func add_layer(nodes: int, activation: Dictionary = ACTIVATIONS.SIGMOID, input_weights:Array=[], input_bias:Array=[], col_size = 1):
-	
-	
+func add_layer(nodes: int, activation: Dictionary = ACTIVATIONS.SIGMOID, mutate:bool = true, input_weights:Array=[], input_bias:Array=[], col_size = 1):
 	var weights:Matrix
 	var bias:Matrix
 	
@@ -72,7 +74,10 @@ func add_layer(nodes: int, activation: Dictionary = ACTIVATIONS.SIGMOID, input_w
 		bias = Matrix.rand(Matrix.new(nodes, 1))
 	else:
 		bias = Matrix.from_array(input_bias)
-	
+	if mutate:
+		weights = Matrix.mutate(weights, mutation_rate, mutation_min_range, mutation_max_range)
+		bias = Matrix.mutate(bias, mutation_rate, mutation_min_range, mutation_max_range)
+		
 	var layer_data: Dictionary = {
 		"weights": weights,
 		"bias": bias,
@@ -97,7 +102,13 @@ func predict(input_array: Array) -> Array:
 		var map: Matrix = Matrix.map(sum, layer.activation.function)
 		inputs = map
 	return Matrix.to_array(inputs)
-#
+
+func mean_squared_error(predicted: Matrix, target: Matrix) -> float:
+	var errors = Matrix.subtract(predicted, target)
+	errors = Matrix.square(errors)
+	var mean_error = Matrix.average(errors)
+	return mean_error
+
 func train(input_array: Array, target_array: Array):
 	var inputs: Matrix = Matrix.from_array(input_array)
 	var targets: Matrix = Matrix.from_array(target_array)
@@ -114,6 +125,13 @@ func train(input_array: Array, target_array: Array):
 		unactivated_outputs.append(sum)
 	
 	var expected_output: Matrix = targets
+	
+	# output from last layer in network
+	var predicted_output: Matrix = outputs[network.size() - 1]
+	# MSE to calculate loss
+	var loss: float = mean_squared_error(predicted_output, expected_output)
+	# increase the total loss
+	total_loss += loss
 	
 	var next_layer_errors: Matrix
 	
@@ -157,5 +175,5 @@ func train(input_array: Array, target_array: Array):
 			network[layer_index].weights = Matrix.add(layer.weights, weight_delta)
 			network[layer_index].bias = Matrix.add(layer.bias, hidden_gradient)
 			
-			
+		
 		

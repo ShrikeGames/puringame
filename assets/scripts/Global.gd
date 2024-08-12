@@ -67,6 +67,12 @@ var evil_orb_scene: Resource = load("res://assets/scenes/EvilOrb.tscn")
 
 var purin_object_scene: Resource = load("res://assets/scenes/Purin.tscn")
 
+var purin_textures: Array[Texture2D] = []
+var evil_purin_textures: Array[Texture2D] = []
+const purin_file_path_root = "res://assets/images/game/"
+
+var neural_training_models:Array[NeuralNetworkAdvanced] = []
+
 func read_json(path:String) -> Dictionary:
 	if not FileAccess.file_exists(path):
 		return {}
@@ -213,11 +219,6 @@ func update_all_volumes():
 	update_volume(AudioServer.get_bus_index("Music"), Global.volume_music * 100)
 	
 
-
-var purin_textures: Array[Texture2D] = []
-var evil_purin_textures: Array[Texture2D] = []
-const purin_file_path_root = "res://assets/images/game/"
-
 func load_purin():
 	if not purin_textures.is_empty():
 		return
@@ -230,14 +231,14 @@ func load_purin():
 		evil_purin_textures.append(load(evil_image_path))
 
 var max_input_size:int = 195
-var source_network:NeuralNetworkAdvanced
-func load_ml():
+func load_ml(mutate:bool=true):
+	var nna:NeuralNetworkAdvanced
 	var default_ml_json = Global.read_json("res://ai_ml.json")
 	var ml_json = Global.read_json("user://ai_ml.json")
 	if not ml_json:
 		ml_json = default_ml_json
 	if not ml_json.get("ml", []).is_empty():
-		source_network = NeuralNetworkAdvanced.new()
+		nna = NeuralNetworkAdvanced.new()
 		
 		for layer_data in ml_json.get("ml"):
 			var weights = layer_data["weights"]
@@ -245,25 +246,26 @@ func load_ml():
 			var bias = layer_data["bias"]
 			var activation_name = layer_data["activation_name"]
 			if activation_name == "relu":
-				source_network.add_layer(layer_data["size"], source_network.ACTIVATIONS.RELU, weights, bias, col_size)
+				nna.add_layer(layer_data["size"], nna.ACTIVATIONS.RELU, mutate, weights, bias, col_size)
 			elif activation_name == "linear":
-				source_network.add_layer(layer_data["size"], source_network.ACTIVATIONS.LINEAR, weights, bias, col_size)
+				nna.add_layer(layer_data["size"], nna.ACTIVATIONS.LINEAR, mutate, weights, bias, col_size)
 			elif activation_name == "sigmoid":
-				source_network.add_layer(layer_data["size"], source_network.ACTIVATIONS.SIGMOID, weights, bias, col_size)
-		
+				nna.add_layer(layer_data["size"], nna.ACTIVATIONS.SIGMOID, mutate, weights, bias, col_size)
+		nna.total_loss = ml_json.get("total_loss", 0)
+		nna.total_score = ml_json.get("total_score", 0)
 	else:
-		source_network = NeuralNetworkAdvanced.new()
-		source_network.add_layer(max_input_size, source_network.ACTIVATIONS.RELU)
-		source_network.add_layer(64, source_network.ACTIVATIONS.RELU)
-		source_network.add_layer(1, source_network.ACTIVATIONS.SIGMOID)
-	return source_network
+		nna = NeuralNetworkAdvanced.new()
+		nna.add_layer(max_input_size, nna.ACTIVATIONS.RELU, mutate)
+		nna.add_layer(128, nna.ACTIVATIONS.RELU, mutate)
+		nna.add_layer(1, nna.ACTIVATIONS.SIGMOID, mutate)
+	return nna
 	
-func save_ml_file(input_file:String="user://ai_ml.json", output_file="user://ai_ml.json"):
+func save_ml_file(nna:NeuralNetworkAdvanced, input_file:String="user://ai_ml.json", output_file="user://ai_ml.json"):
 	var ml_json = Global.read_json(input_file)
 	if not ml_json:
 		ml_json = {}
 	var layers:Array[Dictionary] = []
-	for layer in source_network.layers:
+	for layer in nna.layers:
 		var layer_data: Dictionary = {
 			"weights": Matrix.to_array(layer["weights"]),
 			"bias": Matrix.to_array(layer["bias"]),
@@ -274,6 +276,9 @@ func save_ml_file(input_file:String="user://ai_ml.json", output_file="user://ai_
 		}
 		layers.append(layer_data)
 	ml_json["ml"] = layers
+	ml_json["total_score"] = nna.total_score
+	ml_json["total_loss"] = nna.total_loss
+	
 	var json_string := JSON.stringify(ml_json)
 	# We will need to open/create a new file for this data string
 	var file_access := FileAccess.open(output_file, FileAccess.WRITE)
