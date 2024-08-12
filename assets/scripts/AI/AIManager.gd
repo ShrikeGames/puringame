@@ -110,7 +110,12 @@ func init_ai_players():
 		ai_games_node.add_child(game)
 		game.debug = debug
 		# make own copy of the best NN (with mutations)
-		game.source_network = Global.load_ml(true)
+		var generation_mutation_rate = 0.15
+		if generation == 1:
+			# mutate everything randomly in gen 1
+			# so we have a very diverse initial population
+			generation_mutation_rate = 1
+		game.source_network = Global.load_ml(true, generation_mutation_rate)
 		# reset stats
 		game.source_network.total_loss = 0
 		game.source_network.total_score = 0

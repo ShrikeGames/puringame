@@ -50,7 +50,8 @@ static func rand(matrix: Matrix) -> Matrix:
 
 static func mutate(a: Matrix, mutation_rate:float, mutation_min_range:float, mutation_max_range:float) -> Matrix:
 	var result = Matrix.new(a.rows, a.cols)
-
+	seed(randi())
+	randomize()
 	for row in range(result.rows):
 		for col in range(result.cols):
 			if randf() < mutation_rate:

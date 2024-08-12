@@ -231,7 +231,7 @@ func load_purin():
 		evil_purin_textures.append(load(evil_image_path))
 
 var max_input_size:int = 195
-func load_ml(mutate:bool=true):
+func load_ml(mutate:bool=true, mutation_rate:float = 0.15):
 	var nna:NeuralNetworkAdvanced
 	var default_ml_json = Global.read_json("res://ai_ml.json")
 	var ml_json = Global.read_json("user://ai_ml.json")
@@ -239,7 +239,7 @@ func load_ml(mutate:bool=true):
 		ml_json = default_ml_json
 	if not ml_json.get("ml", []).is_empty():
 		nna = NeuralNetworkAdvanced.new()
-		
+		nna.mutation_rate = mutation_rate
 		for layer_data in ml_json.get("ml"):
 			var weights = layer_data["weights"]
 			var col_size = layer_data["cols"]
@@ -255,6 +255,7 @@ func load_ml(mutate:bool=true):
 		nna.total_score = ml_json.get("total_score", 0)
 	else:
 		nna = NeuralNetworkAdvanced.new()
+		nna.mutation_rate = mutation_rate
 		nna.add_layer(max_input_size, nna.ACTIVATIONS.RELU, mutate)
 		nna.add_layer(128, nna.ACTIVATIONS.RELU, mutate)
 		nna.add_layer(1, nna.ACTIVATIONS.SIGMOID, mutate)

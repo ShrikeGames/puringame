@@ -6,9 +6,9 @@ var learning_rate: float = 0.1
 var layer_structure: Array[int] = []
 var layers: Array[Dictionary] = []
 
-var mutation_rate:float = 0.03
+var mutation_rate:float = 0.15
 var mutation_min_range:float = -0.15
-var mutation_max_range:float = -0.15
+var mutation_max_range:float = 0.15
 var total_score:float = 0
 var total_loss:float = 0
 
