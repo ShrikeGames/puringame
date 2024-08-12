@@ -2,13 +2,13 @@ class_name NeuralNetworkAdvanced
 # source: https://github.com/ryash072007/Godot-AI-Kit
 # Date: 2024-08-11
 var network: Array
-var learning_rate: float = 0.1
+var learning_rate: float = 0.15
 var layer_structure: Array[int] = []
 var layers: Array[Dictionary] = []
 
 var mutation_rate:float = 0.15
-var mutation_min_range:float = -0.15
-var mutation_max_range:float = 0.15
+var mutation_min_range:float = -0.5
+var mutation_max_range:float = 0.5
 var total_score:float = 0
 var total_loss:float = 0
 
@@ -74,7 +74,8 @@ func add_layer(nodes: int, activation: Dictionary = ACTIVATIONS.SIGMOID, mutate:
 		bias = Matrix.rand(Matrix.new(nodes, 1))
 	else:
 		bias = Matrix.from_array(input_bias)
-	if mutate:
+	# don't mutate the input layer
+	if mutate and layer_structure.size() != 0:
 		weights = Matrix.mutate(weights, mutation_rate, mutation_min_range, mutation_max_range)
 		bias = Matrix.mutate(bias, mutation_rate, mutation_min_range, mutation_max_range)
 		
@@ -176,4 +177,12 @@ func train(input_array: Array, target_array: Array):
 			network[layer_index].bias = Matrix.add(layer.bias, hidden_gradient)
 			
 		
-		
+func cross_breed(nna:NeuralNetworkAdvanced, percent_split:float=0.5) -> void:
+	for layer_index in range(1, len(network)):
+		var weights1:Matrix = network[layer_index]["weights"]
+		var weights2:Matrix = nna.network[layer_index]["weights"]
+		network[layer_index]["weights"] = Matrix.cross_breed(weights1, weights2, percent_split)
+		var bias1:Matrix = network[layer_index]["bias"]
+		var bias2:Matrix = nna.network[layer_index]["bias"]
+		network[layer_index]["bias"] = Matrix.cross_breed(bias1, bias2, percent_split)
+	

@@ -257,7 +257,7 @@ func load_ml(mutate:bool=true, mutation_rate:float = 0.15):
 		nna = NeuralNetworkAdvanced.new()
 		nna.mutation_rate = mutation_rate
 		nna.add_layer(max_input_size, nna.ACTIVATIONS.RELU, mutate)
-		nna.add_layer(128, nna.ACTIVATIONS.RELU, mutate)
+		nna.add_layer(12, nna.ACTIVATIONS.RELU, mutate)
 		nna.add_layer(1, nna.ACTIVATIONS.SIGMOID, mutate)
 	return nna
 	

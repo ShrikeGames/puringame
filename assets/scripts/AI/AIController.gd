@@ -63,9 +63,10 @@ func process_ai(_delta):
 			if not predictions.is_empty() and predictions[0] is float:
 				var best_nna_prediction:Array = game.best_nna.predict(input)
 				actuals = best_nna_prediction
-				game.best_icon.position.x = actuals[0] * 800.0
-				# train this model based on the best one
-				game.source_network.train(input, actuals)
+				if not actuals.is_empty() and actuals[0] is float:
+					game.best_icon.position.x = actuals[0] * game.ml_scale_factor
+					# train this model based on the best one
+					game.source_network.train(input, actuals)
 				
 		# see where the old AI moved us to, treat that as good for now
 		if game.neural_training and game.source_network:
@@ -75,13 +76,14 @@ func process_ai(_delta):
 			predictions = game.source_network.predict(input)
 			
 			if game.prediction_icon:
-				game.prediction_icon.position.x = predictions[0]*800
+				game.prediction_icon.position.x = predictions[0] * game.ml_scale_factor
 			# go to where the neural networks says to go
-			if not predictions.is_empty() and predictions[0] is float:
-				game.noir.position.x = game.valid_x_pos(int(predictions[0]*800))
-			temp_debug_text = "[Prediction] %s vs %s. Total Loss: %s"%[predictions, actuals, game.source_network.total_loss]
-		
-		
+			if not predictions.is_empty() and not is_nan(predictions[0]):
+				game.noir.position.x = game.valid_x_pos(predictions[0] * game.ml_scale_factor)
+				temp_debug_text = "[Prediction] %s vs %s. Total Loss: %s."%[predictions, actuals, game.source_network.total_loss]
+			else:
+				temp_debug_text = "invalid prediction? %s"%[predictions]
+				
 		# drop the purin wherever was selected
 		game.drop_purin()
 		
@@ -91,7 +93,8 @@ func process_ai(_delta):
 			{
 				"x": game.noir.position.x,
 				"level": held_purin_level,
-				"score": game.score
+				"score": game.score,
+				"input": input
 			}
 		)
 		

@@ -68,6 +68,9 @@ func init_ai_players():
 			Global.neural_training_models.sort_custom(best_nna_sort)
 			# take only the best one
 			nna = Global.neural_training_models[0]
+			# cross breed it with the 2nd best
+			if len(Global.neural_training_models) > 1:
+				nna.cross_breed(Global.neural_training_models[1], 0.5)
 			print("Generation %s Best Results:"%[generation])
 			print("Total Loss: %s"%nna.total_loss)
 			print("Total Score: %s"%nna.total_score)

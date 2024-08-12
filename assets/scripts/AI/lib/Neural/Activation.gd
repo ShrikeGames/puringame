@@ -3,22 +3,28 @@ class_name Activation
 # Date: 2024-08-11
 
 static func sigmoid(value: float, _row: int, _col: int) -> float:
-	return 1 / (1 + exp(-value))
+	var result = 1 / (1 + exp(-value))
+	if is_nan(result) or is_inf(result):
+		print("value %s caused sigmoid to break with a value of %s"%[value, result])
+	return result
 
 static func dsigmoid(value: float, _row: int, _col: int) -> float:
 	return value * (1 - value)
 
 static func relu(value: float, _row: int, _col: int) -> float:
-	return max(0.0, value)
+	var result = max(0.0, min(800.0, value))
+	if is_nan(result) or is_inf(result):
+		print("value %s caused relu to break with a value of %s"%[value, result])
+	return result
 	
 static func linear(value: float, _row: int, _col: int) -> float:
-	return value
+	return min(800.0, max(0.0, value))
 	
 static func dlinear(_value: float, _row: int, _col: int) -> float:
 	return 1
 
 static func drelu(value: float, _row: int, _col: int) -> float:
-	if value < 0:
+	if value < 0.0:
 		return 0.0
 	else:
 		return 1.0
@@ -52,7 +58,10 @@ static func elu(value: float, _row: int, _col: int) -> float:
 
 static func delu(value: float, _row: int, _col: int) -> float:
 	var alpha: float = 0.1
-	return (((alpha * (exp(value) - 1)) if value < 0.0 else value) + alpha) if value < 0.0 else 1.0
+	var result = (((alpha * (exp(value) - 1)) if value < 0.0 else value) + alpha) if value < 0.0 else 1.0
+	if is_nan(result) or is_inf(result):
+		print("value %s caused delu to break with a value of %s"%[value, result])
+	return result
 
 static func softplus(value: float, _row: int, _col: int) -> float:
 	return log(exp(1)) * (1 + exp(value))

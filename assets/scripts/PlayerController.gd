@@ -49,6 +49,7 @@ var best_nna:NeuralNetworkAdvanced
 var config_json:Dictionary
 var default_config_json:Dictionary
 
+var ml_scale_factor:float = 800
 var score: int = 0
 var dropped_purin_count: int = 0
 var last_dropped_purin:Purin
@@ -180,16 +181,16 @@ func update_score_label():
 func get_state():
 	
 	var state:Array[float] = []
-	state.append(purin_bag.get_current_purin()["level"]/float(Global.highest_possible_purin_level))
-	state.append(purin_bag.get_next_purin()["level"]/float(Global.highest_possible_purin_level))
+	state.append((purin_bag.get_current_purin()["level"]+1)/10.0)
+	state.append((purin_bag.get_next_purin()["level"]+1)/10.0)
 	# 64 purin * 3 each = 192 + 2 = 194 total size
 	for purin in purin_node.get_children():
-		state.append(purin.position.x/800.0)
-		state.append(purin.position.y/800.0)
-		state.append(purin.get_meta("level")/float(Global.highest_possible_purin_level))
+		state.append(purin.position.x/ml_scale_factor)
+		state.append(purin.position.y/ml_scale_factor)
+		state.append((purin.get_meta("level")+1)/10.0)
 	if len(state) < 194:
 		for i in range(len(state), 195):
-			state.append(0)
+			state.append(-1.0)
 	
 	return state.slice(0, min(195, len(state)))
 	
@@ -244,7 +245,8 @@ func save_results():
 	history.append(new_run)
 	source_network.total_score = score
 	Global.neural_training_models.append(source_network)
-	
+	if not ai_controlled:
+		Global.save_ml_file(source_network)
 	# sort history from best to worst
 	history.sort_custom(rank_history)
 	if training:
@@ -362,11 +364,11 @@ func mean_squared_error(actual, predicted):
 	
 func terminate_training_early():
 	# Selection Pressure Rules
-	var current_purin_count:int = purin_node.get_child_count()
+#	var current_purin_count:int = purin_node.get_child_count()
 	# kill those with excessive purin that aren't combined
-	if is_instance_valid(purin_bag) and purin_bag.max_purin_level < 9 and current_purin_count > 20:
-		return true
-	
+#	if is_instance_valid(purin_bag) and purin_bag.max_purin_level < 9 and current_purin_count > 20:
+#		return true
+#
 	return false
 
 func process_player(delta):
@@ -388,14 +390,16 @@ func process_player(delta):
 		drop_purin()
 		
 		if neural_training and source_network:
-			var actuals = [int(noir.position.x)/800.0]
+			var actuals = [noir.position.x/ml_scale_factor]
 			# get state of the game before anything is done
 			var input = get_state()
 			# tell it to predict to see what it's already learned if anything
 			var predictions = source_network.predict(input)
-			if prediction_icon:
-				prediction_icon.position.x = predictions[0]*800
-			
+			if not predictions.is_empty() and predictions[0] is float:
+				if prediction_icon:
+					prediction_icon.position.x = predictions[0] * ml_scale_factor
+				# correct it assuming the player is correct
+				source_network.train(input, actuals)
 			#game.noir.position.x = predictions[0]
 			# show us how close it was to what you did
 			self.debug_label.text = "[Prediction] %s vs %s. MSE: %s"%[predictions, actuals, mean_squared_error(actuals, predictions)]

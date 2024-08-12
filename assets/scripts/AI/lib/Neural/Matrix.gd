@@ -45,7 +45,8 @@ static func rand(matrix: Matrix) -> Matrix:
 	
 	for row in range(result.rows):
 		for col in range(result.cols):
-			result.data[row][col] = randf_range(-1, 1)
+			# should initialize with very small weights
+			result.data[row][col] = randf_range(-1, 1)*0.25
 	return result
 
 static func mutate(a: Matrix, mutation_rate:float, mutation_min_range:float, mutation_max_range:float) -> Matrix:
@@ -72,6 +73,20 @@ static func add(a: Matrix, b: Matrix) -> Matrix:
 
 	return result
 
+static func cross_breed(a:Matrix, b:Matrix, percent_split:float=0.5) -> Matrix:
+	assert(a.rows == b.rows and a.cols == b.cols)
+	
+	var result = Matrix.new(a.rows, a.cols)
+
+	for row in range(result.rows):
+		for col in range(result.cols):
+			if randf() < percent_split:
+				result.data[row][col] = a.data[row][col]
+			else:
+				result.data[row][col] = b.data[row][col]
+
+	return result
+	
 static func subtract(a: Matrix, b: Matrix) -> Matrix:
 	assert(a.rows == b.rows and a.cols == b.cols)
 
