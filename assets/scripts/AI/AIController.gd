@@ -94,7 +94,7 @@ func process_ai(_delta):
 				"x": game.noir.position.x,
 				"level": held_purin_level,
 				"score": game.score,
-				"input": input
+				#"input": input
 			}
 		)
 		

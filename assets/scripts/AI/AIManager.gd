@@ -25,7 +25,7 @@ func _on_ready() -> void:
 	
 func init_ai_players():
 	Engine.time_scale = time_scale
-	
+	Node2D.print_orphan_nodes()
 	if generation >= 1:
 		var config_json = Global.read_json("user://ai_v2_%s.json"%[generation])
 		
@@ -71,12 +71,17 @@ func init_ai_players():
 			# cross breed it with the 2nd best
 			if len(Global.neural_training_models) > 1:
 				nna.cross_breed(Global.neural_training_models[1], 0.5)
-			print("Generation %s Best Results:"%[generation])
-			print("Total Loss: %s"%nna.total_loss)
-			print("Total Score: %s"%nna.total_score)
+			print("Generation %s Results:"%[generation])
+			print("Best Total Loss: %s"%nna.total_loss)
+			print("Best Total Score: %s"%nna.total_score)
+			print("Average Loss: %s"%[Global.neural_training_total_loss/Global.neural_training_total_models])
+			print("Average Score: %s"%[Global.neural_training_total_score/Global.neural_training_total_models])
 			Global.save_ml_file(nna)
 			# clear the list
 			Global.neural_training_models = []
+			Global.neural_training_total_loss = 0
+			Global.neural_training_total_score = 0
+			Global.neural_training_total_models = 0
 		
 	generation += 1
 	for game in ai_games_node.get_children():
@@ -113,7 +118,8 @@ func init_ai_players():
 		ai_games_node.add_child(game)
 		game.debug = debug
 		# make own copy of the best NN (with mutations)
-		var generation_mutation_rate = 0.15
+		# larger mutation rates for the later population members
+		var generation_mutation_rate = 0.15 + i
 		if generation == 1:
 			# mutate everything randomly in gen 1
 			# so we have a very diverse initial population
@@ -167,7 +173,7 @@ func _process(delta):
 	if camera != null and not games.is_empty():
 		var updated:bool = false
 		for game in games:
-			if not is_instance_valid(following_game) or (is_instance_valid(game) and game.score > 90000 and game.score > following_game.score and game.player_name != following_game.player_name):
+			if not is_instance_valid(following_game) or (is_instance_valid(game) and game.score > 20000 and game.score > following_game.score and game.player_name != following_game.player_name):
 				following_game = game
 				updated = true
 		if updated:

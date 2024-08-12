@@ -240,13 +240,19 @@ func save_results():
 		new_run["configurations"]["username"] = player_name
 		new_run["configurations"]["username_jp"] = player_name
 		new_run["configurations"]["score"] = score
-		new_run["configurations"]["replay"] = ai_controller.move_history
+		#new_run["configurations"]["replay"] = ai_controller.move_history
 	
 	history.append(new_run)
 	source_network.total_score = score
 	Global.neural_training_models.append(source_network)
+	Global.neural_training_models.sort_custom(best_nna_sort)
+	Global.neural_training_total_score += score
+	Global.neural_training_total_loss += source_network.total_loss
+	Global.neural_training_total_models += 1
+	Global.neural_training_models = Global.neural_training_models.slice(2)
 	if not ai_controlled:
 		Global.save_ml_file(source_network)
+	
 	# sort history from best to worst
 	history.sort_custom(rank_history)
 	if training:
@@ -302,6 +308,7 @@ func check_game_over(delta):
 			#print("Delete AI player ", player_name, " because they lost, are not set to auto retry and are in training")
 			#print("%s Game Over with a score of %s" % [player_name, score])
 			save_results()
+			
 			self.queue_free()
 		return true
 
@@ -617,3 +624,8 @@ func remove_dead_opponents():
 			updated_opponents.append(opponent)
 	opponents = updated_opponents
 
+func best_nna_sort(nna1:NeuralNetworkAdvanced, nna2:NeuralNetworkAdvanced):
+	#nna1.total_loss < nna2.total_loss and 
+	if nna1.total_score > nna2.total_score:
+		return true
+	return false

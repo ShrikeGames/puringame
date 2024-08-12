@@ -72,6 +72,9 @@ var evil_purin_textures: Array[Texture2D] = []
 const purin_file_path_root = "res://assets/images/game/"
 
 var neural_training_models:Array[NeuralNetworkAdvanced] = []
+var neural_training_total_score:float = 0
+var neural_training_total_loss:float = 0
+var neural_training_total_models:int = 1
 
 func read_json(path:String) -> Dictionary:
 	if not FileAccess.file_exists(path):

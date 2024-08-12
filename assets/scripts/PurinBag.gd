@@ -26,6 +26,10 @@ func generate_purin_bag() -> Array[PurinIndicator]:
 		new_bag.append(indicator)
 		if bag_node != null:
 			bag_node.add_child(indicator)
+		else:
+			# so it can be cleaned up automatically when this is deleted
+			indicator.visible = false
+			self.add_child(indicator)
 	# shuffle it randomly
 	new_bag.shuffle()
 	#print("new_bag: ", new_bag)
