@@ -71,10 +71,10 @@ var purin_textures: Array[Texture2D] = []
 var evil_purin_textures: Array[Texture2D] = []
 const purin_file_path_root = "res://assets/images/game/"
 
+var max_input_size:int = 98
 var neural_training_models:Array[NeuralNetworkAdvanced] = []
 var neural_training_total_score:float = 0
 var neural_training_total_loss:float = 0
-var neural_training_total_models:int = 1
 
 func read_json(path:String) -> Dictionary:
 	if not FileAccess.file_exists(path):
@@ -233,7 +233,7 @@ func load_purin():
 		var evil_image_path = "%spurin%d_evil.png" % [purin_file_path_root, i]
 		evil_purin_textures.append(load(evil_image_path))
 
-var max_input_size:int = 195
+
 func load_ml(mutate:bool=true, mutation_rate:float = 0.15):
 	var nna:NeuralNetworkAdvanced
 	var default_ml_json = Global.read_json("res://ai_ml.json")
@@ -244,26 +244,30 @@ func load_ml(mutate:bool=true, mutation_rate:float = 0.15):
 		nna = NeuralNetworkAdvanced.new()
 		nna.mutation_rate = mutation_rate
 		for layer_data in ml_json.get("ml"):
-			var weights = layer_data["weights"]
-			var col_size = layer_data["cols"]
-			var bias = layer_data["bias"]
-			var activation_name = layer_data["activation_name"]
-			if activation_name == "relu":
-				nna.add_layer(layer_data["size"], nna.ACTIVATIONS.RELU, mutate, weights, bias, col_size)
-			elif activation_name == "linear":
-				nna.add_layer(layer_data["size"], nna.ACTIVATIONS.LINEAR, mutate, weights, bias, col_size)
-			elif activation_name == "sigmoid":
-				nna.add_layer(layer_data["size"], nna.ACTIVATIONS.SIGMOID, mutate, weights, bias, col_size)
+			nna.add_layer_from_layer_data(layer_data, mutate)
+			
 		nna.total_loss = ml_json.get("total_loss", 0)
 		nna.total_score = ml_json.get("total_score", 0)
 	else:
-		nna = NeuralNetworkAdvanced.new()
-		nna.mutation_rate = mutation_rate
-		nna.add_layer(max_input_size, nna.ACTIVATIONS.RELU, mutate)
-		nna.add_layer(12, nna.ACTIVATIONS.RELU, mutate)
-		nna.add_layer(1, nna.ACTIVATIONS.SIGMOID, mutate)
+		nna = generate_new_nna(mutate, mutation_rate, false)
 	return nna
 	
+func generate_new_nna(mutate:bool=false, mutation_rate:float = 0.15, randomize_layers:bool=false):
+	var nna:NeuralNetworkAdvanced = NeuralNetworkAdvanced.new()
+	nna.mutation_rate = mutation_rate
+	var action_type = nna.ACTIVATIONS.SIGMOID
+	nna.add_layer(max_input_size, action_type, mutate)
+	if randomize_layers:
+		# randomly pick how many hidden layers and how many nodes are in each
+		for hidden_layer in range(0, randi_range(1, 5)):
+			var num_nodes:int = int(pow(2,randi_range(1,8)))
+			nna.add_layer(num_nodes, action_type, mutate)
+	else:
+		nna.add_layer(32, action_type, mutate)
+	#output layer
+	nna.add_layer(1, nna.ACTIVATIONS.SIGMOID, mutate)
+	return nna
+
 func save_ml_file(nna:NeuralNetworkAdvanced, input_file:String="user://ai_ml.json", output_file="user://ai_ml.json"):
 	var ml_json = Global.read_json(input_file)
 	if not ml_json:

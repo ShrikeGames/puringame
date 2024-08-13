@@ -2,13 +2,13 @@ class_name NeuralNetworkAdvanced
 # source: https://github.com/ryash072007/Godot-AI-Kit
 # Date: 2024-08-11
 var network: Array
-var learning_rate: float = 0.15
+var learning_rate: float = 0.005
 var layer_structure: Array[int] = []
 var layers: Array[Dictionary] = []
 
-var mutation_rate:float = 0.15
-var mutation_min_range:float = -0.5
-var mutation_max_range:float = 0.5
+var mutation_rate:float = 0.3
+var mutation_min_range:float = -0.75
+var mutation_max_range:float = 0.75
 var total_score:float = 0
 var total_loss:float = 0
 
@@ -62,16 +62,14 @@ func add_layer(nodes: int, activation: Dictionary = ACTIVATIONS.SIGMOID, mutate:
 	if input_weights.is_empty():
 		#print("Create new random weights")
 		if layer_structure.size() != 0:
-			weights = Matrix.rand(Matrix.new(nodes, layer_structure[-1]))
-		else:
-			weights = Matrix.new(nodes, nodes)
+			weights = Matrix.rand(Matrix.new(nodes, layer_structure[-1]), 0.75)
 	else:
 		#print("Load weights from array")
 		weights = Matrix.from_array2(input_weights, col_size)
 		
 	
 	if input_bias.is_empty():
-		bias = Matrix.rand(Matrix.new(nodes, 1))
+		bias = Matrix.rand(Matrix.new(nodes, 1), 0.1)
 	else:
 		bias = Matrix.from_array(input_bias)
 	# don't mutate the input layer
@@ -79,14 +77,20 @@ func add_layer(nodes: int, activation: Dictionary = ACTIVATIONS.SIGMOID, mutate:
 		weights = Matrix.mutate(weights, mutation_rate, mutation_min_range, mutation_max_range)
 		bias = Matrix.mutate(bias, mutation_rate, mutation_min_range, mutation_max_range)
 		
+	var weight_rows:int = 0
+	var weight_cols:int = 0
+	if layer_structure.size() != 0:
+		weight_rows = weights.rows
+		weight_cols = weights.cols
+		
 	var layer_data: Dictionary = {
 		"weights": weights,
 		"bias": bias,
 		"activation": activation,
 		"activation_name": activation["name"],
 		"size": nodes,
-		"rows": weights.rows,
-		"cols": weights.cols
+		"rows": weight_rows,
+		"cols": weight_cols
 	}
 	layers.append(layer_data)
 	if layer_structure.size() != 0:
@@ -110,6 +114,24 @@ func mean_squared_error(predicted: Matrix, target: Matrix) -> float:
 	var mean_error = Matrix.average(errors)
 	return mean_error
 
+func train_bulk(training_file_path:String):
+	var file_access := FileAccess.open(training_file_path, FileAccess.READ)
+	if not file_access:
+		print("No training file exists")
+		return
+	var training_data_string:String = FileAccess.get_file_as_string(training_file_path)
+	
+	var training_data:Array = training_data_string.split("\n")
+	print("len(training_data) ", len(training_data))
+	for line in training_data:
+		if line != "" and line != "\n":
+			var line_data:Array = line.split(", ")
+			var target:Array = [float(line_data.pop_front())]
+			var input:Array = line_data
+			for i in range(0,len(input)):
+				input[i] = float(input[i])
+			train(input, target)
+	
 func train(input_array: Array, target_array: Array):
 	var inputs: Matrix = Matrix.from_array(input_array)
 	var targets: Matrix = Matrix.from_array(target_array)
@@ -175,14 +197,53 @@ func train(input_array: Array, target_array: Array):
 			
 			network[layer_index].weights = Matrix.add(layer.weights, weight_delta)
 			network[layer_index].bias = Matrix.add(layer.bias, hidden_gradient)
-			
-		
-func cross_breed(nna:NeuralNetworkAdvanced, percent_split:float=0.5) -> void:
-	for layer_index in range(1, len(network)):
+
+func add_layer_from_layer_data(layer_data:Dictionary, mutate:bool=false) -> void:
+	var weights:Array = layer_data["weights"]
+	var col_size:int = layer_data["cols"]
+	var bias:Array = layer_data["bias"]
+	var activation_name:String = layer_data["activation_name"]
+	if activation_name == "relu":
+		add_layer(layer_data["size"], ACTIVATIONS.RELU, mutate, weights, bias, col_size)
+	elif activation_name == "linear":
+		add_layer(layer_data["size"], ACTIVATIONS.LINEAR, mutate, weights, bias, col_size)
+	elif activation_name == "sigmoid":
+		add_layer(layer_data["size"], ACTIVATIONS.SIGMOID, mutate, weights, bias, col_size)
+
+func copy(mutate:bool = false) -> NeuralNetworkAdvanced:
+	var nna_copy:NeuralNetworkAdvanced = NeuralNetworkAdvanced.new()
+	nna_copy.learning_rate = learning_rate
+	nna_copy.mutation_rate = mutation_rate
+	nna_copy.mutation_min_range = mutation_min_range
+	nna_copy.mutation_max_range = mutation_max_range
+	nna_copy.total_loss = total_loss
+	nna_copy.total_score = total_score
+	for layer in self.layers:
+		var layer_data:Dictionary = {
+			"weights": Matrix.to_array(layer["weights"]),
+			"bias": Matrix.to_array(layer["bias"]),
+			"activation_name": layer["activation_name"],
+			"size": layer["size"],
+			"rows": layer["rows"],
+			"cols": layer["cols"]
+		}
+		nna_copy.add_layer_from_layer_data(layer_data, mutate)
+	
+	return nna_copy
+	
+func cross_breed(nna:NeuralNetworkAdvanced, percent_split:float=0.5, mutate:bool=false) -> NeuralNetworkAdvanced:
+	var child_nna:NeuralNetworkAdvanced = nna.copy(mutate)
+	for layer_index in range(0, len(network)):
 		var weights1:Matrix = network[layer_index]["weights"]
 		var weights2:Matrix = nna.network[layer_index]["weights"]
-		network[layer_index]["weights"] = Matrix.cross_breed(weights1, weights2, percent_split)
+		child_nna.network[layer_index]["weights"] = Matrix.cross_breed(weights1, weights2, percent_split)
 		var bias1:Matrix = network[layer_index]["bias"]
 		var bias2:Matrix = nna.network[layer_index]["bias"]
-		network[layer_index]["bias"] = Matrix.cross_breed(bias1, bias2, percent_split)
-	
+		child_nna.network[layer_index]["bias"] = Matrix.cross_breed(bias1, bias2, percent_split)
+	return child_nna
+
+func get_string_info():
+	var info:String =""
+	for layer in self.layers:
+		info = "[%s]%s"%[layer["size"], info]
+	return info

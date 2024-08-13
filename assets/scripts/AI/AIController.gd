@@ -20,6 +20,7 @@ var actuals: Array
 
 var selected_purin:Purin = null
 var best_score:float = 0
+
 func init(player_controller:PlayerController):
 	self.game = player_controller
 	self.held_purin_level = 0
@@ -80,7 +81,7 @@ func process_ai(_delta):
 			# go to where the neural networks says to go
 			if not predictions.is_empty() and not is_nan(predictions[0]):
 				game.noir.position.x = game.valid_x_pos(predictions[0] * game.ml_scale_factor)
-				temp_debug_text = "[Prediction] %s vs %s. Total Loss: %s."%[predictions, actuals, game.source_network.total_loss]
+				temp_debug_text = "%s [Prediction] %s vs %s. Total Loss: %s."%[game.source_network.get_string_info(), predictions, actuals, game.source_network.total_loss]
 			else:
 				temp_debug_text = "invalid prediction? %s"%[predictions]
 				

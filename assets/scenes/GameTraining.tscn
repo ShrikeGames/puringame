@@ -21,9 +21,9 @@
 
 [node name="Game" type="Node2D" node_paths=PackedStringArray("ai_games_node", "camera")]
 script = ExtResource("1_doc3l")
-num_ai = 80
+num_ai = 50
 ai_games_node = NodePath("AIGames")
-time_scale = 2.0
+time_scale = 1.5
 debug = true
 neural_training = true
 camera = NodePath("Camera2D")

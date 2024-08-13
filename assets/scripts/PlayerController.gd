@@ -2,7 +2,7 @@ extends Node2D
 class_name PlayerController
 # random number generator seed
 var initial_seed:String
-
+var training_file_path = "user://training.txt"
 @export var player_name: String = "player"
 @export var config_path: String = "user://player.json"
 @export var default_config_path: String = "res://default.json"
@@ -42,7 +42,6 @@ var can_drop_early: bool =false
 var auto_drop:bool = false
 var target_score:float = 150000
 @export var debug:bool = false
-
 var source_network:NeuralNetworkAdvanced
 var best_nna:NeuralNetworkAdvanced
 
@@ -59,9 +58,16 @@ var time_since_last_dropped_purin_sec: float = 0
 var drop_purin_cooldown_sec: float = 2.5
 
 var skip_saving:bool = false
+
 func _on_ready():
 	if initial_seed:
 		seed(initial_seed.hash())
+		
+	if not ai_controlled:
+		var file = FileAccess.open(training_file_path, FileAccess.WRITE)
+		file.store_string("")
+		file.close()
+	
 	# set game speed
 	if not ai_controlled:
 		Engine.time_scale = Global.game_speed
@@ -179,20 +185,20 @@ func update_score_label():
 		score_label.text = "[center]%s[/center]" % [score]
 
 func get_state():
-	
 	var state:Array[float] = []
 	state.append((purin_bag.get_current_purin()["level"]+1)/10.0)
 	state.append((purin_bag.get_next_purin()["level"]+1)/10.0)
-	# 64 purin * 3 each = 192 + 2 = 194 total size
+	# 32 purin * 3 each = 96 + 2 = 98 total size
 	for purin in purin_node.get_children():
 		state.append(purin.position.x/ml_scale_factor)
 		state.append(purin.position.y/ml_scale_factor)
 		state.append((purin.get_meta("level")+1)/10.0)
-	if len(state) < 194:
-		for i in range(len(state), 195):
+	# pad to always be exact length needed
+	if len(state) < Global.max_input_size:
+		for i in range(len(state), Global.max_input_size+1):
 			state.append(-1.0)
-	
-	return state.slice(0, min(195, len(state)))
+	# ensure we never have more than the exact length needed
+	return state.slice(0, min(Global.max_input_size, len(state)))
 	
 func get_board_state():
 	var state: Dictionary = {"purin":[]}
@@ -248,8 +254,7 @@ func save_results():
 	Global.neural_training_models.sort_custom(best_nna_sort)
 	Global.neural_training_total_score += score
 	Global.neural_training_total_loss += source_network.total_loss
-	Global.neural_training_total_models += 1
-	Global.neural_training_models = Global.neural_training_models.slice(2)
+	
 	if not ai_controlled:
 		Global.save_ml_file(source_network)
 	
@@ -371,11 +376,22 @@ func mean_squared_error(actual, predicted):
 	
 func terminate_training_early():
 	# Selection Pressure Rules
-#	var current_purin_count:int = purin_node.get_child_count()
-	# kill those with excessive purin that aren't combined
-#	if is_instance_valid(purin_bag) and purin_bag.max_purin_level < 9 and current_purin_count > 20:
-#		return true
-#
+	var current_purin_count:int = purin_node.get_child_count()
+	
+	if is_instance_valid(purin_bag):
+		# didn't manage to merge even up to a red
+		if purin_bag.max_purin_level < 2:
+			if dropped_purin_count > 15:
+				return true 
+		
+		# did not get a rainbow and has a cluttered board
+#		if purin_bag.max_purin_level < 9:
+#			if current_purin_count > 20:
+#				return true 
+		# over the max purin count that it can get as input
+		if current_purin_count > 32:
+				return true 
+	
 	return false
 
 func process_player(delta):
@@ -386,6 +402,7 @@ func process_player(delta):
 	# check inputs
 	var just_pressed:bool = Input.is_action_just_pressed("drop_purin")
 	var just_released:bool = Input.is_action_just_released("drop_purin")
+	var input = get_state()
 	# accessibility setting will cause you to always drop until toggled off
 	if just_released and Global.drop_troggle:
 		# toggle between auto drop on or off
@@ -398,21 +415,37 @@ func process_player(delta):
 		
 		if neural_training and source_network:
 			var actuals = [noir.position.x/ml_scale_factor]
+			print(actuals)
 			# get state of the game before anything is done
-			var input = get_state()
+			input = get_state()
 			# tell it to predict to see what it's already learned if anything
 			var predictions = source_network.predict(input)
 			if not predictions.is_empty() and predictions[0] is float:
 				if prediction_icon:
 					prediction_icon.position.x = predictions[0] * ml_scale_factor
+				if best_icon:
+					best_icon.position.x = actuals[0] * ml_scale_factor
 				# correct it assuming the player is correct
 				source_network.train(input, actuals)
 			#game.noir.position.x = predictions[0]
 			# show us how close it was to what you did
 			self.debug_label.text = "[Prediction] %s vs %s. MSE: %s"%[predictions, actuals, mean_squared_error(actuals, predictions)]
-		
+
+func write_to_training_file(msg: String) -> void:
+	if not FileAccess.file_exists(training_file_path):
+		print_debug("Training file path incorrect or log file missing.")
+		return
+	var file = FileAccess.open(training_file_path, FileAccess.READ)
+	msg = "%s\n%s"%[file.get_as_text(), msg]
+	file = FileAccess.open(training_file_path, FileAccess.WRITE)
+	file.store_string(msg)
+	file.close()
 	
 func drop_purin():
+	if not ai_controlled:
+		Global.save_ml_file(source_network)
+		var training_data:Array = [noir.position.x / ml_scale_factor] + get_state()
+		write_to_training_file(("%s"%[training_data]).replace("[","").replace("]",""))
 	spawn_purin()
 	noir.change_held_purin(purin_bag.get_current_purin())
 	time_since_last_dropped_purin_sec = 0
@@ -496,7 +529,8 @@ func get_purin_radius(level: int):
 	return (Global.purin_sizes[level] * 0.5) * 1.17 * self.scale.x
 
 func score_by_level(level:int):
-	return int(pow(level+1, 3))
+	#return int(pow(level+1, 3))
+	return int(pow(level+1, 2)) * int(1 + (dropped_purin_count * 0.1))
 
 func combine_purin(purin1: Purin, purin2: Purin):
 	# if they were already freed then we have nothing to do

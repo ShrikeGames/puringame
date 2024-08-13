@@ -31,13 +31,15 @@ static func from_array2(arr: Array, col_size: int) -> Matrix:
 	return result
 
 static func to_array(matrix: Matrix) -> Array:
+	if matrix == null:
+		return []
 	var result = []
 	for row in range(matrix.rows):
 		for col in range(matrix.cols):
 			result.append(matrix.data[row][col])
 	return result
 
-static func rand(matrix: Matrix) -> Matrix:
+static func rand(matrix: Matrix, multiplier:float = 1) -> Matrix:
 	seed(randi())
 	randomize()
 	
@@ -46,7 +48,7 @@ static func rand(matrix: Matrix) -> Matrix:
 	for row in range(result.rows):
 		for col in range(result.cols):
 			# should initialize with very small weights
-			result.data[row][col] = randf_range(-1, 1)*0.25
+			result.data[row][col] = randf_range(-1*multiplier, 1*multiplier)
 	return result
 
 static func mutate(a: Matrix, mutation_rate:float, mutation_min_range:float, mutation_max_range:float) -> Matrix:
@@ -75,7 +77,8 @@ static func add(a: Matrix, b: Matrix) -> Matrix:
 
 static func cross_breed(a:Matrix, b:Matrix, percent_split:float=0.5) -> Matrix:
 	assert(a.rows == b.rows and a.cols == b.cols)
-	
+	seed(randi())
+	randomize()
 	var result = Matrix.new(a.rows, a.cols)
 
 	for row in range(result.rows):
@@ -84,7 +87,7 @@ static func cross_breed(a:Matrix, b:Matrix, percent_split:float=0.5) -> Matrix:
 				result.data[row][col] = a.data[row][col]
 			else:
 				result.data[row][col] = b.data[row][col]
-
+	
 	return result
 	
 static func subtract(a: Matrix, b: Matrix) -> Matrix:

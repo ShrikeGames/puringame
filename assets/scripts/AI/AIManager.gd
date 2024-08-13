@@ -21,6 +21,7 @@ var nna:NeuralNetworkAdvanced
 func _on_ready() -> void:
 	nna = Global.load_ml(false)
 	Global.save_ml_file(nna)
+	
 	init_ai_players();
 	
 func init_ai_players():
@@ -66,33 +67,31 @@ func init_ai_players():
 		if not Global.neural_training_models.is_empty():
 			# sort the trained models
 			Global.neural_training_models.sort_custom(best_nna_sort)
-			# take only the best one
+			# the new best NNA all others will use to judge themselves
 			nna = Global.neural_training_models[0]
-			# cross breed it with the 2nd best
-			if len(Global.neural_training_models) > 1:
-				nna.cross_breed(Global.neural_training_models[1], 0.5)
+			Global.save_ml_file(nna)
 			print("Generation %s Results:"%[generation])
 			print("Best Total Loss: %s"%nna.total_loss)
 			print("Best Total Score: %s"%nna.total_score)
-			print("Average Loss: %s"%[Global.neural_training_total_loss/Global.neural_training_total_models])
-			print("Average Score: %s"%[Global.neural_training_total_score/Global.neural_training_total_models])
-			Global.save_ml_file(nna)
-			# clear the list
-			Global.neural_training_models = []
-			Global.neural_training_total_loss = 0
-			Global.neural_training_total_score = 0
-			Global.neural_training_total_models = 0
+			print("Best Layer Configuration: %s"%nna.get_string_info())
+			var num_models:int = len(Global.neural_training_models)
+			print("Average Loss: %s"%[Global.neural_training_total_loss/num_models])
+			print("Average Score: %s"%[Global.neural_training_total_score/num_models])
+	if generation == 0:
+		nna.train_bulk("user://training.txt")
 		
 	generation += 1
 	for game in ai_games_node.get_children():
 		ai_games_node.queue_free()
 		
 	games = []
-	print("Begin Generation %s"%[generation])
+	
 	var x_pos:float = 0
 	var y_pos:float = 0
 	generation_ended = false
 	generation_timer = 0
+	# take only the top half of the population
+	Global.neural_training_models = Global.neural_training_models.slice(0, int(len(Global.neural_training_models)*0.5))
 	
 	for i in range(0, num_ai):
 		var game:PlayerController = play_package.instantiate()
@@ -119,12 +118,28 @@ func init_ai_players():
 		game.debug = debug
 		# make own copy of the best NN (with mutations)
 		# larger mutation rates for the later population members
-		var generation_mutation_rate = 0.15 + i
-		if generation == 1:
-			# mutate everything randomly in gen 1
-			# so we have a very diverse initial population
-			generation_mutation_rate = 1
-		game.source_network = Global.load_ml(true, generation_mutation_rate)
+		var generation_mutation_rate = min(0.75, 0.15 + (i*2))
+		# cross breed it with another network
+		if len(Global.neural_training_models) > 1 and generation > 1:
+			if i < num_ai*0.1:
+				if i == 0:
+					var parent1:NeuralNetworkAdvanced = Global.neural_training_models[0]
+					parent1.mutation_rate = generation_mutation_rate
+					var parent2:NeuralNetworkAdvanced = Global.neural_training_models[1]
+					parent2.mutation_rate = generation_mutation_rate
+					game.source_network = parent1.cross_breed(parent2)
+				else:
+					game.source_network = Global.neural_training_models[0].copy(true)
+			else:
+				var parent1:NeuralNetworkAdvanced = Global.neural_training_models[0]
+				parent1.mutation_rate = generation_mutation_rate
+				var parent2:NeuralNetworkAdvanced = Global.neural_training_models.pick_random()
+				parent2.mutation_rate = generation_mutation_rate
+				game.source_network = parent1.cross_breed(parent2)
+		else:
+			nna.mutation_rate = generation_mutation_rate
+			game.source_network = nna.copy(true)
+		
 		# reset stats
 		game.source_network.total_loss = 0
 		game.source_network.total_score = 0
@@ -148,7 +163,13 @@ func init_ai_players():
 	camera.position.x = 960
 	camera.position.y = following_game.position.y + 535
 	
+	Global.save_ml_file(nna)
+	# clear the stats for previous generation
+	Global.neural_training_models = []
+	Global.neural_training_total_loss = 0
+	Global.neural_training_total_score = 0
 	
+	print("Begin Generation %s"%[generation])
 
 func rank_history(run1:Dictionary, run2:Dictionary):
 	if run1.get("score", 0) > run2.get("score", 0):
@@ -173,7 +194,7 @@ func _process(delta):
 	if camera != null and not games.is_empty():
 		var updated:bool = false
 		for game in games:
-			if not is_instance_valid(following_game) or (is_instance_valid(game) and game.score > 20000 and game.score > following_game.score and game.player_name != following_game.player_name):
+			if not is_instance_valid(following_game) or (is_instance_valid(game) and game.score > 20000 and game.score > nna.total_score and game.player_name != following_game.player_name):
 				following_game = game
 				updated = true
 		if updated:

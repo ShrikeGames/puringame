@@ -193,6 +193,7 @@ locale/locale_filter_mode=0
 
 [physics]
 
+common/max_physics_steps_per_frame=16
 2d/physics_engine="GodotPhysics2D"
 2d/solver/solver_iterations=20
 
@@ -200,3 +201,4 @@ locale/locale_filter_mode=0
 
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+limits/spatial_indexer/update_iterations_per_frame=30
