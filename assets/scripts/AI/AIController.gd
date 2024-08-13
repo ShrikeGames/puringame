@@ -59,31 +59,26 @@ func process_ai(_delta):
 		#calc_level_distribution()
 		self.space_state = get_world_2d().direct_space_state
 		
-		# look at results of last time we predicted and dropped
-		if input and game.neural_training and game.source_network:
-			if not predictions.is_empty() and predictions[0] is float:
-				var best_nna_prediction:Array = game.best_nna.predict(input)
-				actuals = best_nna_prediction
-				if not actuals.is_empty() and actuals[0] is float:
-					game.best_icon.position.x = actuals[0] * game.ml_scale_factor
-					# train this model based on the best one
-					game.source_network.train(input, actuals)
-				
 		# see where the old AI moved us to, treat that as good for now
-		if game.neural_training and game.source_network:
+		if game.neural_training and game.source_network and game.best_nna:
 			# get state of the game before anything is done
 			input = game.get_state()
+			var best_nna_prediction:Array = game.best_nna.predict(input)
+			actuals = best_nna_prediction
+			
 			# tell it to predict where we should drop next
 			predictions = game.source_network.predict(input)
+			# train this model based on the best one's guess
+			game.source_network.train(input, actuals)
 			
 			if game.prediction_icon:
 				game.prediction_icon.position.x = predictions[0] * game.ml_scale_factor
-			# go to where the neural networks says to go
-			if not predictions.is_empty() and not is_nan(predictions[0]):
-				game.noir.position.x = game.valid_x_pos(predictions[0] * game.ml_scale_factor)
-				temp_debug_text = "%s [Prediction] %s vs %s. Total Loss: %s."%[game.source_network.get_string_info(), predictions, actuals, game.source_network.total_loss]
-			else:
-				temp_debug_text = "invalid prediction? %s"%[predictions]
+			if game.best_icon:
+				game.best_icon.position.x = actuals[0] * game.ml_scale_factor
+				
+			game.noir.position.x = game.valid_x_pos(predictions[0] * game.ml_scale_factor)
+			temp_debug_text = "%s. Target Score: %s\n[Prediction] %s vs %s.\nTotal Loss: %s."%[game.source_network.get_string_info(), game.best_nna.total_score, predictions, actuals, game.source_network.total_loss]
+			
 				
 		# drop the purin wherever was selected
 		game.drop_purin()

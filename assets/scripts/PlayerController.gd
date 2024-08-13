@@ -33,6 +33,7 @@ var ai_controller: AIController
 @export var debug_label: RichTextLabel
 @export var score_label: RichTextLabel
 
+@export var ai_suggestions:bool = true
 @export var training: bool = false
 @export var move_speed: float = 450.0
 @export var last_mouse_pos:Vector2 = Vector2(0.0, 0.0)
@@ -62,11 +63,6 @@ var skip_saving:bool = false
 func _on_ready():
 	if initial_seed:
 		seed(initial_seed.hash())
-		
-	if not ai_controlled:
-		var file = FileAccess.open(training_file_path, FileAccess.WRITE)
-		file.store_string("")
-		file.close()
 	
 	# set game speed
 	if not ai_controlled:
@@ -77,10 +73,11 @@ func _on_ready():
 
 func init():
 	load_configs()
-	if prediction_icon:
+	if neural_training and prediction_icon:
 		prediction_icon.visible = neural_training
-	if best_icon:
-		best_icon.visible = neural_training
+	
+	if ai_suggestions and neural_training and best_icon:
+		best_icon.visible = ai_suggestions
 	
 	if not training:
 		# set up the game, can be called to restart at anytime
@@ -166,9 +163,16 @@ func set_up_game():
 	gameover_screen.visible = false
 	debug_label.visible = debug
 	
-	# player driven neural training
-	if neural_training and not training:
-		source_network = Global.load_ml(false)
+	if not ai_controlled and neural_training:
+		best_nna = Global.load_ml(false)
+		if not FileAccess.file_exists(training_file_path):
+			var file = FileAccess.open(training_file_path, FileAccess.WRITE)
+			file.store_string("")
+			file.close()
+			best_nna.train_bulk("res://training.txt")
+		else:
+			best_nna.train_bulk(training_file_path)
+		source_network = best_nna.copy(true)
 	
 	# for testing
 	#spawn_purin(Vector2(350,400),{"level": 2, "evil": false})
@@ -403,6 +407,16 @@ func process_player(delta):
 	var just_pressed:bool = Input.is_action_just_pressed("drop_purin")
 	var just_released:bool = Input.is_action_just_released("drop_purin")
 	var input = get_state()
+	
+	if ai_suggestions and best_nna:
+		var ai_suggestion = best_nna.predict(input)
+		if not ai_suggestion.is_empty() and ai_suggestion[0] is float:
+			if best_icon:
+				best_icon.position.x = ai_suggestion[0] * ml_scale_factor
+		var predictions = source_network.predict(input)
+		if not predictions.is_empty() and predictions[0] is float:
+			if prediction_icon:
+				prediction_icon.position.x = predictions[0] * ml_scale_factor
 	# accessibility setting will cause you to always drop until toggled off
 	if just_released and Global.drop_troggle:
 		# toggle between auto drop on or off
@@ -423,8 +437,9 @@ func process_player(delta):
 			if not predictions.is_empty() and predictions[0] is float:
 				if prediction_icon:
 					prediction_icon.position.x = predictions[0] * ml_scale_factor
-				if best_icon:
-					best_icon.position.x = actuals[0] * ml_scale_factor
+				if not ai_suggestions:
+					if best_icon:
+						best_icon.position.x = actuals[0] * ml_scale_factor
 				# correct it assuming the player is correct
 				source_network.train(input, actuals)
 			#game.noir.position.x = predictions[0]

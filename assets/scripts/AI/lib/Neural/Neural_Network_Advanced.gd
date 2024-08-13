@@ -2,7 +2,7 @@ class_name NeuralNetworkAdvanced
 # source: https://github.com/ryash072007/Godot-AI-Kit
 # Date: 2024-08-11
 var network: Array
-var learning_rate: float = 0.005
+var learning_rate: float = 0.01
 var layer_structure: Array[int] = []
 var layers: Array[Dictionary] = []
 
@@ -243,7 +243,7 @@ func cross_breed(nna:NeuralNetworkAdvanced, percent_split:float=0.5, mutate:bool
 	return child_nna
 
 func get_string_info():
-	var info:String =""
+	var info:String ="LR: %s MR: %s"%[learning_rate, mutation_rate]
 	for layer in self.layers:
 		info = "[%s]%s"%[layer["size"], info]
 	return info

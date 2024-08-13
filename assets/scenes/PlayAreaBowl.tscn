@@ -195,12 +195,12 @@ bbcode_enabled = true
 text = "test"
 
 [node name="Prediction" type="Sprite2D" parent="."]
-position = Vector2(457, 25)
+position = Vector2(457, 177)
 scale = Vector2(0.25, 0.25)
 texture = ExtResource("10_4b5rc")
 
 [node name="Best" type="Sprite2D" parent="."]
-position = Vector2(341, 25)
+position = Vector2(341, 177)
 scale = Vector2(0.25, 0.25)
 texture = ExtResource("11_de281")
 

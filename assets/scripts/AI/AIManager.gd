@@ -27,6 +27,12 @@ func _on_ready() -> void:
 func init_ai_players():
 	Engine.time_scale = time_scale
 	Node2D.print_orphan_nodes()
+	if generation == 0:
+		if not FileAccess.file_exists("user://training.txt"):
+			nna.train_bulk("res://training.txt")
+		else:
+			nna.train_bulk("user://training.txt")
+		
 	if generation >= 1:
 		var config_json = Global.read_json("user://ai_v2_%s.json"%[generation])
 		
@@ -68,8 +74,9 @@ func init_ai_players():
 			# sort the trained models
 			Global.neural_training_models.sort_custom(best_nna_sort)
 			# the new best NNA all others will use to judge themselves
-			nna = Global.neural_training_models[0]
-			Global.save_ml_file(nna)
+			if Global.neural_training_models[0].total_score > nna.total_score:
+				nna = Global.neural_training_models[0]
+				Global.save_ml_file(nna)
 			print("Generation %s Results:"%[generation])
 			print("Best Total Loss: %s"%nna.total_loss)
 			print("Best Total Score: %s"%nna.total_score)
@@ -77,9 +84,7 @@ func init_ai_players():
 			var num_models:int = len(Global.neural_training_models)
 			print("Average Loss: %s"%[Global.neural_training_total_loss/num_models])
 			print("Average Score: %s"%[Global.neural_training_total_score/num_models])
-	if generation == 0:
-		nna.train_bulk("user://training.txt")
-		
+	
 	generation += 1
 	for game in ai_games_node.get_children():
 		ai_games_node.queue_free()
@@ -118,18 +123,19 @@ func init_ai_players():
 		game.debug = debug
 		# make own copy of the best NN (with mutations)
 		# larger mutation rates for the later population members
-		var generation_mutation_rate = min(0.75, 0.15 + (i*2))
+		var generation_mutation_rate = min(0.75, 0.03 + (i*0.03))
 		# cross breed it with another network
 		if len(Global.neural_training_models) > 1 and generation > 1:
 			if i < num_ai*0.1:
 				if i == 0:
-					var parent1:NeuralNetworkAdvanced = Global.neural_training_models[0]
+					nna.mutation_rate = 0.03
+					game.source_network = nna.copy(true)
+				else:
+					var parent1:NeuralNetworkAdvanced = nna.copy(false)
 					parent1.mutation_rate = generation_mutation_rate
-					var parent2:NeuralNetworkAdvanced = Global.neural_training_models[1]
+					var parent2:NeuralNetworkAdvanced = Global.neural_training_models[i-1]
 					parent2.mutation_rate = generation_mutation_rate
 					game.source_network = parent1.cross_breed(parent2)
-				else:
-					game.source_network = Global.neural_training_models[0].copy(true)
 			else:
 				var parent1:NeuralNetworkAdvanced = Global.neural_training_models[0]
 				parent1.mutation_rate = generation_mutation_rate
