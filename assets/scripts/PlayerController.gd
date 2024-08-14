@@ -44,11 +44,11 @@ var auto_drop:bool = false
 var target_score:float = 150000
 @export var debug:bool = false
 var source_network:NeuralNetworkAdvanced
-var best_nna:NeuralNetworkAdvanced
 
 var config_json:Dictionary
 var default_config_json:Dictionary
 
+var generation:int = 0
 var ml_scale_factor:float = 800
 var score: int = 0
 var dropped_purin_count: int = 0
@@ -122,7 +122,12 @@ func restart_game():
 		purin_bag = null
 	if ai_controller:
 		ai_controller.queue_free()
+		source_network.total_loss = 0
+		source_network.total_score = 0
+		source_network.fitness = 0
+		source_network.learning_rate = 0.1*randf()
 	if auto_retry and attempts > max_retry_attempts:
+		Global.save_ml_file(source_network, "user://ai_ml_%s.json"%[player_name], "user://ai_ml_%s.json"%[player_name])
 		self.queue_free()
 		return
 	set_up_game()
@@ -164,15 +169,14 @@ func set_up_game():
 	debug_label.visible = debug
 	
 	if not ai_controlled and neural_training:
-		best_nna = Global.load_ml(false)
 		if not FileAccess.file_exists(training_file_path):
 			var file = FileAccess.open(training_file_path, FileAccess.WRITE)
 			file.store_string("")
 			file.close()
-			best_nna.train_bulk("res://training.txt")
+			Global.nna.train_bulk("res://training.txt")
 		else:
-			best_nna.train_bulk(training_file_path)
-		source_network = best_nna.copy(true)
+			Global.nna.train_bulk(training_file_path)
+		source_network = Global.nna.copy(true)
 	
 	# for testing
 	#spawn_purin(Vector2(350,400),{"level": 2, "evil": false})
@@ -242,23 +246,17 @@ func save_results():
 	var history:Array = config_json.get("history", [])
 	var new_run:Dictionary = {
 		"score": score,
-		"board_state": get_board_state(),
+		"fitness": source_network.fitness,
+		"username": player_name,
+		"username_jp": player_name
 	}
-	if ai_controlled:
-		new_run["configurations"] = ai_controller.configurations
-		new_run["configurations"]["attempts"] = attempts
-		new_run["configurations"]["username"] = player_name
-		new_run["configurations"]["username_jp"] = player_name
-		new_run["configurations"]["score"] = score
-		#new_run["configurations"]["replay"] = ai_controller.move_history
-	
 	history.append(new_run)
 	source_network.total_score = score
 	Global.neural_training_models.append(source_network)
 	Global.neural_training_models.sort_custom(best_nna_sort)
 	Global.neural_training_total_score += score
 	Global.neural_training_total_loss += source_network.total_loss
-	
+	Global.neural_training_total_fitness += source_network.fitness
 	if not ai_controlled:
 		Global.save_ml_file(source_network)
 	
@@ -266,11 +264,11 @@ func save_results():
 	history.sort_custom(rank_history)
 	if training:
 		# save all for training
-		config_json["history"] = history
+		config_json["history"] = history.slice(0, min(101, len(history)))
 	else:
 		# only save the last 10 after sorting
 		config_json["history"] = history.slice(0, min(max_score_history_length+1, len(history)))
-		
+	
 	# save the results
 	var json_string := JSON.stringify(config_json)
 	# We will need to open/create a new file for this data string
@@ -383,11 +381,14 @@ func terminate_training_early():
 	var current_purin_count:int = purin_node.get_child_count()
 	
 	if is_instance_valid(purin_bag):
+		# Don't need most rules because fitness covers them
 		# didn't manage to merge even up to a red
-		if purin_bag.max_purin_level < 2:
-			if dropped_purin_count > 15:
-				return true 
-		
+#		if purin_bag.max_purin_level < 2:
+#			if dropped_purin_count > 15:
+#				return true 
+		# only enforce this when not exploring
+		if ai_controller.epsilon < 0.2 and source_network.target_fitness > 120 and source_network.fitness < source_network.target_fitness:
+			return true
 		# did not get a rainbow and has a cluttered board
 #		if purin_bag.max_purin_level < 9:
 #			if current_purin_count > 20:
@@ -408,8 +409,8 @@ func process_player(delta):
 	var just_released:bool = Input.is_action_just_released("drop_purin")
 	var input = get_state()
 	
-	if ai_suggestions and best_nna:
-		var ai_suggestion = best_nna.predict(input)
+	if ai_suggestions and Global.nna:
+		var ai_suggestion = Global.nna.predict(input)
 		if not ai_suggestion.is_empty() and ai_suggestion[0] is float:
 			if best_icon:
 				best_icon.position.x = ai_suggestion[0] * ml_scale_factor
@@ -427,7 +428,7 @@ func process_player(delta):
 	):
 		drop_purin()
 		
-		if neural_training and source_network:
+		if neural_training and source_network and not ai_controlled:
 			var actuals = [noir.position.x/ml_scale_factor]
 			print(actuals)
 			# get state of the game before anything is done
@@ -451,16 +452,19 @@ func write_to_training_file(msg: String) -> void:
 		print_debug("Training file path incorrect or log file missing.")
 		return
 	var file = FileAccess.open(training_file_path, FileAccess.READ)
-	msg = "%s\n%s"%[file.get_as_text(), msg]
+	msg = "%s\n%s"%[msg, file.get_as_text()]
 	file = FileAccess.open(training_file_path, FileAccess.WRITE)
 	file.store_string(msg)
 	file.close()
 	
+func log_as_training_data():
+	var training_data:Array = [noir.position.x / ml_scale_factor] + get_state()
+	write_to_training_file(("%s"%[training_data]).replace("[","").replace("]",""))
+	
 func drop_purin():
 	if not ai_controlled:
 		Global.save_ml_file(source_network)
-		var training_data:Array = [noir.position.x / ml_scale_factor] + get_state()
-		write_to_training_file(("%s"%[training_data]).replace("[","").replace("]",""))
+		log_as_training_data()
 	spawn_purin()
 	noir.change_held_purin(purin_bag.get_current_purin())
 	time_since_last_dropped_purin_sec = 0
@@ -654,7 +658,16 @@ func add_evil_purin(level, opponent):
 	
 func gain_score(score_amount:int):
 	score += score_amount
+	if neural_training and source_network:
+		increase_fitness(source_network, score_amount)
 	update_score_label()
+	
+func increase_fitness(nn:NeuralNetworkAdvanced, score_amount:int):
+	var fitness_increase:float = 0
+	# if it's merging the only purin you get full points
+	# if there are 10 purin on the board after merging you're getting 1/10th the points
+	fitness_increase += score_amount/float(purin_node.get_child_count())
+	nn.fitness += fitness_increase
 	
 func bonk_purin(purin1: Purin, purin2: Purin):
 	# TODO later maybe use the bodys to do something else
@@ -675,6 +688,6 @@ func remove_dead_opponents():
 
 func best_nna_sort(nna1:NeuralNetworkAdvanced, nna2:NeuralNetworkAdvanced):
 	#nna1.total_loss < nna2.total_loss and 
-	if nna1.total_score > nna2.total_score:
+	if nna1.fitness > nna2.fitness:
 		return true
 	return false

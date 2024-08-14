@@ -21,11 +21,13 @@
 
 [node name="Game" type="Node2D" node_paths=PackedStringArray("ai_games_node", "camera")]
 script = ExtResource("1_doc3l")
-num_ai = 50
+num_ai = 100
 ai_games_node = NodePath("AIGames")
-time_scale = 1.5
+time_scale = 2.0
 debug = true
+auto_retry = true
 neural_training = true
+max_retry_attempts = 10
 camera = NodePath("Camera2D")
 
 [node name="ProgressionIndicator" type="Node2D" parent="."]

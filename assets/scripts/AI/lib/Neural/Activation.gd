@@ -6,22 +6,22 @@ static func sigmoid(value: float, _row: int, _col: int) -> float:
 	var result = 1 / (1 + exp(-value))
 	if is_nan(result) or is_inf(result):
 		print("value %s caused sigmoid to break with a value of %s"%[value, result])
-	return result
+	return max(-1,min(1, result))
 
 static func dsigmoid(value: float, _row: int, _col: int) -> float:
 	return value * (1 - value)
 
 static func relu(value: float, _row: int, _col: int) -> float:
-	var result = max(0.0, min(800.0, value))
+	var result = max(0.0, value)
 	if is_nan(result) or is_inf(result):
 		print("value %s caused relu to break with a value of %s"%[value, result])
 	return result
 	
 static func linear(value: float, _row: int, _col: int) -> float:
-	return min(800.0, max(0.0, value))
+	return value
 	
 static func dlinear(_value: float, _row: int, _col: int) -> float:
-	return 1
+	return 1.0
 
 static func drelu(value: float, _row: int, _col: int) -> float:
 	if value < 0.0:

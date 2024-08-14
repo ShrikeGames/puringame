@@ -61,6 +61,7 @@ static func mutate(a: Matrix, mutation_rate:float, mutation_min_range:float, mut
 				result.data[row][col] = a.data[row][col] + randf_range(mutation_min_range, mutation_max_range)
 			else:
 				result.data[row][col] = a.data[row][col]
+			result.data[row][col] = max(-0.5, min(0.5, result.data[row][col]))
 
 	return result
 	
@@ -218,3 +219,12 @@ func index_of_max_from_row(_row: int) -> int:
 
 func max_from_row(_row: int) -> float:
 	return data[_row].max()
+
+static func sum(matrix: Matrix) -> float:
+	var total: float = 0.0
+	
+	for row in range(matrix.rows):
+		for col in range(matrix.cols):
+			total += matrix.data[row][col]
+	
+	return total

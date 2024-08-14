@@ -22,8 +22,8 @@ func update():
 	# update names for the top 9
 	var player_json = Global.read_json("user://player.json")
 	var default_json = Global.read_json("res://default.json")
-	var ai_json = Global.read_json("user://ai.json")
-	var ai_default_json = Global.read_json("res://ai.json")
+	var ai_json = Global.read_json("user://ai_v2.json")
+	var ai_default_json = Global.read_json("res://ai_v2.json")
 	var player_scores:Array = [{
 			"score":0,
 			"board_state": [],
@@ -35,7 +35,8 @@ func update():
 	if ai_json:
 		ai_scores = ai_json.get("history", [])
 	else:
-		ai_scores = ai_default_json.get("history", [])
+		ai_scores = ai_default_json.get("history", [{}])
+	
 	if not ai_scores[0].has("username"):
 		ai_scores[0]["username"] = "AI"
 		ai_scores[0]["username_jp"] = "AI"

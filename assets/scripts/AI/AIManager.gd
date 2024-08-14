@@ -15,76 +15,49 @@ var generation_timer:float = 0.0
 
 var games:Array[PlayerController]
 @export var generation:int = 0
-var following_game:PlayerController
-var nna:NeuralNetworkAdvanced
 
+var training_data:Array
 func _on_ready() -> void:
-	nna = Global.load_ml(false)
-	Global.save_ml_file(nna)
+	Global.nna = Global.load_ml(false)
+	Global.nna.learning_rate = 1
+	var training_filepath:String = "user://training.txt"
+	if not FileAccess.file_exists(training_filepath):
+		training_filepath = "res://training.txt"
+		
+	#training_data = Global.nna.load_data_from_file(training_filepath, -1)
+	#Global.nna.train_bulk_cached(training_data)
+	Global.save_ml_file(Global.nna)
 	
-	init_ai_players();
+	init_ai_players();#
 	
 func init_ai_players():
 	Engine.time_scale = time_scale
 	Node2D.print_orphan_nodes()
-	if generation == 0:
-		if not FileAccess.file_exists("user://training.txt"):
-			nna.train_bulk("res://training.txt")
-		else:
-			nna.train_bulk("user://training.txt")
 		
 	if generation >= 1:
-		var config_json = Global.read_json("user://ai_v2_%s.json"%[generation])
-		
-		if config_json:
-			var history:Array = config_json.get("history", [])
-			history.sort_custom(rank_history)
-			var total_score:int = 0
-			var total_count:int = 0
-			var highest_score:int = 0
-			var minimum:int = 9999999
-			
-			for config in history:
-				if config.get("score") > highest_score:
-					highest_score = config.get("score")
-				if config.get("score") < minimum:
-					minimum = config.get("score")
-				total_score += config.get("score")
-				total_count += 1
-				
-			var average:float = total_score / float(total_count)
-			print("[Stats] Minimum Score for Generation %s was %s"%[generation, minimum])
-			print("[Stats] Average Score for Generation %s was %s"%[generation, average])
-			print("[Stats] Highest Score for Generation %s was %s"%[generation, highest_score])
-			
-		var history:Array = config_json.get("history", [])
-		config_json["history"] = history.slice(0, round(num_ai*0.5))
-		# save the results
-		var json_string := JSON.stringify(config_json)
-		# We will need to open/create a new file for this data string
-		var file_access := FileAccess.open("user://ai_v2.json", FileAccess.WRITE)
-		if not file_access:
-			print("An error happened while saving data: ", FileAccess.get_open_error())
-			return
-			
-		file_access.store_line(json_string)
-		file_access.close()
-		# take best NN and use that going forward
+#		print("Train global best on training data before next generation starts")
+#		if not FileAccess.file_exists("user://training.txt"):
+#			Global.nna.train_bulk("res://training.txt", 1000)
+#		else:
+#			Global.nna.train_bulk("user://training.txt", 1000)
+#
 		if not Global.neural_training_models.is_empty():
 			# sort the trained models
 			Global.neural_training_models.sort_custom(best_nna_sort)
-			# the new best NNA all others will use to judge themselves
-			if Global.neural_training_models[0].total_score > nna.total_score:
-				nna = Global.neural_training_models[0]
-				Global.save_ml_file(nna)
+			print("[Stats] Global Best Total Loss: %s"%Global.nna.total_loss)
+			print("[Stats] Global Best Total Score: %s"%Global.nna.total_score)
+			print("[Stats] Global Best FItness: %s"%Global.nna.fitness)
+			print("[Stats] Global Best Layer Configuration: %s"%Global.nna.get_string_info())
 			print("Generation %s Results:"%[generation])
-			print("Best Total Loss: %s"%nna.total_loss)
-			print("Best Total Score: %s"%nna.total_score)
-			print("Best Layer Configuration: %s"%nna.get_string_info())
+			print("[Stats] Best Total Loss: %s"%Global.neural_training_models[0].total_loss)
+			print("[Stats] Best Total Score: %s"%Global.neural_training_models[0].total_score)
+			print("[Stats] Best FItness: %s"%Global.neural_training_models[0].fitness)
+			print("[Stats] Best Layer Configuration: %s"%Global.neural_training_models[0].get_string_info())
 			var num_models:int = len(Global.neural_training_models)
-			print("Average Loss: %s"%[Global.neural_training_total_loss/num_models])
-			print("Average Score: %s"%[Global.neural_training_total_score/num_models])
-	
+			print("[Stats] Average Loss: %s"%[Global.neural_training_total_loss/num_models])
+			print("[Stats] Average Score: %s"%[Global.neural_training_total_score/num_models])
+			print("[Stats] Average Fitness: %s"%[Global.neural_training_total_fitness/num_models])
+			
 	generation += 1
 	for game in ai_games_node.get_children():
 		ai_games_node.queue_free()
@@ -100,60 +73,68 @@ func init_ai_players():
 	
 	for i in range(0, num_ai):
 		var game:PlayerController = play_package.instantiate()
-		game.ai_controlled = true
 		game.mute_sound = true
+		game.training = true
+		game.neural_training = true
+		game.ai_controlled = true
 		game.auto_retry = auto_retry
 		game.neural_training = neural_training
 		game.max_retry_attempts = max_retry_attempts
+		game.debug = true
 		
-		game.training = true
 		var player_name = "ai%s_%s"%[generation, i]
 		game.player_name = player_name
 		
 		# save to your own generation file
-		game.config_path = "user://ai_v2_%s.json"%[generation]
-		if generation <= 1:
-			game.default_config_path = "res://ai_v2.json"
-		else:
-			# use previous generation
-			game.default_config_path = "user://ai_v2_%s.json"%[generation-1]
+		game.config_path = "user://ai_v2.json"
+		game.default_config_path = "res://ai_v2.json"
 		
 		game.position = Vector2(40 + (x_pos*1020), y_pos)
 		ai_games_node.add_child(game)
 		game.debug = debug
-		# make own copy of the best NN (with mutations)
-		# larger mutation rates for the later population members
+		
 		var generation_mutation_rate = min(0.75, 0.03 + (i*0.03))
-		# cross breed it with another network
 		if len(Global.neural_training_models) > 1 and generation > 1:
-			if i < num_ai*0.1:
+			# higher generations start cross breeding
+			if i < num_ai*0.2:
 				if i == 0:
-					nna.mutation_rate = 0.03
-					game.source_network = nna.copy(true)
+					game.source_network = Global.nna.copy(true)
+					# the new best NNA all others will use to judge themselves
+					if Global.neural_training_models[0].fitness > Global.nna.fitness:
+						print("New best model")
+						Global.nna = Global.neural_training_models[0].copy(false)
+						Global.save_ml_file(Global.nna)
 				else:
-					var parent1:NeuralNetworkAdvanced = nna.copy(false)
+					var parent1:NeuralNetworkAdvanced = Global.nna.copy(false)
 					parent1.mutation_rate = generation_mutation_rate
 					var parent2:NeuralNetworkAdvanced = Global.neural_training_models[i-1]
 					parent2.mutation_rate = generation_mutation_rate
 					game.source_network = parent1.cross_breed(parent2)
 			else:
-				var parent1:NeuralNetworkAdvanced = Global.neural_training_models[0]
+				var parent1_index:int = randi_range(0, int(len(Global.neural_training_models)*0.1))
+				var parent1:NeuralNetworkAdvanced = Global.neural_training_models[parent1_index]
 				parent1.mutation_rate = generation_mutation_rate
-				var parent2:NeuralNetworkAdvanced = Global.neural_training_models.pick_random()
+				var parent2_index:int = randi_range(0, int(len(Global.neural_training_models)*0.2))
+				var parent2:NeuralNetworkAdvanced = Global.neural_training_models[parent2_index]
 				parent2.mutation_rate = generation_mutation_rate
 				game.source_network = parent1.cross_breed(parent2)
+			
 		else:
-			nna.mutation_rate = generation_mutation_rate
-			game.source_network = nna.copy(true)
+			game.source_network = Global.nna.copy(true, 1)
 		
 		# reset stats
 		game.source_network.total_loss = 0
 		game.source_network.total_score = 0
-		# give it a reference to the current best one as well
-		game.best_nna = nna
+		game.source_network.fitness = 0
+		game.source_network.learning_rate = 0.0001+randf()
+		game.generation = generation
+		
 		game.init()
 		game.set_up_game()
-		game.ai_controller.debug = debug
+		
+		game.ai_controller.debug = true
+		game.ai_controller.epsilon = max(0.1, 0.5 - (generation*0.01))
+		
 		games.append(game)
 		x_pos += 1
 		if i > 0 and (i+1) % 2 == 0:
@@ -165,16 +146,13 @@ func init_ai_players():
 			games[i+1].opponents = [games[i]]
 			games[i].opponents = [games[i+1]]
 			
-	following_game = games[0]
-	camera.position.x = 960
-	camera.position.y = following_game.position.y + 535
+	camera.games = games
 	
-	Global.save_ml_file(nna)
 	# clear the stats for previous generation
 	Global.neural_training_models = []
 	Global.neural_training_total_loss = 0
 	Global.neural_training_total_score = 0
-	
+	Global.neural_training_total_fitness = 0 
 	print("Begin Generation %s"%[generation])
 
 func rank_history(run1:Dictionary, run2:Dictionary):
@@ -197,19 +175,9 @@ func _process(delta):
 	if ai_games_node.get_child_count() <= 0:
 		init_ai_players();
 	
-	if camera != null and not games.is_empty():
-		var updated:bool = false
-		for game in games:
-			if not is_instance_valid(following_game) or (is_instance_valid(game) and game.score > 20000 and game.score > nna.total_score and game.player_name != following_game.player_name):
-				following_game = game
-				updated = true
-		if updated:
-			camera.position.x = 960
-			camera.position.y = following_game.position.y + 535
 			
 	
 func best_nna_sort(nna1:NeuralNetworkAdvanced, nna2:NeuralNetworkAdvanced):
-	#nna1.total_loss < nna2.total_loss and 
-	if nna1.total_score > nna2.total_score:
+	if nna1.fitness > nna2.fitness:
 		return true
 	return false

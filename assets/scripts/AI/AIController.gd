@@ -15,9 +15,11 @@ var move_history:Array[Dictionary] = []
 var temp_debug_text:String = ""
 var input:Array
 var predictions:Array
+var best_nna_prediction:Array
 var prev_score:float
-var actuals: Array
-
+var epsilon:float = 0.25
+var min_epsilon:float = 0.01
+var decay_rate = 0.995
 var selected_purin:Purin = null
 var best_score:float = 0
 
@@ -52,34 +54,56 @@ func calc_level_distribution():
 func process_ai(_delta):
 	if game.gameover_screen.visible:
 		return
-	if debug and game.training:
-		self.game.debug_label.text = "Attempt #%s %s"%[game.attempts+1, temp_debug_text]
+	
+	calc_level_distribution()
 	
 	if can_drop():
 		#calc_level_distribution()
 		self.space_state = get_world_2d().direct_space_state
 		
-		# see where the old AI moved us to, treat that as good for now
-		if game.neural_training and game.source_network and game.best_nna:
-			# get state of the game before anything is done
+		if game.neural_training and game.source_network and Global.nna:
+			if predictions:
+				# was a previous prediction from last time we dropped
+				var score_increased_amount:float = game.score - prev_score
+				if score_increased_amount > 0:
+					# train where you went on that input to get that score increase
+					# train the best AI and yourself
+					best_nna_prediction = [max(0,min(1, game.noir.position.x / game.ml_scale_factor))]
+					Global.nna.train(input, best_nna_prediction)
+					game.source_network.train(input, best_nna_prediction)
+				# show what we picked
+				if game.prediction_icon:
+					game.prediction_icon.position.x = predictions[0] * game.ml_scale_factor
+				if game.best_icon:
+					game.best_icon.position.x = best_nna_prediction[0] * game.ml_scale_factor
+				temp_debug_text = "#%s %s e:%s\nTarget FS: %s Total Loss: %s\n[Prediction] %s vs %s\n"%[game.attempts+1, game.source_network.get_string_info(), snapped(epsilon, 0.001), snapped(game.source_network.target_fitness, 0.001), snapped(game.source_network.target_fitness, 0.01), predictions, best_nna_prediction]
+				self.game.debug_label.text = "%s"%[temp_debug_text]
+			# new drop
+			# get state of the game
 			input = game.get_state()
-			var best_nna_prediction:Array = game.best_nna.predict(input)
-			actuals = best_nna_prediction
+			# see what the best AI would do in this state
+			best_nna_prediction = Global.nna.predict(input)
 			
-			# tell it to predict where we should drop next
-			predictions = game.source_network.predict(input)
-			# train this model based on the best one's guess
-			game.source_network.train(input, actuals)
+			# random chance to do a random move to see what happens instead
+			if randf() < epsilon:
+				predictions = [randf()]
+			else:
+				# predict using our nn where we should drop
+				predictions = game.source_network.predict(input)
 			
-			if game.prediction_icon:
-				game.prediction_icon.position.x = predictions[0] * game.ml_scale_factor
-			if game.best_icon:
-				game.best_icon.position.x = actuals[0] * game.ml_scale_factor
-				
-			game.noir.position.x = game.valid_x_pos(predictions[0] * game.ml_scale_factor)
-			temp_debug_text = "%s. Target Score: %s\n[Prediction] %s vs %s.\nTotal Loss: %s."%[game.source_network.get_string_info(), game.best_nna.total_score, predictions, actuals, game.source_network.total_loss]
+			# reduce epsilon chance
+			epsilon = max(min_epsilon, epsilon * decay_rate)
 			
-				
+			# move us to where we predict
+			game.noir.position.x = game.valid_x_pos(predictions[0] * game.ml_scale_factor)	
+			# update score
+			game.source_network.total_score = game.score
+			# update fitness
+			var new_tf:float = 0
+			for i in range(0, len(proportions)-1):
+				new_tf += game.score_by_level(i+1) * proportions[i]
+			game.source_network.target_fitness = new_tf
+			
 		# drop the purin wherever was selected
 		game.drop_purin()
 		

@@ -2,16 +2,25 @@ class_name NeuralNetworkAdvanced
 # source: https://github.com/ryash072007/Godot-AI-Kit
 # Date: 2024-08-11
 var network: Array
-var learning_rate: float = 0.01
+var learning_rate: float = 0.001
 var layer_structure: Array[int] = []
 var layers: Array[Dictionary] = []
 
+var max_training_data_rows:int = 2000
 var mutation_rate:float = 0.3
-var mutation_min_range:float = -0.75
-var mutation_max_range:float = 0.75
+var mutation_min_range:float = -1.0
+var mutation_max_range:float = 1.0
 var total_score:float = 0
 var total_loss:float = 0
-
+var fitness:float = 0
+var target_fitness:float = 0
+var MAPPINGS: Dictionary = {
+	"FILLER_MASK": {
+		"function": Callable(NeuralNetworkAdvanced, "remove_filler_values"),
+		"derivative": Callable(NeuralNetworkAdvanced, "remove_filler_values"),
+		"name": "remove_filler_values"
+	},
+}
 var ACTIVATIONS: Dictionary = {
 	"SIGMOID": {
 		"function": Callable(Activation, "sigmoid"),
@@ -62,14 +71,14 @@ func add_layer(nodes: int, activation: Dictionary = ACTIVATIONS.SIGMOID, mutate:
 	if input_weights.is_empty():
 		#print("Create new random weights")
 		if layer_structure.size() != 0:
-			weights = Matrix.rand(Matrix.new(nodes, layer_structure[-1]), 0.75)
+			weights = Matrix.rand(Matrix.new(nodes, layer_structure[-1]), 1)
 	else:
 		#print("Load weights from array")
 		weights = Matrix.from_array2(input_weights, col_size)
 		
 	
 	if input_bias.is_empty():
-		bias = Matrix.rand(Matrix.new(nodes, 1), 0.1)
+		bias = Matrix.rand(Matrix.new(nodes, 1), 0)
 	else:
 		bias = Matrix.from_array(input_bias)
 	# don't mutate the input layer
@@ -108,34 +117,76 @@ func predict(input_array: Array) -> Array:
 		inputs = map
 	return Matrix.to_array(inputs)
 
-func mean_squared_error(predicted: Matrix, target: Matrix) -> float:
-	var errors = Matrix.subtract(predicted, target)
-	errors = Matrix.square(errors)
-	var mean_error = Matrix.average(errors)
-	return mean_error
+static func remove_filler_values(value:float, _row: int, _col: int) -> float:
+	if value != -1.0:
+		return 1.0
+	return 0.0
 
-func train_bulk(training_file_path:String):
-	var file_access := FileAccess.open(training_file_path, FileAccess.READ)
-	if not file_access:
-		print("No training file exists")
-		return
-	var training_data_string:String = FileAccess.get_file_as_string(training_file_path)
+func calculate_loss(predicted_output: Matrix, expected_output: Matrix, mask: Matrix) -> float:
+	var output_errors: Matrix = Matrix.subtract(expected_output, predicted_output)
+	# Apply the mask to ignore filler values
+	output_errors = Matrix.multiply(output_errors, mask)
+	var squared_errors: Matrix = Matrix.square(output_errors)
+	# Sum of all squared errors
+	var sum_squared_errors: float = Matrix.sum(squared_errors)
+	# Count of valid entries
+	var valid_count: float = Matrix.sum(mask)
 	
-	var training_data:Array = training_data_string.split("\n")
-	print("len(training_data) ", len(training_data))
-	for line in training_data:
+	# Avoid division by zero
+	if valid_count == 0:
+		return 0
+		
+	return sum_squared_errors / valid_count  # Return the mean squared error
+
+func load_data_from_file(file_path: String, max_count:int = max_training_data_rows) -> Array:
+	var inputs: Array = []
+	var targets: Array = []
+	var file_access := FileAccess.open(file_path, FileAccess.READ)
+	file_access.seek(0)
+	var rows_read:int = 0
+	while not file_access.eof_reached() and (rows_read < max_count or max_count < 0):
+		var line:String = file_access.get_line()
 		if line != "" and line != "\n":
 			var line_data:Array = line.split(", ")
-			var target:Array = [float(line_data.pop_front())]
 			var input:Array = line_data
 			for i in range(0,len(input)):
 				input[i] = float(input[i])
-			train(input, target)
+			inputs.append(input)
+			targets.append([float(line_data.pop_front())])
+			rows_read += 1
+	return [targets, inputs]
+	
+func train_bulk_cached(data:Array):
+	print("Train NNA in bulk")
+	if data.size() == 0:
+		return
+
+	var targets: Array = data[0]
+	var inputs: Array = data[1]
+	for i in range(targets.size()):
+		train(inputs[i], targets[i])
+	return targets.size()
+	
+func train_bulk(file_path: String, max_count:int = max_training_data_rows):
+	var data:Array = load_data_from_file(file_path, max_count)
+	
+	if data.size() == 0:
+		return
+
+	var targets: Array = data[0]
+	var inputs: Array = data[1]
+	for i in range(targets.size()):
+		train(inputs[i], targets[i])
+	return targets.size()
 	
 func train(input_array: Array, target_array: Array):
 	var inputs: Matrix = Matrix.from_array(input_array)
 	var targets: Matrix = Matrix.from_array(target_array)
-
+	train_matrix(inputs, targets)
+	
+func train_matrix(inputs: Matrix, targets: Matrix):
+	var mask = Matrix.map(targets, self.MAPPINGS.FILLER_MASK.function)
+	
 	var layer_inputs: Matrix = inputs
 	var outputs: Array[Matrix] = []
 	var unactivated_outputs: Array[Matrix] = []
@@ -151,9 +202,8 @@ func train(input_array: Array, target_array: Array):
 	
 	# output from last layer in network
 	var predicted_output: Matrix = outputs[network.size() - 1]
-	# MSE to calculate loss
-	var loss: float = mean_squared_error(predicted_output, expected_output)
-	# increase the total loss
+	
+	var loss:float = calculate_loss(predicted_output, expected_output, mask)
 	total_loss += loss
 	
 	var next_layer_errors: Matrix
@@ -165,6 +215,7 @@ func train(input_array: Array, target_array: Array):
 
 		if layer_index == network.size() - 1:
 			var output_errors: Matrix = Matrix.subtract(expected_output, layer_outputs)
+			output_errors = Matrix.multiply(output_errors, mask)
 			next_layer_errors = output_errors
 			
 			var gradients: Matrix = Matrix.map(layer_outputs, layer.activation.derivative)
@@ -183,8 +234,10 @@ func train(input_array: Array, target_array: Array):
 			var weights_hidden_output_t = Matrix.transpose(network[layer_index + 1].weights)
 			var hidden_errors = Matrix.dot_product(weights_hidden_output_t, next_layer_errors)
 			next_layer_errors = hidden_errors
+			
 			var hidden_gradient = Matrix.map(layer_outputs, layer.activation.derivative)
-			hidden_gradient = Matrix.multiply(hidden_gradient, hidden_errors)
+			
+			hidden_gradient = Matrix.multiply(hidden_gradient, next_layer_errors)
 			hidden_gradient = Matrix.scalar(hidden_gradient, learning_rate)
 			
 			var inputs_t: Matrix
@@ -210,14 +263,15 @@ func add_layer_from_layer_data(layer_data:Dictionary, mutate:bool=false) -> void
 	elif activation_name == "sigmoid":
 		add_layer(layer_data["size"], ACTIVATIONS.SIGMOID, mutate, weights, bias, col_size)
 
-func copy(mutate:bool = false) -> NeuralNetworkAdvanced:
+func copy(mutate:bool = false, custom_mutation_rate:float=mutation_rate) -> NeuralNetworkAdvanced:
 	var nna_copy:NeuralNetworkAdvanced = NeuralNetworkAdvanced.new()
 	nna_copy.learning_rate = learning_rate
-	nna_copy.mutation_rate = mutation_rate
+	nna_copy.mutation_rate = custom_mutation_rate
 	nna_copy.mutation_min_range = mutation_min_range
 	nna_copy.mutation_max_range = mutation_max_range
 	nna_copy.total_loss = total_loss
 	nna_copy.total_score = total_score
+	nna_copy.fitness = fitness
 	for layer in self.layers:
 		var layer_data:Dictionary = {
 			"weights": Matrix.to_array(layer["weights"]),
@@ -243,7 +297,7 @@ func cross_breed(nna:NeuralNetworkAdvanced, percent_split:float=0.5, mutate:bool
 	return child_nna
 
 func get_string_info():
-	var info:String ="LR: %s MR: %s"%[learning_rate, mutation_rate]
+	var info:String ="LR: %s MR: %s FS: %s (%s%%)"%[snapped(learning_rate, 0.001), mutation_rate, snapped(fitness, 0.001), snapped((fitness/target_fitness)*100, 0.1)]
 	for layer in self.layers:
 		info = "[%s]%s"%[layer["size"], info]
 	return info
