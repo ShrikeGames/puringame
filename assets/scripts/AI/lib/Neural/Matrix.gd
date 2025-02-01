@@ -1,6 +1,6 @@
 class_name Matrix
 # source: https://github.com/ryash072007/Godot-AI-Kit
-# Date: 2024-08-11
+# Date: 2025-01-31
 var rows: int
 var cols: int
 
@@ -39,7 +39,7 @@ static func to_array(matrix: Matrix) -> Array:
 			result.append(matrix.data[row][col])
 	return result
 
-static func rand(matrix: Matrix, multiplier:float = 1) -> Matrix:
+static func rand(matrix: Matrix, nodes:float = 1) -> Matrix:
 	seed(randi())
 	randomize()
 	
@@ -47,8 +47,8 @@ static func rand(matrix: Matrix, multiplier:float = 1) -> Matrix:
 	
 	for row in range(result.rows):
 		for col in range(result.cols):
-			# should initialize with very small weights
-			result.data[row][col] = randf_range(-1*multiplier, 1*multiplier)
+			# should initialize with very small weights using Xavier Weight Init
+			result.data[row][col] = randf_range(-1.0/sqrt(nodes), 1.0/sqrt(nodes))
 	return result
 
 static func mutate(a: Matrix, mutation_rate:float, mutation_min_range:float, mutation_max_range:float) -> Matrix:
@@ -61,7 +61,7 @@ static func mutate(a: Matrix, mutation_rate:float, mutation_min_range:float, mut
 				result.data[row][col] = a.data[row][col] + randf_range(mutation_min_range, mutation_max_range)
 			else:
 				result.data[row][col] = a.data[row][col]
-			result.data[row][col] = max(-0.5, min(0.5, result.data[row][col]))
+			result.data[row][col] = max(-1, min(1, result.data[row][col]))
 
 	return result
 	

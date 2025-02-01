@@ -3,7 +3,7 @@ class_name NoiR
 @export var drop_line: Line2D
 @export var held_purin: PurinIndicator
 var space_state
-
+var purin_collide_level:int = -1
 
 # Called when the node enters the scene tree for the first time.
 func _on_ready():
@@ -21,6 +21,7 @@ func _process(_delta):
 	)
 	query.exclude = [self]
 	query.collision_mask = 1
+	purin_collide_level = -1
 	var result = space_state.intersect_ray(query)
 	if (
 		result
@@ -29,7 +30,8 @@ func _process(_delta):
 		and result.collider.get_instance_id() != self.get_instance_id()
 	):
 		drop_line.set_point_position(1, to_local(result.position))
-
+		if is_instance_of(result.collider, Purin):
+			purin_collide_level = result.collider.get_meta("level", 0)
 
 func change_held_purin(purin_info:Dictionary):
 	

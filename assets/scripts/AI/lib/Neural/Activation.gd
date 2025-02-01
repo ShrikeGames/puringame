@@ -6,7 +6,7 @@ static func sigmoid(value: float, _row: int, _col: int) -> float:
 	var result = 1 / (1 + exp(-value))
 	if is_nan(result) or is_inf(result):
 		print("value %s caused sigmoid to break with a value of %s"%[value, result])
-	return max(-1,min(1, result))
+	return result
 
 static func dsigmoid(value: float, _row: int, _col: int) -> float:
 	return value * (1 - value)

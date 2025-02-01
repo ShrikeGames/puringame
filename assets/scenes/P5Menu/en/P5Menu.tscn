@@ -22,34 +22,35 @@ position = Vector2(892, 880)
 [node name="MenuItems" type="Node2D" parent="."]
 
 [node name="Solo" parent="MenuItems" instance=ExtResource("1_m4aaq")]
-position = Vector2(666, 117)
+position = Vector2(619, 244)
 rotation = -0.127282
 contact_monitor = false
 
 [node name="Verus" parent="MenuItems" instance=ExtResource("3_ty0db")]
-position = Vector2(615, 255)
+position = Vector2(568, 382)
 rotation = 0.120469
 contact_monitor = false
 
 [node name="Purin99" parent="MenuItems" instance=ExtResource("3_ohso7")]
-position = Vector2(571, 403)
+position = Vector2(524, 530)
 rotation = -0.0440394
 mass = 4.0
 contact_monitor = false
 
 [node name="Settings" parent="MenuItems" instance=ExtResource("3_1bvp2")]
-position = Vector2(524, 568)
+position = Vector2(477, 695)
 rotation = -0.00117026
 mass = 6.0
 contact_monitor = false
 lock_rotation = true
 
 [node name="Leaderboard" parent="MenuItems" instance=ExtResource("2_xqi8g")]
-position = Vector2(568, 674)
+position = Vector2(521, 801)
 rotation = -0.0566351
 contact_monitor = false
 
 [node name="Training" parent="MenuItems" instance=ExtResource("2_x8mm0")]
+visible = false
 position = Vector2(444, 813)
 rotation = -0.0161528
 mass = 1000.0

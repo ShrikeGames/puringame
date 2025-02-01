@@ -2,14 +2,14 @@ class_name NeuralNetworkAdvanced
 # source: https://github.com/ryash072007/Godot-AI-Kit
 # Date: 2024-08-11
 var network: Array
-var learning_rate: float = 0.001
+var learning_rate: float = 0.0005
 var layer_structure: Array[int] = []
 var layers: Array[Dictionary] = []
 
 var max_training_data_rows:int = 2000
 var mutation_rate:float = 0.3
-var mutation_min_range:float = -1.0
-var mutation_max_range:float = 1.0
+var mutation_min_range:float = -2.0
+var mutation_max_range:float = 2.0
 var total_score:float = 0
 var total_loss:float = 0
 var fitness:float = 0
@@ -19,6 +19,11 @@ var MAPPINGS: Dictionary = {
 		"function": Callable(NeuralNetworkAdvanced, "remove_filler_values"),
 		"derivative": Callable(NeuralNetworkAdvanced, "remove_filler_values"),
 		"name": "remove_filler_values"
+	},
+	"BCE_CLAMP": {
+		"function": Callable(NeuralNetworkAdvanced, "bce_clamp"),
+		"derivative": Callable(NeuralNetworkAdvanced, "bce_clamp"),
+		"name": "bce_clamp"
 	},
 }
 var ACTIVATIONS: Dictionary = {
@@ -71,14 +76,14 @@ func add_layer(nodes: int, activation: Dictionary = ACTIVATIONS.SIGMOID, mutate:
 	if input_weights.is_empty():
 		#print("Create new random weights")
 		if layer_structure.size() != 0:
-			weights = Matrix.rand(Matrix.new(nodes, layer_structure[-1]), 1)
+			weights = Matrix.rand(Matrix.new(nodes, layer_structure[-1]), nodes)
 	else:
 		#print("Load weights from array")
 		weights = Matrix.from_array2(input_weights, col_size)
 		
 	
 	if input_bias.is_empty():
-		bias = Matrix.rand(Matrix.new(nodes, 1), 0)
+		bias = Matrix.rand(Matrix.new(nodes, 1), nodes)
 	else:
 		bias = Matrix.from_array(input_bias)
 	# don't mutate the input layer
@@ -135,8 +140,25 @@ func calculate_loss(predicted_output: Matrix, expected_output: Matrix, mask: Mat
 	# Avoid division by zero
 	if valid_count == 0:
 		return 0
-		
-	return sum_squared_errors / valid_count  # Return the mean squared error
+	# Return the mean squared error
+	return sum_squared_errors / valid_count
+
+static func bce_clamp(value:float, _row: int, _col: int) -> float:
+	return clamp(value, 1e-15, 1.0 - 1e-15)
+	
+func calculate_binary_cross_entropy(predicted_output: Matrix, expected_output: Matrix) -> float:
+	# Clipping predicted outputs to prevent log(0) which leads to NaN
+	var clamped_predicted_output:Matrix = Matrix.map(predicted_output, self.MAPPINGS.BCE_CLAMP.function)
+	
+	# Calculate binary cross-entropy
+	var loss: float = 0.0
+	for row in range(clamped_predicted_output.rows):
+		var predicted = clamped_predicted_output.data[row][0]
+		var expected = expected_output.data[row][0]
+		if predicted and expected:
+			loss += - (expected * log(predicted) + (1 - expected) * log(1 - predicted))
+	# Return the average loss
+	return loss / clamped_predicted_output.rows
 
 func load_data_from_file(file_path: String, max_count:int = max_training_data_rows) -> Array:
 	var inputs: Array = []
@@ -147,45 +169,39 @@ func load_data_from_file(file_path: String, max_count:int = max_training_data_ro
 	while not file_access.eof_reached() and (rows_read < max_count or max_count < 0):
 		var line:String = file_access.get_line()
 		if line != "" and line != "\n":
-			var line_data:Array = line.split(", ")
+			var line_data:Array = line.split(",")
+			var target:float = float(line_data[0])
+			var learning_modifier:float = float(line_data[1])
+			
 			var input:Array = line_data
 			for i in range(0,len(input)):
 				input[i] = float(input[i])
-			inputs.append(input)
-			targets.append([float(line_data.pop_front())])
+			inputs.append(input.slice(2))
+			targets.append([target, learning_modifier])
 			rows_read += 1
 	return [targets, inputs]
-	
-func train_bulk_cached(data:Array):
-	print("Train NNA in bulk")
-	if data.size() == 0:
-		return
 
-	var targets: Array = data[0]
-	var inputs: Array = data[1]
-	for i in range(targets.size()):
-		train(inputs[i], targets[i])
-	return targets.size()
-	
 func train_bulk(file_path: String, max_count:int = max_training_data_rows):
 	var data:Array = load_data_from_file(file_path, max_count)
 	
 	if data.size() == 0:
 		return
-
 	var targets: Array = data[0]
-	var inputs: Array = data[1]
 	for i in range(targets.size()):
-		train(inputs[i], targets[i])
+		var target:Array = [targets[i][0]]
+		var learning_modifier:float = targets[i][1]
+		var inputs: Array = data[1][i]
+		print("Train %s"%[i])
+		train(inputs, target, learning_modifier)
 	return targets.size()
 	
-func train(input_array: Array, target_array: Array):
+func train(input_array: Array, target_array: Array, learning_multiplier:float=1):
 	var inputs: Matrix = Matrix.from_array(input_array)
 	var targets: Matrix = Matrix.from_array(target_array)
-	train_matrix(inputs, targets)
+	train_matrix(inputs, targets, learning_multiplier)
 	
-func train_matrix(inputs: Matrix, targets: Matrix):
-	var mask = Matrix.map(targets, self.MAPPINGS.FILLER_MASK.function)
+func train_matrix(inputs: Matrix, targets: Matrix, learning_multiplier:float=1):
+	#var mask = Matrix.map(targets, self.MAPPINGS.FILLER_MASK.function)
 	
 	var layer_inputs: Matrix = inputs
 	var outputs: Array[Matrix] = []
@@ -203,7 +219,8 @@ func train_matrix(inputs: Matrix, targets: Matrix):
 	# output from last layer in network
 	var predicted_output: Matrix = outputs[network.size() - 1]
 	
-	var loss:float = calculate_loss(predicted_output, expected_output, mask)
+	#var loss:float = calculate_loss(predicted_output, expected_output, mask)
+	var loss:float = calculate_binary_cross_entropy(predicted_output, expected_output)
 	total_loss += loss
 	
 	var next_layer_errors: Matrix
@@ -215,12 +232,13 @@ func train_matrix(inputs: Matrix, targets: Matrix):
 
 		if layer_index == network.size() - 1:
 			var output_errors: Matrix = Matrix.subtract(expected_output, layer_outputs)
-			output_errors = Matrix.multiply(output_errors, mask)
+			#Binary cross entrop doesn't need a mask
+			#output_errors = Matrix.multiply(output_errors, mask)
 			next_layer_errors = output_errors
 			
 			var gradients: Matrix = Matrix.map(layer_outputs, layer.activation.derivative)
 			gradients = Matrix.multiply(gradients, output_errors)
-			gradients = Matrix.scalar(gradients, learning_rate)
+			gradients = Matrix.scalar(gradients, learning_rate*learning_multiplier)
 			
 			var weight_delta: Matrix
 			if layer_index == 0:
@@ -297,7 +315,8 @@ func cross_breed(nna:NeuralNetworkAdvanced, percent_split:float=0.5, mutate:bool
 	return child_nna
 
 func get_string_info():
-	var info:String ="LR: %s MR: %s FS: %s (%s%%)"%[snapped(learning_rate, 0.001), mutation_rate, snapped(fitness, 0.001), snapped((fitness/target_fitness)*100, 0.1)]
+	#mutation_rate = 0.03
+	var info:String ="LR: %s MR: %s FS: %s (%s%%)"%[snapped(learning_rate, 0.00001), mutation_rate, snapped(fitness, 0.0001), snapped((fitness/target_fitness)*100, 0.1)]
 	for layer in self.layers:
 		info = "[%s]%s"%[layer["size"], info]
 	return info

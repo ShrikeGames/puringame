@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3 uid="uid://co78w8c6ais1o"]
+
+[ext_resource type="Script" path="res://assets/scripts/Graph/NNNode.gd" id="1_hwdoo"]
+[ext_resource type="Texture2D" uid="uid://brt7tyr0jdf2p" path="res://assets/images/Menu/ArrowDownBlack.png" id="2_j8rff"]
+
+[node name="NNNode" type="Node2D" node_paths=PackedStringArray("text_label")]
+script = ExtResource("1_hwdoo")
+text_label = NodePath("Text")
+
+[node name="Bubble" type="Sprite2D" parent="."]
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("2_j8rff")
+
+[node name="Text" type="RichTextLabel" parent="."]
+offset_left = -12.0
+offset_top = -28.0
+offset_right = 12.0
+offset_bottom = -5.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+bbcode_enabled = true
+scroll_active = false

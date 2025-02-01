@@ -88,7 +88,7 @@ func get_current_purin() -> Dictionary:
 func get_next_purin() -> Dictionary:
 	#print("get_current_purin_level: ", max_level)
 	restock_bag()
-	var second_purin:PurinIndicator = bag[0]
+	var second_purin:PurinIndicator = bag[1]
 	return {"level": second_purin.level, "evil": second_purin.evil}
 
 

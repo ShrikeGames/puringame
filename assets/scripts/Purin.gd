@@ -101,7 +101,7 @@ func can_reach_purin(purin:Purin, _game:PlayerController, space_state, drop_puri
 	
 func number_possible_combines():
 	reset_lines()
-	var target_level = self.get_meta("level", 0) + 1
+	var target_level = self.get_meta("level", 0) - 1
 	var count:int = 0
 	for body in get_colliding_bodies():
 		if is_instance_valid(body) and is_instance_of(body, Purin):
