@@ -21,6 +21,7 @@ func init_ai_players():
 		var game:PlayerController = play_package.instantiate()
 		game.ai_controlled = true
 		game.mute_sound = true
+		game.debug = true
 		var player_name = "ai%s"%(i)
 		game.player_name = player_name
 		game.config_path = "res://ai_v2.json"

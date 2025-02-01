@@ -25,7 +25,7 @@ var exploration_decreasing_decay: float = 0.01 # How quickly exploration reduces
 var min_exploration_probability: float = 0.01 # Minimum exploration threshold
 var discounted_factor: float = 0.9 # How much future rewards matter (gamma)
 var learning_rate: float = 0.2 # How quickly new information overrides old (alpha)
-var decay_per_steps: int = 100 # Steps before reducing exploration
+var decay_per_steps: int = 1000 # Steps before reducing exploration
 var steps_completed: int = 0 # Total steps taken by agent
 
 # Track states and actions between steps for temporal difference learning
@@ -51,8 +51,13 @@ func _init(n_observations: int, n_action_spaces: int, _is_learning: bool = true,
 # 1. Chooses between exploration and exploitation
 # 2. Updates Q-values based on rewards
 # 3. Handles exploration decay
-func predict(updated_current_state: int, reward_of_previous_state: float) -> int:
+func predict(updated_current_state: int, reward_of_previous_state: float, updated_previous_state: int = -100 , updated_previous_action: int = -100) -> int:
 	var action_to_take: int
+	if updated_previous_state <= -100:
+		updated_previous_state = previous_state
+	if updated_previous_action <= -100:
+		updated_previous_action = previous_action
+	
 	# Exploration vs Exploitation decision
 	# Random action (explore) if random number < exploration_probability
 	# Best known action (exploit) otherwise
@@ -70,12 +75,12 @@ func predict(updated_current_state: int, reward_of_previous_state: float) -> int
 			if not SARSA:
 				# Q-Learning update rule: Q(s,a) = Q(s,a) + α[r + γ*max(Q(s',a')) - Q(s,a)]
 				# Where α is learning_rate, γ is discounted_factor
-				QTable.data[previous_state][previous_action] = (1 - learning_rate) * QTable.data[previous_state][previous_action] + \
+				QTable.data[updated_previous_state][updated_previous_action] = (1 - learning_rate) * QTable.data[updated_previous_state][updated_previous_action] + \
 				learning_rate * (reward_of_previous_state + discounted_factor * QTable.max_from_row(updated_current_state))
 			else:
 				# SARSA update rule: Q(s,a) = Q(s,a) + α[r + γ*Q(s',a') - Q(s,a)]
 				# Uses actual next action instead of maximum possible value
-				QTable.data[previous_state][previous_action] = (1 - learning_rate) * QTable.data[previous_state][previous_action] + \
+				QTable.data[updated_previous_state][updated_previous_action] = (1 - learning_rate) * QTable.data[updated_previous_state][updated_previous_action] + \
 				learning_rate * (reward_of_previous_state + discounted_factor * QTable.data[updated_current_state][action_to_take])
 		
 		# Update state/action memory for next iteration

@@ -50,11 +50,17 @@ var drop_purin_cooldown_sec: float = 2.5
 
 var skip_saving:bool = false
 
-@export var ai_default_model_path: String = "res://ai_qlearning_model.json"
-@export var ai_model_path: String = "user://ai_qlearning_model.json"
+@export var ai_default_model_path: String = "res://ai_qlearning_model.bin"
+@export var ai_model_path: String = "user://ai_qlearning_model.bin"
+var adjusted_score: int = 0
 var action_to_do: int = 0
 var previous_reward:float = 0
-var previous_score:float = 0
+var previous_adjusted_score:float = 0
+var previous_noir_position:Vector2
+var previous_state:int = -100
+var previous_action:int = -100
+var previous_board_value:float = 0
+var board_value:float = 0
 
 func _on_ready():
 	if initial_seed:
@@ -134,12 +140,17 @@ func set_up_game():
 	
 	if ai_controlled:
 		noir.position.x = randi_range(0, 800)
+		previous_noir_position = noir.position
 		previous_reward = 0
-		previous_score = 0
-		# allow the AI to be in 3200 states
-		# xpos 0-799 * 4 board_values
-		# board_values is defined as 0 nothing below, 1 purin of matching level under you, 2 purin of 1 larger under, 3 a larger purin under
-		var observation_space:int = 3200
+		adjusted_score = 0
+		previous_adjusted_score = 0
+		previous_state = -100
+		previous_action = -100
+		board_value = 0
+		previous_board_value = 0
+		# allow the AI to be in 2.6 million states of (x, y, value)
+		# value is defined as 0 nothing below, 1 purin of matching level under you, 2 purin of 1 larger under, 3 a larger purin under
+		var observation_space:int = 2600000
 		# We also have 4 possible actions to take for any observation space
 		# 0 = wait, 1 = go left, 2 = drop purin, 3 = go right
 		var action_space:int = 4
@@ -149,10 +160,10 @@ func set_up_game():
 		var not_sarsa:bool = false
 		if Global.qnet == null:
 			Global.qnet  = QLearning.new(observation_space, action_space, is_learning, not_sarsa)
-		if FileAccess.file_exists(ai_model_path):
-			Global.qnet.load_from_file(ai_model_path)
-		elif FileAccess.file_exists(ai_default_model_path):
-			Global.qnet.load_from_file(ai_default_model_path)
+			if FileAccess.file_exists(ai_model_path):
+				Global.qnet.load_from_file(ai_model_path)
+			elif FileAccess.file_exists(ai_default_model_path):
+				Global.qnet.load_from_file(ai_default_model_path)
 
 
 func remove_all_purin():
@@ -475,6 +486,8 @@ func combine_purin(purin1: Purin, purin2: Purin):
 	scoreorb.target_position = scoreorb_target.position
 	scoreorb_node.add_child(scoreorb)
 	scoreorb.connect("scored", gain_score)
+	if ai_controlled:
+		adjusted_score += int(score_increase * (spawn_y/800.0))
 	
 	if new_purin:
 		last_dropped_purin = new_purin
@@ -518,7 +531,7 @@ func purin_is_moving(purin:Purin):
 	return false
 	
 func get_ai_current_state():
-	# 0 nothing below, 1 purin of matching level under you, 2 purin of 1 larger under, 3 a larger purin under
+	# 0 = nothing, 1 = purin that can be combined, 2 = purin close to being able to combine, 3 = unlikely to be able to combine
 	var position_value:int = 3
 	
 	var held_purin_level:int = purin_bag.get_current_purin().get("level")
@@ -530,27 +543,47 @@ func get_ai_current_state():
 		position_value = 2
 	else:
 		position_value = 3
-	# this ensures a one-to-one mapping between each pair (x, position_value)
-	return int(noir.position.x) + (position_value * 800)
+	# this ensures a one-to-one mapping between each pair (x, y, position_value)
+	# 2.6 million possible board states
+	return int(noir.drop_line.position.y * 3200) + (noir.position.x + (position_value * 800))
+
+func evaluate_board_value():
+	var new_board_value:float = 0
+	for purin in purin_node.get_children():
+		var purin_level:int = purin.get_meta("level", 0)
+		var purin_radius:int = purin.get_meta("radius")
+		# should give more rewards for higher purin level and closer to bottom right
+		new_board_value += purin_level * ((purin.position.y+purin_radius)/800.0) * ((purin.position.x-purin_radius)/800.0)
+	
+	return new_board_value
 
 func calculate_board_state_reward():
-	var reward:float = score - previous_score
-	# TODO add more logic to evaluate the boardstate and see if it's better
-	return reward
+	# how much score did we get between last action and now
+	var score_reward:float = (adjusted_score - previous_adjusted_score) * 0.1
+	# how much did the board's overall state improve
+	var board_value_reward:float = (previous_board_value - board_value) * 0.9
+	
+	return score_reward + board_value_reward
+
 
 func process_ai(delta):
 	if gameover_screen.visible:
 		return
 	
+	board_value = evaluate_board_value()
 	previous_reward = calculate_board_state_reward()
-	self.debug_label.text = "Suggested Action: %s. Previous Action: %s. Previous Reward: %s."%[action_to_do, Global.qnet.previous_action, previous_reward]
+	
+	self.debug_label.text = "Board Value: %s. Suggested Action: %s. Previous Action: %s. Previous Reward: %s. Adjusted Score: %s. Steps: %s. Exploration Probability: %s "%[board_value, action_to_do, Global.qnet.previous_action, previous_reward, adjusted_score, Global.qnet.steps_completed, Global.qnet.exploration_probability]
 	# wait for the last dropped purin to stop before taking another action
 	if is_instance_valid(last_dropped_purin) and purin_is_moving(last_dropped_purin):
 		return
 	
 	var ai_current_state:int = get_ai_current_state()
+	previous_adjusted_score = adjusted_score
+	previous_state = ai_current_state
+	previous_action = action_to_do
 	
-	action_to_do = Global.qnet.predict(ai_current_state, previous_reward)
+	action_to_do = Global.qnet.predict(ai_current_state, previous_reward, previous_state, previous_action)
 	
 	#print("Suggested Action: ", action_to_do)
 	# act based on last decided action
@@ -559,9 +592,14 @@ func process_ai(delta):
 		return
 	elif action_to_do == 1:
 		noir.position.x = valid_x_pos(noir.position.x - (move_speed*delta))
+		# give some minor score encouraging moving
+		adjusted_score += abs(noir.position.x - previous_noir_position.x)
 	elif action_to_do == 2 and time_since_last_dropped_purin_sec >= drop_purin_cooldown_sec:
-		previous_score = score
 		drop_purin()
 	elif action_to_do == 3:
 		noir.position.x = valid_x_pos(noir.position.x + (move_speed*delta))
+		# give some minor score encouraging moving
+		adjusted_score += abs(noir.position.x - previous_noir_position.x)
 	
+	previous_noir_position = noir.position
+	previous_board_value = board_value

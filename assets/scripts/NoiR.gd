@@ -4,7 +4,6 @@ class_name NoiR
 @export var held_purin: PurinIndicator
 var space_state
 var purin_collide_level:int = -1
-
 # Called when the node enters the scene tree for the first time.
 func _on_ready():
 	drop_line.add_point(Vector2(0, 0))
