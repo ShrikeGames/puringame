@@ -50,8 +50,8 @@ var drop_purin_cooldown_sec: float = 2.5
 
 var skip_saving:bool = false
 
-@export var ai_default_model_path: String = "res://ai_qlearning_model.bin"
-@export var ai_model_path: String = "user://ai_qlearning_model.bin"
+@export var ai_default_brain_path: String = "res://ai_dqn_model.json"
+@export var ai_brain_path: String = "user://ai_dqn_model.json"
 var adjusted_score: int = 0
 var action_to_do: int = 0
 var previous_reward:float = 0
@@ -61,7 +61,9 @@ var previous_state:int = -100
 var previous_action:int = -100
 var previous_board_value:float = 0
 var board_value:float = 0
-
+var board_state:Array = []
+var previous_board_state:Array = []
+var auto_retry:bool = true
 func _on_ready():
 	if initial_seed:
 		seed(initial_seed.hash())
@@ -148,24 +150,31 @@ func set_up_game():
 		previous_action = -100
 		board_value = 0
 		previous_board_value = 0
-		# allow the AI to be in 2.6 million states of (x, y, value)
-		# value is defined as 0 nothing below, 1 purin of matching level under you, 2 purin of 1 larger under, 3 a larger purin under
-		var observation_space:int = 2600000
-		# We also have 4 possible actions to take for any observation space
-		# 0 = wait, 1 = go left, 2 = drop purin, 3 = go right
-		var action_space:int = 4
-		# learn as you go
-		var is_learning:bool = true
-		# use SARSA instead of QLearning
-		var not_sarsa:bool = false
-		if Global.qnet == null:
-			Global.qnet  = QLearning.new(observation_space, action_space, is_learning, not_sarsa)
-			if FileAccess.file_exists(ai_model_path):
-				Global.qnet.load_from_file(ai_model_path)
-			elif FileAccess.file_exists(ai_default_model_path):
-				Global.qnet.load_from_file(ai_default_model_path)
-
-
+		
+		if Global.brain == null:
+			Global.brain = SDQN.new(322, 801)
+			if FileAccess.file_exists(ai_brain_path):
+				Global.brain.load(ai_brain_path)
+			elif FileAccess.file_exists(ai_default_brain_path):
+				Global.brain.load(ai_default_brain_path)
+			else:
+				Global.brain.discount_factor = 0.99
+				Global.brain.exploration_probability = 1
+				Global.brain.min_exploration_probability = 0.001
+				Global.brain.exploration_decay = 0.99
+				Global.brain.batch_size = 64
+				Global.brain.max_steps = 1024
+				Global.brain.target_update_frequency = 1024
+				Global.brain.max_memory_size = 100000
+				Global.brain.automatic_decay = true
+				Global.brain.lr_decay_rate = 1
+				Global.brain.final_learning_rate = 0.001
+				Global.brain.use_multi_threading = true
+				Global.nna = Global.generate_new_nna()
+				Global.brain.set_Q_network(Global.nna)
+			Global.brain.use_multi_threading = true
+			Global.brain.use_threading()
+			
 func remove_all_purin():
 	for purin in purin_node.get_children():
 		purin.queue_free()
@@ -202,7 +211,14 @@ func save_results():
 	
 	if ai_controlled:
 		print("Saving qlearning model")
-		Global.qnet.save_to_file(ai_model_path)
+		#Global.qnet.save_to_file(ai_model_path)
+		board_state = get_board_state()
+		board_value = evaluate_board_value()
+		previous_reward = calculate_board_state_reward()
+		# remember what the last move was and that it gameovered
+		Global.brain.add_memory(previous_board_state, previous_action, -100, board_state, true)
+		Global.brain.save(ai_brain_path)
+		#Global.nna.save(ai_model_path)
 	
 	# save the results
 	var json_string := JSON.stringify(config_json)
@@ -232,7 +248,7 @@ func _process(delta: float) -> void:
 func check_game_over(delta):
 	if gameover_screen.visible == true:
 		
-		if Input.is_action_pressed("retry"):
+		if Input.is_action_pressed("retry") or (ai_controlled and auto_retry):
 			#print("retry action pressed? ", Input.is_action_pressed("retry"))
 			#print("auto_retry? ", auto_retry)
 			save_results()
@@ -246,7 +262,6 @@ func check_game_over(delta):
 						opponent.restart_game()
 			return false
 		return true
-
 	for purin in purin_node.get_children():
 		if not is_instance_of(purin, Purin):
 			continue
@@ -254,15 +269,25 @@ func check_game_over(delta):
 		if ( 
 			purin.game_over_timer_sec >= Global.game_over_threshold_sec
 		):
-			print("GameOver %s"%[score])
+			if ai_controlled:
+				print("S:%s. AS: %s. BV: %s."%[score, adjusted_score, board_value])
+			else:
+				print("GameOver %s"%[score])
 			gameover_screen.visible = true
 			purin.game_over_timer_sec = Global.game_over_threshold_sec
 			
 			if not ai_controlled:
 				get_tree().paused = true
 			if ai_controlled:
-				print("Saving qlearning model")
-				Global.qnet.save_to_file(ai_model_path)
+				#print("Saving qlearning model")
+				board_state = get_board_state()
+				board_value = evaluate_board_value()
+				previous_reward = calculate_board_state_reward()
+				# remember what the last move was and that it gameovered
+				Global.brain.add_memory(previous_board_state, previous_action, -100, board_state, true)
+				Global.brain.save(ai_brain_path)
+				#Global.nna.save(ai_model_path)
+				
 			
 			return true
 		if purin.position.x < left_edge.position.x:
@@ -487,7 +512,7 @@ func combine_purin(purin1: Purin, purin2: Purin):
 	scoreorb_node.add_child(scoreorb)
 	scoreorb.connect("scored", gain_score)
 	if ai_controlled:
-		adjusted_score += int(score_increase * (spawn_y/800.0))
+		adjusted_score += int(int(pow(new_level+1, 2)) * (spawn_y/800.0))
 	
 	if new_purin:
 		last_dropped_purin = new_purin
@@ -549,57 +574,73 @@ func get_ai_current_state():
 
 func evaluate_board_value():
 	var new_board_value:float = 0
+	var purin_sizes:Array = [0,0,0,0,0,0,0,0,0,0]
 	for purin in purin_node.get_children():
-		var purin_level:int = purin.get_meta("level", 0)
+		var purin_level:int = purin.get_meta("level", 0) + 1
 		var purin_radius:int = purin.get_meta("radius")
+		purin_sizes[purin_level-1] += 1
 		# should give more rewards for higher purin level and closer to bottom right
-		new_board_value += purin_level * ((purin.position.y+purin_radius)/800.0) * ((purin.position.x-purin_radius)/800.0)
+		new_board_value += purin_level * ((purin.position.y+purin_radius)/800.0) * ((purin.position.x+purin_radius)/800.0)
+	# more purin on the board means it is less valuable
+	new_board_value /= purin_node.get_child_count()
+	# idealy have one of each which would be the optimal
+	for purin_size_count in purin_sizes:
+		if purin_size_count > 0:
+			new_board_value /= purin_size_count
 	
 	return new_board_value
 
 func calculate_board_state_reward():
 	# how much score did we get between last action and now
-	var score_reward:float = (adjusted_score - previous_adjusted_score) * 0.1
+	var score_reward:float = (adjusted_score - previous_adjusted_score) * 0.05
 	# how much did the board's overall state improve
-	var board_value_reward:float = (previous_board_value - board_value) * 0.9
+	var board_value_reward:float = (previous_board_value - board_value) * 0.95
 	
 	return score_reward + board_value_reward
 
+func get_board_state():
+	var board_state_vector:Array = []
+	# score (normalized)
+	board_state_vector.append(score/999999.0)
+	# held purin level (normalized)
+	board_state_vector.append(score/10.0)
+	# for each purin give the level, x, y, xvel, yvel
+	for purin in purin_node.get_children():
+		board_state_vector.append((purin.get_meta("level")+1)/10.0)
+		board_state_vector.append(purin.position.x/800.0)
+		board_state_vector.append(purin.position.y/800.0)
+		board_state_vector.append(purin.linear_velocity.x/9999.0)
+		board_state_vector.append(purin.linear_velocity.y/9999.0)
+	# if the vector is not long enough pad it out to 322 with 0s
+	if len(board_state_vector) < 322:
+		for i in range(len(board_state_vector), 322):
+			board_state_vector.append(0)
+	return board_state_vector
 
 func process_ai(delta):
 	if gameover_screen.visible:
 		return
-	
+	board_state = get_board_state()
 	board_value = evaluate_board_value()
 	previous_reward = calculate_board_state_reward()
 	
-	self.debug_label.text = "Board Value: %s. Suggested Action: %s. Previous Action: %s. Previous Reward: %s. Adjusted Score: %s. Steps: %s. Exploration Probability: %s "%[board_value, action_to_do, Global.qnet.previous_action, previous_reward, adjusted_score, Global.qnet.steps_completed, Global.qnet.exploration_probability]
+	self.debug_label.text = "Board Value: %s. Previous Action: %s. Previous Reward: %s. Adjusted Score: %s. Steps: %s. Update Steps: %s. Trainings Done: %s. Exploration Probability: %s"%[snapped(board_value, 0.01), snapped(previous_action, 0.01), snapped(previous_reward, 0.01), snapped(adjusted_score, 0.01), Global.brain.steps,  Global.brain.update_steps,  Global.brain.trainings_done, snapped(Global.brain.exploration_probability, 0.01)]
 	# wait for the last dropped purin to stop before taking another action
 	if is_instance_valid(last_dropped_purin) and purin_is_moving(last_dropped_purin):
 		return
-	
-	var ai_current_state:int = get_ai_current_state()
-	previous_adjusted_score = adjusted_score
-	previous_state = ai_current_state
-	previous_action = action_to_do
-	
-	action_to_do = Global.qnet.predict(ai_current_state, previous_reward, previous_state, previous_action)
-	
-	#print("Suggested Action: ", action_to_do)
-	# act based on last decided action
-	# 0 = wait, 1 = go left, 2 = drop purin, 3 = go right
-	if action_to_do == 0:
-		return
-	elif action_to_do == 1:
-		noir.position.x = valid_x_pos(noir.position.x - (move_speed*delta))
-		# give some minor score encouraging moving
-		adjusted_score += abs(noir.position.x - previous_noir_position.x)
-	elif action_to_do == 2 and time_since_last_dropped_purin_sec >= drop_purin_cooldown_sec:
+	if time_since_last_dropped_purin_sec >= drop_purin_cooldown_sec:
+		# if there was a previous action we took then let's record how it went
+		if previous_action >= 0 and Global.brain:
+			Global.brain.add_memory(previous_board_state, previous_action, previous_reward, board_state, false)
+		
+		# make a new prediction
+		action_to_do = Global.brain.choose_action(board_state)
+		# drop the purin there
+		noir.position.x = action_to_do
 		drop_purin()
-	elif action_to_do == 3:
-		noir.position.x = valid_x_pos(noir.position.x + (move_speed*delta))
-		# give some minor score encouraging moving
-		adjusted_score += abs(noir.position.x - previous_noir_position.x)
-	
-	previous_noir_position = noir.position
-	previous_board_value = board_value
+		# remember what we just did so next update we can see the results of it
+		previous_noir_position = noir.position
+		previous_action = action_to_do
+		previous_board_state = board_state
+		previous_board_value = board_value
+		previous_adjusted_score = adjusted_score

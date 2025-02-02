@@ -1,31 +1,33 @@
+# A class that implements an advanced neural network with multiple optimization methods
 class_name NeuralNetworkAdvanced
-# source: https://github.com/ryash072007/Godot-AI-Kit
-# Date: 2024-08-11
-var network: Array
-var learning_rate: float = 0.0005
-var layer_structure: Array[int] = []
-var layers: Array[Dictionary] = []
 
-var max_training_data_rows:int = 2000
-var mutation_rate:float = 0.3
-var mutation_min_range:float = -2.0
-var mutation_max_range:float = 2.0
-var total_score:float = 0
-var total_loss:float = 0
-var fitness:float = 0
-var target_fitness:float = 0
-var MAPPINGS: Dictionary = {
-	"FILLER_MASK": {
-		"function": Callable(NeuralNetworkAdvanced, "remove_filler_values"),
-		"derivative": Callable(NeuralNetworkAdvanced, "remove_filler_values"),
-		"name": "remove_filler_values"
-	},
-	"BCE_CLAMP": {
-		"function": Callable(NeuralNetworkAdvanced, "bce_clamp"),
-		"derivative": Callable(NeuralNetworkAdvanced, "bce_clamp"),
-		"name": "bce_clamp"
-	},
-}
+# Neural network state variables
+# Array to store the network layers (weights, biases, and activations)
+var network: Array
+
+# Learning rate for training the network
+var learning_rate: float = 0.01
+
+# Array to store the structure of the network (number of nodes in each layer)
+var layer_structure: Array[int] = []
+
+var clip_value: float = INF
+
+enum methods {SGD, ADAM}
+var bp_method: int
+
+# Adam optimiser
+var beta1: float = 0.9
+var beta2: float = 0.999
+var epsilon: float = 1e-8
+var m_weights: Array[Matrix] = [] # First moment for weights
+var v_weights: Array[Matrix] = [] # Second moment for weights
+var m_biases: Array[Matrix] = [] # First moment for biases
+var v_biases: Array[Matrix] = [] # Second moment for biases
+var t: int = 0 # Time step
+var training_gradient_threshold: float = 1e-6
+var use_amsgrad: bool = false
+
 var ACTIVATIONS: Dictionary = {
 	"SIGMOID": {
 		"function": Callable(Activation, "sigmoid"),
@@ -69,254 +71,327 @@ var ACTIVATIONS: Dictionary = {
 	}
 }
 
-func add_layer(nodes: int, activation: Dictionary = ACTIVATIONS.SIGMOID, mutate:bool = true, input_weights:Array=[], input_bias:Array=[], col_size = 1):
-	var weights:Matrix
-	var bias:Matrix
-	
-	if input_weights.is_empty():
-		#print("Create new random weights")
-		if layer_structure.size() != 0:
-			weights = Matrix.rand(Matrix.new(nodes, layer_structure[-1]), nodes)
-	else:
-		#print("Load weights from array")
-		weights = Matrix.from_array2(input_weights, col_size)
-		
-	
-	if input_bias.is_empty():
-		bias = Matrix.rand(Matrix.new(nodes, 1), nodes)
-	else:
-		bias = Matrix.from_array(input_bias)
-	# don't mutate the input layer
-	if mutate and layer_structure.size() != 0:
-		weights = Matrix.mutate(weights, mutation_rate, mutation_min_range, mutation_max_range)
-		bias = Matrix.mutate(bias, mutation_rate, mutation_min_range, mutation_max_range)
-		
-	var weight_rows:int = 0
-	var weight_cols:int = 0
+# Initialize the neural network with specified backpropagation method
+func _init(_bp_method: int = methods.SGD) -> void:
+	self.bp_method = _bp_method
+
+# Add a new layer to the network
+# nodes: number of neurons in the layer
+# activation: activation function type (RELU, SIGMOID, etc.)
+# use_optim_init: whether to use optimized weight initialization
+# random_biases: whether to initialize biases randomly
+func add_layer(nodes: int, activation: String = "LINEAR", use_optim_init: bool = true, random_biases: bool = false):
+	# If there is already a layer, we need to add weights and biases for the new layer
 	if layer_structure.size() != 0:
-		weight_rows = weights.rows
-		weight_cols = weights.cols
-		
-	var layer_data: Dictionary = {
-		"weights": weights,
-		"bias": bias,
-		"activation": activation,
-		"activation_name": activation["name"],
-		"size": nodes,
-		"rows": weight_rows,
-		"cols": weight_cols
-	}
-	layers.append(layer_data)
-	if layer_structure.size() != 0:
-		network.push_back(layer_data)
-	
+
+		var weights: Matrix
+		var bias: Matrix
+
+		if use_optim_init:
+			if activation in ["RELU", "LEAKYRELU", "ELU", "LINEAR"]:
+				print("Using He init")
+				weights = Matrix.uniform_he_init(Matrix.new(nodes, layer_structure[-1]), layer_structure[-1])
+			elif activation in ["SIGMOID", "TANH"]:
+				print("Using Glorot init")
+				weights = Matrix.uniform_glorot_init(Matrix.new(nodes, layer_structure[-1]), layer_structure[-1], nodes)
+			else:
+				print("Using rand init")
+				weights = Matrix.rand(Matrix.new(nodes, layer_structure[-1]))
+		else:
+			print("Using rand init")
+			weights = Matrix.rand(Matrix.new(nodes, layer_structure[-1]))
+
+		if random_biases:
+			bias = Matrix.rand(Matrix.new(nodes, 1))
+		else:
+			bias = Matrix.new(nodes, 1)
+
+		var layer_data: Dictionary = {
+			"weights": weights,
+			"bias": bias,
+			"activation": activation # Set activation function for this layer
+		}
+
+		network.push_back(layer_data) # Add the layer to the network
+
+		if bp_method == methods.ADAM:
+			m_weights.push_back(Matrix.new(nodes, layer_structure[-1]))
+			v_weights.push_back(Matrix.new(nodes, layer_structure[-1]))
+			m_biases.push_back(Matrix.new(nodes, 1))
+			v_biases.push_back(Matrix.new(nodes, 1))
+
+	# Add the number of nodes to the layer structure
 	layer_structure.append(nodes)
 
-
+# Forward pass: Make predictions using the trained network
 func predict(input_array: Array) -> Array:
+	# Convert input array to a matrix
 	var inputs: Matrix = Matrix.from_array(input_array)
+	# Forward pass through the network
 	for layer in network:
-		var product: Matrix = Matrix.dot_product(layer.weights, inputs)
-		var sum: Matrix = Matrix.add(product, layer.bias)
-		var map: Matrix = Matrix.map(sum, layer.activation.function)
-		inputs = map
+		var product: Matrix = Matrix.dot_product(layer.weights, inputs) # Calculate the weighted sum of inputs
+		var sum: Matrix = Matrix.add(product, layer.bias) # Add bias to the sum
+		var map: Matrix = Matrix.map(sum, ACTIVATIONS.get(layer.activation).function) # Apply activation function
+		inputs = map # Use the output of this layer as input for the next
+	# Return the final output as an array
 	return Matrix.to_array(inputs)
 
-static func remove_filler_values(value:float, _row: int, _col: int) -> float:
-	if value != -1.0:
-		return 1.0
-	return 0.0
+# Training dispatcher: Choose between SGD and ADAM optimization
+func train(input_array: Array, target_array: Array) -> void:
+	match bp_method:
+		methods.SGD:
+			self.SGD(input_array, target_array)
+		methods.ADAM:
+			self.ADAM(input_array, target_array)
 
-func calculate_loss(predicted_output: Matrix, expected_output: Matrix, mask: Matrix) -> float:
-	var output_errors: Matrix = Matrix.subtract(expected_output, predicted_output)
-	# Apply the mask to ignore filler values
-	output_errors = Matrix.multiply(output_errors, mask)
-	var squared_errors: Matrix = Matrix.square(output_errors)
-	# Sum of all squared errors
-	var sum_squared_errors: float = Matrix.sum(squared_errors)
-	# Count of valid entries
-	var valid_count: float = Matrix.sum(mask)
-	
-	# Avoid division by zero
-	if valid_count == 0:
-		return 0
-	# Return the mean squared error
-	return sum_squared_errors / valid_count
-
-static func bce_clamp(value:float, _row: int, _col: int) -> float:
-	return clamp(value, 1e-15, 1.0 - 1e-15)
-	
-func calculate_binary_cross_entropy(predicted_output: Matrix, expected_output: Matrix) -> float:
-	# Clipping predicted outputs to prevent log(0) which leads to NaN
-	var clamped_predicted_output:Matrix = Matrix.map(predicted_output, self.MAPPINGS.BCE_CLAMP.function)
-	
-	# Calculate binary cross-entropy
-	var loss: float = 0.0
-	for row in range(clamped_predicted_output.rows):
-		var predicted = clamped_predicted_output.data[row][0]
-		var expected = expected_output.data[row][0]
-		if predicted and expected:
-			loss += - (expected * log(predicted) + (1 - expected) * log(1 - predicted))
-	# Return the average loss
-	return loss / clamped_predicted_output.rows
-
-func load_data_from_file(file_path: String, max_count:int = max_training_data_rows) -> Array:
-	var inputs: Array = []
-	var targets: Array = []
-	var file_access := FileAccess.open(file_path, FileAccess.READ)
-	file_access.seek(0)
-	var rows_read:int = 0
-	while not file_access.eof_reached() and (rows_read < max_count or max_count < 0):
-		var line:String = file_access.get_line()
-		if line != "" and line != "\n":
-			var line_data:Array = line.split(",")
-			var target:float = float(line_data[0])
-			var learning_modifier:float = float(line_data[1])
-			
-			var input:Array = line_data
-			for i in range(0,len(input)):
-				input[i] = float(input[i])
-			inputs.append(input.slice(2))
-			targets.append([target, learning_modifier])
-			rows_read += 1
-	return [targets, inputs]
-
-func train_bulk(file_path: String, max_count:int = max_training_data_rows):
-	var data:Array = load_data_from_file(file_path, max_count)
-	
-	if data.size() == 0:
-		return
-	var targets: Array = data[0]
-	for i in range(targets.size()):
-		var target:Array = [targets[i][0]]
-		var learning_modifier:float = targets[i][1]
-		var inputs: Array = data[1][i]
-		print("Train %s"%[i])
-		train(inputs, target, learning_modifier)
-	return targets.size()
-	
-func train(input_array: Array, target_array: Array, learning_multiplier:float=1):
+# Stochastic Gradient Descent (SGD) implementation
+# Performs one forward pass and one backward pass to update weights
+func SGD(input_array: Array, target_array: Array) -> void:
+	# Convert input and target arrays to matrices
 	var inputs: Matrix = Matrix.from_array(input_array)
 	var targets: Matrix = Matrix.from_array(target_array)
-	train_matrix(inputs, targets, learning_multiplier)
-	
-func train_matrix(inputs: Matrix, targets: Matrix, learning_multiplier:float=1):
-	#var mask = Matrix.map(targets, self.MAPPINGS.FILLER_MASK.function)
-	
+
+	# Arrays to store outputs and unactivated outputs of each layer
 	var layer_inputs: Matrix = inputs
-	var outputs: Array[Matrix] = []
-	var unactivated_outputs: Array[Matrix] = []
+	var outputs: Array[Matrix]
+	var unactivated_outputs: Array[Matrix]
+
+	# Forward pass through each layer
 	for layer in network:
-		var product: Matrix = Matrix.dot_product(layer.weights, layer_inputs)
-		var sum: Matrix = Matrix.add(product, layer.bias)
-		var map: Matrix = Matrix.map(sum, layer.activation.function)
-		layer_inputs = map
-		outputs.append(map)
-		unactivated_outputs.append(sum)
-	
+		var product: Matrix = Matrix.dot_product(layer.weights, layer_inputs) # Weighted sum of inputs
+		var sum: Matrix = Matrix.add(product, layer.bias) # Add bias
+		var map: Matrix = Matrix.map(sum, ACTIVATIONS.get(layer.activation).function) # Apply activation function
+		layer_inputs = map # Set output as input for the next layer
+		outputs.append(map) # Store the output of this layer
+		unactivated_outputs.append(sum) # Store the unactivated output for later use
+
+	# Start backpropagation by calculating output errors
 	var expected_output: Matrix = targets
-	
-	# output from last layer in network
-	var predicted_output: Matrix = outputs[network.size() - 1]
-	
-	#var loss:float = calculate_loss(predicted_output, expected_output, mask)
-	var loss:float = calculate_binary_cross_entropy(predicted_output, expected_output)
-	total_loss += loss
-	
-	var next_layer_errors: Matrix
-	
+	var next_layer_errors: Matrix = null
+
+	# Loop backward through the network layers
 	for layer_index in range(network.size() - 1, -1, -1):
 		var layer: Dictionary = network[layer_index]
 		var layer_outputs: Matrix = outputs[layer_index]
-		#var layer_unactivated_output: Matrix = Matrix.transpose(unactivated_outputs[layer_index])
+		var layer_unactivated_output: Matrix = unactivated_outputs[layer_index]
+		var current_error: Matrix
 
-		if layer_index == network.size() - 1:
-			var output_errors: Matrix = Matrix.subtract(expected_output, layer_outputs)
-			#Binary cross entrop doesn't need a mask
-			#output_errors = Matrix.multiply(output_errors, mask)
-			next_layer_errors = output_errors
-			
-			var gradients: Matrix = Matrix.map(layer_outputs, layer.activation.derivative)
-			gradients = Matrix.multiply(gradients, output_errors)
-			gradients = Matrix.scalar(gradients, learning_rate*learning_multiplier)
-			
-			var weight_delta: Matrix
-			if layer_index == 0:
-				weight_delta = Matrix.dot_product(gradients, Matrix.transpose(inputs))
-			else:
-				weight_delta = Matrix.dot_product(gradients, Matrix.transpose(outputs[layer_index - 1]))
-				
-			network[layer_index].weights = Matrix.add(layer.weights, weight_delta)
-			network[layer_index].bias = Matrix.add(layer.bias, gradients)
+		# Determine current errors
+		if next_layer_errors == null:
+			# Output layer error
+			current_error = Matrix.subtract(expected_output, layer_outputs)
 		else:
+			# Hidden layer error
 			var weights_hidden_output_t = Matrix.transpose(network[layer_index + 1].weights)
-			var hidden_errors = Matrix.dot_product(weights_hidden_output_t, next_layer_errors)
-			next_layer_errors = hidden_errors
-			
-			var hidden_gradient = Matrix.map(layer_outputs, layer.activation.derivative)
-			
-			hidden_gradient = Matrix.multiply(hidden_gradient, next_layer_errors)
-			hidden_gradient = Matrix.scalar(hidden_gradient, learning_rate)
-			
-			var inputs_t: Matrix
-			
-			if layer_index != 0:
-				inputs_t = Matrix.transpose(outputs[layer_index - 1])
+			current_error = Matrix.dot_product(weights_hidden_output_t, next_layer_errors)
+			current_error = Matrix.multiply(current_error, Matrix.map(layer_unactivated_output, ACTIVATIONS.get(layer.activation).derivative))
+
+		# Gradient calculation
+		var gradients: Matrix = Matrix.map(layer_outputs, ACTIVATIONS.get(layer.activation).derivative)
+		gradients = Matrix.multiply(gradients, current_error) # this becomes gradient
+
+		if clip_value != INF:
+			# This was value clipping
+			#gradients = Matrix.clamp_matrix(gradients, -clip_value, clip_value)
+
+			# This is norm scaling
+			var norm = Matrix.norm(gradients) # Calculate the L2 norm of the gradients
+			if norm > clip_value:
+				gradients = Matrix.scalar(gradients, clip_value / norm) # Scale gradients to the threshold
+
+		gradients = Matrix.scalar(gradients, learning_rate)
+		# Weight updates
+		var inputs_t: Matrix = Matrix.transpose(inputs) if layer_index == 0 else Matrix.transpose(outputs[layer_index - 1])
+		var weight_delta: Matrix = Matrix.dot_product(gradients, inputs_t)
+
+		# Update weights and biases
+		network[layer_index].weights = Matrix.add(layer.weights, weight_delta)
+		network[layer_index].bias = Matrix.add(layer.bias, gradients)
+
+		# Pass current error to the next layer
+		next_layer_errors = current_error
+
+# ADAM optimizer implementation
+# Adaptive Moment Estimation - combines benefits of AdaGrad and RMSProp
+func ADAM(input_array: Array, target_array: Array) -> void:
+	# Convert input and target arrays to matrices
+	var inputs: Matrix = Matrix.from_array(input_array)
+	var targets: Matrix = Matrix.from_array(target_array)
+
+	# Arrays to store outputs and unactivated outputs of each layer
+	var layer_inputs: Matrix = inputs
+	var outputs: Array[Matrix]
+	var unactivated_outputs: Array[Matrix]
+
+	# Forward pass through each layer
+	for layer in network:
+		var product: Matrix = Matrix.dot_product(layer.weights, layer_inputs) # Weighted sum of inputs
+		var sum: Matrix = Matrix.add(product, layer.bias) # Add bias
+		var map: Matrix = Matrix.map(sum, ACTIVATIONS.get(layer.activation).function) # Apply activation function
+		layer_inputs = map # Set output as input for the next layer
+		outputs.append(map) # Store the output of this layer
+		unactivated_outputs.append(sum) # Store the unactivated output for later use
+
+	t += 1
+
+	# Start backpropagation by calculating output errors
+	var expected_output: Matrix = targets
+	var next_layer_errors: Matrix = null
+
+	# Loop backward through the network layers
+	for layer_index in range(network.size() - 1, -1, -1):
+		var layer: Dictionary = network[layer_index]
+		var layer_outputs: Matrix = outputs[layer_index]
+		var layer_unactivated_output: Matrix = unactivated_outputs[layer_index]
+		var current_error: Matrix
+		# Determine current errors
+		if next_layer_errors == null:
+			# Output layer error
+			current_error = Matrix.subtract(layer_outputs, expected_output)
+		else:
+			# Hidden layer error
+			var weights_hidden_output_t = Matrix.transpose(network[layer_index + 1].weights)
+			current_error = Matrix.dot_product(weights_hidden_output_t, next_layer_errors)
+			current_error = Matrix.multiply(current_error, Matrix.map(layer_unactivated_output, ACTIVATIONS.get(layer.activation).derivative))
+
+		# Gradient calculation
+		var gradients: Matrix = Matrix.map(layer_outputs, ACTIVATIONS.get(layer.activation).derivative)
+		gradients = Matrix.multiply(gradients, current_error) # this becomes gradient
+
+		if Matrix.norm(gradients) < training_gradient_threshold:
+			print("breaking")
+			break
+
+		# Weight updates
+		var inputs_t: Matrix = Matrix.transpose(inputs) if layer_index == 0 else Matrix.transpose(outputs[layer_index - 1])
+		var weight_gradients: Matrix = Matrix.dot_product(gradients, inputs_t)
+		var bias_gradient: Matrix = gradients
+
+
+		m_weights[layer_index] = Matrix.add(Matrix.scalar(m_weights[layer_index], beta1), Matrix.scalar(weight_gradients, 1.0 - beta1))
+		m_biases[layer_index] = Matrix.add(Matrix.scalar(m_biases[layer_index], beta1), Matrix.scalar(bias_gradient, 1.0 - beta1))
+		var m_hat_w: Matrix = Matrix.scalar(m_weights[layer_index], 1.0 / (1 - pow(beta1, t)))
+		var m_hat_b: Matrix = Matrix.scalar(m_biases[layer_index], 1.0 / (1 - pow(beta1, t)))
+
+		var v_hat_w: Matrix
+		var v_hat_b: Matrix
+
+		if use_amsgrad:
+			var new_v_weights: Matrix = Matrix.add(Matrix.scalar(v_weights[layer_index], beta2), Matrix.scalar(Matrix.square(weight_gradients), 1.0 - beta2))
+			var new_v_biases: Matrix = Matrix.add(Matrix.scalar(v_biases[layer_index], beta2), Matrix.scalar(Matrix.square(bias_gradient), 1.0 - beta2))
+
+			v_weights[layer_index] = Matrix.max_matrix(v_weights[layer_index], new_v_weights)
+			v_biases[layer_index] = Matrix.max_matrix(v_biases[layer_index], new_v_biases)
+
+			v_hat_w = v_weights[layer_index]
+			v_hat_b = v_biases[layer_index]
+
+		else:
+			# Update Adam variables
+			v_weights[layer_index] = Matrix.add(Matrix.scalar(v_weights[layer_index], beta2), Matrix.scalar(Matrix.square(weight_gradients), 1.0 - beta2))
+
+			# Bias updates -> needs to be computed with gradients wrt biases
+			v_biases[layer_index] = Matrix.add(Matrix.scalar(v_biases[layer_index], beta2), Matrix.scalar(Matrix.square(bias_gradient), 1.0 - beta2))
+
+			# Bias correction
+			v_hat_w = Matrix.scalar(v_weights[layer_index], 1.0 / (1 - pow(beta2, t)))
+			v_hat_b = Matrix.scalar(v_biases[layer_index], 1.0 / (1 - pow(beta2, t)))
+
+		# Update weights and biases
+		network[layer_index].weights = Matrix.subtract(network[layer_index].weights, Matrix.divide(Matrix.scalar(m_hat_w, learning_rate), Matrix.scalar_add(Matrix.square_root(v_hat_w), epsilon)))
+		network[layer_index].bias = Matrix.subtract(network[layer_index].bias, Matrix.divide(Matrix.scalar(m_hat_b, learning_rate), Matrix.scalar_add(Matrix.square_root(v_hat_b), epsilon)))
+
+
+		# Pass current error to the next layer
+		next_layer_errors = current_error
+
+# Create a deep copy of the neural network
+# all: if true, copies all properties; if false, copies only essential properties
+func copy(all: bool = false) -> NeuralNetworkAdvanced:
+	var copied_nna: NeuralNetworkAdvanced = NeuralNetworkAdvanced.new()
+	if all:
+		for property in self.get_script().get_script_property_list():
+				copied_nna.set(property.name, self.get(property.name))
+	else:
+		copied_nna.network = network.duplicate(true)
+		copied_nna.layer_structure = layer_structure.duplicate(true)
+		copied_nna.learning_rate = self.learning_rate
+	return copied_nna
+
+# Serialize the neural network to a dictionary
+# Used for saving the network state
+func to_dict() -> Dictionary:
+	var data: Dictionary = {}
+	var properties: Array = self.get_script().get_script_property_list()
+	for property in properties.slice(1):
+		if property.name.to_lower() == "activations":
+			continue
+		var data_to_store
+		if property.name.to_lower() == "network":
+			data_to_store = []
+			for layer in self.get(property.name):
+				data_to_store.append({
+					"weights": layer.weights.data,
+					"bias": layer.bias.data,
+					"activation": layer.activation
+				})
+		elif property.hint_string == "Matrix":
+			if property.type == TYPE_ARRAY:
+				data_to_store = []
+				for i in self.get(property.name):
+					data_to_store.append(i.data)
 			else:
-				inputs_t = Matrix.transpose(inputs)
-			var weight_delta = Matrix.dot_product(hidden_gradient, inputs_t)
-			
-			network[layer_index].weights = Matrix.add(layer.weights, weight_delta)
-			network[layer_index].bias = Matrix.add(layer.bias, hidden_gradient)
+				data_to_store = self.get(property.name).data
+		else:
+			data_to_store = self.get(property.name)
+		data[property.name] = data_to_store
+	return data
 
-func add_layer_from_layer_data(layer_data:Dictionary, mutate:bool=false) -> void:
-	var weights:Array = layer_data["weights"]
-	var col_size:int = layer_data["cols"]
-	var bias:Array = layer_data["bias"]
-	var activation_name:String = layer_data["activation_name"]
-	if activation_name == "relu":
-		add_layer(layer_data["size"], ACTIVATIONS.RELU, mutate, weights, bias, col_size)
-	elif activation_name == "linear":
-		add_layer(layer_data["size"], ACTIVATIONS.LINEAR, mutate, weights, bias, col_size)
-	elif activation_name == "sigmoid":
-		add_layer(layer_data["size"], ACTIVATIONS.SIGMOID, mutate, weights, bias, col_size)
+# Deserialize the neural network from a dictionary
+# Used for loading the network state
+func from_dict(dict: Dictionary) -> void:
+	var properties: Array = self.get_script().get_script_property_list()
+	for property in dict.keys():
+		var value = dict.get(property)
+		if property == "network":
+			for layer in range(value.size()):
+				var data: Matrix = Matrix.new(value[layer].weights.size(), value[layer].weights[0].size())
+				data.data = value[layer].weights
+				value[layer].weights = data
 
-func copy(mutate:bool = false, custom_mutation_rate:float=mutation_rate) -> NeuralNetworkAdvanced:
-	var nna_copy:NeuralNetworkAdvanced = NeuralNetworkAdvanced.new()
-	nna_copy.learning_rate = learning_rate
-	nna_copy.mutation_rate = custom_mutation_rate
-	nna_copy.mutation_min_range = mutation_min_range
-	nna_copy.mutation_max_range = mutation_max_range
-	nna_copy.total_loss = total_loss
-	nna_copy.total_score = total_score
-	nna_copy.fitness = fitness
-	for layer in self.layers:
-		var layer_data:Dictionary = {
-			"weights": Matrix.to_array(layer["weights"]),
-			"bias": Matrix.to_array(layer["bias"]),
-			"activation_name": layer["activation_name"],
-			"size": layer["size"],
-			"rows": layer["rows"],
-			"cols": layer["cols"]
-		}
-		nna_copy.add_layer_from_layer_data(layer_data, mutate)
-	
-	return nna_copy
-	
-func cross_breed(nna:NeuralNetworkAdvanced, percent_split:float=0.5, mutate:bool=false) -> NeuralNetworkAdvanced:
-	var child_nna:NeuralNetworkAdvanced = nna.copy(mutate)
-	for layer_index in range(0, len(network)):
-		var weights1:Matrix = network[layer_index]["weights"]
-		var weights2:Matrix = nna.network[layer_index]["weights"]
-		child_nna.network[layer_index]["weights"] = Matrix.cross_breed(weights1, weights2, percent_split)
-		var bias1:Matrix = network[layer_index]["bias"]
-		var bias2:Matrix = nna.network[layer_index]["bias"]
-		child_nna.network[layer_index]["bias"] = Matrix.cross_breed(bias1, bias2, percent_split)
-	return child_nna
+				data = Matrix.new(value[layer].bias.size(), value[layer].bias[0].size())
+				data.data = value[layer].bias
+				value[layer].bias = data
 
-func get_string_info():
-	#mutation_rate = 0.03
-	var info:String ="LR: %s MR: %s FS: %s (%s%%)"%[snapped(learning_rate, 0.00001), mutation_rate, snapped(fitness, 0.0001), snapped((fitness/target_fitness)*100, 0.1)]
-	for layer in self.layers:
-		info = "[%s]%s"%[layer["size"], info]
-	return info
+		for _property in properties:
+			if property == _property.name:
+				if _property.hint_string == "Matrix":
+					if _property.type == TYPE_ARRAY:
+						var data: Array[Matrix] = []
+						var _value: Array = value
+						for val in _value:
+							var _data: Matrix = Matrix.new(val.size(), val[0].size())
+							_data.data = val
+							data.append(_data)
+						value = data
+					else:
+						var data: Matrix = Matrix.new(value.size(), value[0].size())
+						data.data = value
+						value = data
+		self.set(property, value)
+
+# Save the neural network state to a file
+func save(file_path: String) -> void:
+	var file: FileAccess = FileAccess.open(file_path, FileAccess.WRITE)
+	file.store_string(JSON.stringify(self.to_dict()))
+	file.close()
+
+# Load the neural network state from a file
+func load(file_path: String) -> void:
+	var file: FileAccess = FileAccess.open(file_path, FileAccess.READ)
+	var data_string: String = file.get_as_text()
+	if "inf" in data_string:
+		data_string = data_string.replace("inf", "null")
+	var data: Dictionary = JSON.parse_string(data_string)
+	file.close()
+	self.from_dict(data)

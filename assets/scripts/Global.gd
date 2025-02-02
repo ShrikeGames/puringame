@@ -1,7 +1,4 @@
 extends Node
-var nngraph_resource = ResourceLoader.load("res://assets/scenes/Graph/NNGraph.tscn")
-var nnnode_resource = ResourceLoader.load("res://assets/scenes/Graph/NNNode.tscn")
-
 # This class is always available
 var settings_config_location:String = "user://settings.json"
 var default_settings_config_location:String = "res://settings.json"
@@ -67,6 +64,8 @@ var evil_purin_textures: Array[Texture2D] = []
 const purin_file_path_root = "res://assets/images/game/"
 
 var qnet: QLearning = null
+var nna: NeuralNetworkAdvanced = null
+var brain: SDQN = null
 
 func read_json(path:String) -> Dictionary:
 	if not FileAccess.file_exists(path):
@@ -211,3 +210,16 @@ func load_purin():
 		var evil_image_path = "%spurin%d_evil.png" % [purin_file_path_root, i]
 		evil_purin_textures.append(load(evil_image_path))
 
+# up to 64 purin with 5 values each (size, x, y, xvel, yvel)
+# the size of the held purin to drop
+# current score
+var max_input_size:int = (64 * 5) + 2
+func generate_new_nna():
+	var new_nna:NeuralNetworkAdvanced = NeuralNetworkAdvanced.new()
+	var action_type = "RELU"
+	new_nna.add_layer(max_input_size, action_type, true, false)
+	new_nna.add_layer(128, action_type, true, false)
+	new_nna.add_layer(128, action_type, true, false)
+	#output layer
+	new_nna.add_layer(801, "LINEAR", true, false)
+	return new_nna
