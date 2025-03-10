@@ -1,6 +1,6 @@
 extends Node2D
 
-@export var num_ai: int = 24
+@export var num_ai: int = 1
 var play_package: Resource = load("res://assets/scenes/PlayAreaBowl.tscn")
 @export var ai_games_node: Node2D
 @export var time_scale: float = 1.0
@@ -26,14 +26,12 @@ func init_ai_players():
 	game_count = 0
 	total_score = 0
 	
-#	if FileAccess.file_exists(ai_brain_path):
-#		best_brain = PPO.new(124, 128, 3)
-#		#best_brain.load_model(ai_brain_path)
-#		#best_brain.mutate(0.05)
-#	elif FileAccess.file_exists(ai_default_brain_path):
-#		best_brain = PPO.new(124, 128, 3)
-#		#best_brain.load_model(ai_default_brain_path)
-		#best_brain.mutate(0.005)
+	if FileAccess.file_exists(ai_brain_path):
+		best_brain = PPO.new(124, 128, 3)
+		best_brain.load_model(ai_brain_path)
+	elif FileAccess.file_exists(ai_default_brain_path):
+		best_brain = PPO.new(124, 128, 3)
+		best_brain.load_model(ai_default_brain_path)
 	
 	var x_pos:int = 17
 	var y_pos:int = 0
@@ -58,19 +56,16 @@ func init_ai_players():
 		
 func _process(delta: float) -> void:
 	for game in ai_games_node.get_children():
-		if game.time_since_last_score >= max_idle_time + (ai_games_node.get_child_count()*0.5) or game.gameover_screen.visible or is_bad_state(game):
+		if game.time_since_last_score >= max_idle_time + (ai_games_node.get_child_count()*0.5) or game.gameover_screen.visible:# or is_bad_state(game):
 			if game.score > 0:
 				total_score += game.score
 				if game.score > best_score:
 					best_score = game.score
 					print("New best score of %s from %s"%[best_score, game.player_name])
 					game.brain.save_model(game.ai_brain_path)
-					best_brain = game.brain.copy_model(true)
+					best_brain = game.brain.load_model(game.ai_brain_path)
 				else:
 					print("Score of %s from %s"%[game.score, game.player_name])
-					# degrade the best score to avoid local minimas
-					best_score = best_score *0.99
-					best_brain.mutate(0.005)
 				print("Average Score: %s"%[total_score/float(game_count)])
 				game_count += 1
 			game.restart_game()

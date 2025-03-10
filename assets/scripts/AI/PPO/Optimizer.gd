@@ -3,12 +3,12 @@ extends Resource
 class_name Optimizer
 
 func _init():
-    pass
+	pass
 
 func zero_grad():
-    # This function should be overridden by subclasses to reset gradients
-    pass
+	# This function should be overridden by subclasses to reset gradients
+	pass
 
 func step():
-    # This function should be overridden by subclasses to update parameters
-    pass
+	# This function should be overridden by subclasses to update parameters
+	pass

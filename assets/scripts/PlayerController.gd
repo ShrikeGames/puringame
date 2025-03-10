@@ -30,6 +30,12 @@ var initial_seed:String
 @export var predict_every_sec:float = 0.001
 @export var random_initial_board_state:bool = false
 
+var experience_buffer = []
+var buffer_size = 1024
+var batch_size = 1240
+var training_interval = 50
+var steps_since_training = 0
+
 var time_since_last_prediction_sec:float = 0
 var time_since_last_score:float = 0
 
@@ -176,11 +182,9 @@ func set_up_game():
 		if FileAccess.file_exists(ai_brain_path):
 			brain = PPO.new(input_nodes, hidden_size, output_nodes)
 			brain.load_model(ai_brain_path)
-			brain.mutate(0.05)
 		elif FileAccess.file_exists(ai_default_brain_path):
 			brain = PPO.new(input_nodes, hidden_size, output_nodes)
 			brain.load_model(ai_default_brain_path)
-			brain.mutate(0.005)
 		elif not brain:
 			brain = PPO.new(input_nodes, hidden_size, output_nodes)
 			#brain.learning_rate = 0.001
@@ -652,47 +656,137 @@ func process_ai(delta):
 		return
 	
 	# wait for the last dropped purin to stop before taking another action
-	if is_instance_valid(last_dropped_purin) and purin_is_moving(last_dropped_purin):
-		return
+	#if is_instance_valid(last_dropped_purin) and purin_is_moving(last_dropped_purin):
+	#	return
 	
 	if time_since_last_prediction_sec >= predict_every_sec:
+		# Get current state
+		var results = eyes.get_inputs_from_raycasts(noir, noir.held_purin.level, purin_bag.get_next_purin_level())
+		var state_inputs = results[0]
+		state_inputs.append(noir.position.x/800.0)
+		var state = Tensor.from_array(PackedFloat32Array(state_inputs))
 		
-		var results:Array[Array] = eyes.get_inputs_from_raycasts(noir, noir.held_purin.level, purin_bag.get_next_purin_level())
-		# array of floats 0.0 to 1.0 that represent the inputs for the brain
-		var _inputs = results[0]
-		# include player's current position
-		_inputs.append(noir.position.x/800.0)
-
-		# Convert _inputs to PackedFloat32Array for the PPO model
-		var state = PackedFloat32Array(_inputs)
-
-		# Use PPO model to predict the next action
-		var best_action_to_do = brain.select_action(state)
-
-		debug_label.text = "%s\nPD %s"%[hidden_size, best_action_to_do]
-		time_since_last_prediction_sec = 0
-		if best_action_to_do == 0:
-			# move left
+		# Get action from policy
+		var action = brain.select_action(state.data)
+		
+		# Execute action
+		var old_score = score
+		if action == 0:
 			noir.position.x = valid_x_pos(noir.position.x - (move_speed*delta))
-		elif time_since_last_dropped_purin_sec >= drop_purin_cooldown_sec and best_action_to_do == 1:
-			# drop the purin there
+		elif time_since_last_dropped_purin_sec >= drop_purin_cooldown_sec and action == 1:
 			drop_purin()
-		elif best_action_to_do == 2:
-			# move right
+		elif action == 2:
 			noir.position.x = valid_x_pos(noir.position.x + (move_speed*delta))
 		
-		# Reward for increasing score
-		# TODO more intelligent reward function
-		var reward = score - previous_score
-		previous_score = score
+		# Calculate reward
+		var reward = calculate_reward(old_score)
+		
+		# Get next state
+		var next_results = eyes.get_inputs_from_raycasts(noir, noir.held_purin.level, purin_bag.get_next_purin_level())
+		var next_state_inputs = next_results[0]
+		next_state_inputs.append(noir.position.x/800.0)
+		var next_state = Tensor.from_array(PackedFloat32Array(next_state_inputs))
+		
+		# Store experience
+		experience_buffer.append({
+			"state": state,
+			"action": action,
+			"reward": reward,
+			"next_state": next_state,
+			"done": gameover_screen.visible
+		})
+		
+		# Trim buffer if too large
+		if experience_buffer.size() > buffer_size:
+			experience_buffer.pop_front()
+		
+		steps_since_training += 1
+		
+		# Train on batch if enough steps have passed
+		if steps_since_training >= training_interval and experience_buffer.size() >= batch_size:
+			train_on_batch()
+			steps_since_training = 0
+		
+		time_since_last_prediction_sec = 0
 
-		# Update PPO model with the reward
-		var next_results:Array[Array] = eyes.get_inputs_from_raycasts(noir, noir.held_purin.level, purin_bag.get_next_purin_level())
-		var _next_inputs = next_results[0]
-		# include player's current position
-		_next_inputs.append(noir.position.x/800.0)
-		var next_state = PackedFloat32Array(_next_inputs)
-		# Convert action and reward to PackedFloat32Array
-		var actions = PackedFloat32Array([float(best_action_to_do)])
-		var rewards = PackedFloat32Array([float(reward)])
-		brain.train(state, actions, rewards, next_state)
+# Add these new functions:
+func calculate_reward(old_score: int) -> float:
+	var reward = 0.0
+	
+	# Score-based reward
+	reward += (score - old_score) * 0.1
+	
+	# Height penalty - discourage stacking too high
+	for purin in purin_node.get_children():
+		if purin.position.y < top_edge.position.y + 200:
+			reward -= 0.1
+	
+	# Combo reward
+	if last_dropped_purin_touched_something:
+		reward += 0.5
+	
+	return reward
+
+func train_on_batch():
+	print("Training on batch of size: ", batch_size)
+	print("Experience buffer size: ", experience_buffer.size())
+	
+	# Ensure we have enough experiences
+	if experience_buffer.size() < batch_size:
+		return
+	
+	# Pause the game during training
+	var was_paused = get_tree().paused
+	get_tree().paused = true
+	
+	# Sample random experiences from buffer
+	var batch_indices = []
+	for _i in range(batch_size):
+		batch_indices.append(randi() % experience_buffer.size())
+	
+	# Prepare batch tensors
+	var states_data = PackedFloat32Array()
+	var actions_data = PackedFloat32Array()
+	var rewards_data = PackedFloat32Array()
+	var next_states_data = PackedFloat32Array()
+	var dones_data = PackedFloat32Array()
+	
+	# Collect batch data
+	for idx in batch_indices:
+		var exp = experience_buffer[idx]
+		
+		# Each state has input_nodes elements
+		for i in range(input_nodes):
+			if i < exp["state"].data.size():
+				states_data.append(exp["state"].data[i])
+			else:
+				states_data.append(0.0)
+				
+		actions_data.append(exp["action"])
+		rewards_data.append(exp["reward"])
+		
+		# Each next_state has input_nodes elements
+		for i in range(input_nodes):
+			if i < exp["next_state"].data.size():
+				next_states_data.append(exp["next_state"].data[i])
+			else:
+				next_states_data.append(0.0)
+				
+		dones_data.append(1.0 if exp["done"] else 0.0)
+	
+	# Create tensors from batch data
+	var states_tensor = Tensor.from_array(states_data)
+	var actions_tensor = Tensor.from_array(actions_data)
+	var rewards_tensor = Tensor.from_array(rewards_data)
+	var next_states_tensor = Tensor.from_array(next_states_data)
+	var dones_tensor = Tensor.from_array(dones_data)
+	
+	# Train on batch
+	brain.train(states_tensor, actions_tensor, rewards_tensor, next_states_tensor, dones_tensor)
+	
+	# Save model periodically
+	if training and steps_since_training % 1000 == 0:
+		brain.save_model(ai_brain_path)
+	
+	# Restore previous pause state
+	get_tree().paused = was_paused

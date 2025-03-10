@@ -94,26 +94,7 @@ texture = ExtResource("11_bhs5c")
 
 [node name="PlayAreaBowl" parent="." node_paths=PackedStringArray("purin_bag") instance=ExtResource("13_gy0je")]
 position = Vector2(48, -2)
-player_name = null
-config_path = null
-ai_default_brain_path = null
-ai_brain_path = null
-ai_controlled = null
-vs_player = null
-debug = null
-fov_degrees = null
-num_raycasts = null
-sight = null
-input_nodes = null
-hidden_size = null
-output_nodes = null
-predict_every_sec = null
-random_initial_board_state = null
 purin_bag = NodePath("../PurinBagPlayer")
-mute_sound = null
-move_speed = null
-last_mouse_pos = null
-max_score_history_length = null
 
 [node name="PurinBagPlayer" parent="." instance=ExtResource("15_qafyh")]
 position = Vector2(887, 82)

@@ -2,44 +2,53 @@ extends Optimizer
 
 class_name AdamOptimizer
 
-var parameters: Array
+var parameters: Dictionary
 var learning_rate: float
 var beta1: float = 0.9
 var beta2: float = 0.999
 var epsilon: float = 1e-8
 
-var m: Array
-var v: Array
+var m: Dictionary
+var v: Dictionary
 var t: int = 0
 
-func _init(parameters: Array, learning_rate: float):
+func _init(parameters: Dictionary, learning_rate: float = 0.001):
 	self.parameters = parameters
 	self.learning_rate = learning_rate
-
-	m = []
-	v = []
-	for param in parameters:
-		var m_array = PackedFloat32Array()
-		var v_array = PackedFloat32Array()
-		for _p in range(param.size()):
-			m_array.append(0.0)
-			v_array.append(0.0)
-		m.append(m_array)
-		v.append(v_array)
+	
+	m = {}
+	v = {}
+	
+	for key in parameters.keys():
+		m[key] = Tensor.new(PackedFloat32Array())
+		v[key] = Tensor.new(PackedFloat32Array())
+		
+		for _i in range(parameters[key].size()):
+			m[key].data.append(0.0)
+			v[key].data.append(0.0)
 
 func zero_grad():
-	for param in parameters:
-		for i in range(param.size()):
-			param[i] = 0.0
+	for param in parameters.values():
+		param.zero_gradients()
 
 func step():
 	t += 1
-	for i in range(parameters.size()):
-		var param = parameters[i]
-		var grad = param  # Assuming param contains gradients for simplicity
-		for j in range(param.size()):
-			m[i][j] = beta1 * m[i][j] + (1 - beta1) * grad[j]
-			v[i][j] = beta2 * v[i][j] + (1 - beta2) * grad[j]
-			var m_hat = m[i][j] / (1 - pow(beta1, t))
-			var v_hat = v[i][j] / (1 - pow(beta2, t))
-			param[j] -= learning_rate * m_hat / (sqrt(v_hat) + epsilon)
+	
+	for key in parameters.keys():
+		var param = parameters[key]
+		if not param.gradients:
+			push_error("No gradients found for parameter: " + str(key))
+			continue
+			
+		for i in range(param.size()):
+			if i >= param.gradients.size():
+				push_error("Gradient index out of bounds: " + str(i))
+				continue
+				
+			m[key].data[i] = beta1 * m[key].data[i] + (1 - beta1) * param.gradients[i]
+			v[key].data[i] = beta2 * v[key].data[i] + (1 - beta2) * param.gradients[i] * param.gradients[i]
+			
+			var m_hat = m[key].data[i] / (1 - pow(beta1, t))
+			var v_hat = v[key].data[i] / (1 - pow(beta2, t))
+			
+			param.data[i] -= learning_rate * m_hat / (sqrt(v_hat) + epsilon)

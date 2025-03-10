@@ -24,22 +24,7 @@ size = Vector2(69, 890)
 
 [node name="PlayAreaBowl" type="Node2D" node_paths=PackedStringArray("eyes", "noir", "top_edge", "left_edge", "right_edge", "bottom_edge", "purin_node", "scoreorb_node", "scoreorb_target", "prediction_icon", "best_icon", "sfx_pop_player", "sfx_bonk_player", "gameover_screen", "player_label", "debug_label", "score_label")]
 script = ExtResource("1_anyjf")
-player_name = null
-config_path = null
 default_config_path = "res://player.json"
-ai_default_brain_path = null
-ai_brain_path = null
-ai_controlled = null
-vs_player = null
-debug = null
-fov_degrees = null
-num_raycasts = null
-sight = null
-input_nodes = null
-hidden_size = null
-output_nodes = null
-predict_every_sec = null
-random_initial_board_state = null
 eyes = NodePath("Eyes")
 noir = NodePath("NoiR")
 top_edge = NodePath("TopEdge")
@@ -53,14 +38,10 @@ prediction_icon = NodePath("Prediction")
 best_icon = NodePath("Best")
 sfx_pop_player = NodePath("Pop")
 sfx_bonk_player = NodePath("Bonk")
-mute_sound = null
 gameover_screen = NodePath("GameOverScreen")
 player_label = NodePath("Control/Player Label")
 debug_label = NodePath("DebugText")
 score_label = NodePath("ScoreInfo/Control/Score")
-move_speed = null
-last_mouse_pos = null
-max_score_history_length = null
 
 [node name="DebugText" type="RichTextLabel" parent="."]
 offset_left = 6.0
