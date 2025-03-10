@@ -6,45 +6,52 @@ var input_size: int
 var hidden_size: int
 var output_size: int
 
-var learning_rate: float = 0.0003
+var learning_rate: float = 0.001
 var gamma: float = 0.99
 var epsilon: float = 0.2
 var epochs: int = 10
 var clip_range: float = 0.2
 var value_coef: float = 0.5
-var entropy_coef: float = 0.01
+var entropy_coef: float = 0.001
 
 var policy_net: NeuralNetwork
 var value_net: NeuralNetwork
 var policy_optimizer: AdamOptimizer
 var value_optimizer: AdamOptimizer
 
-func _init(input_size: int, hidden_size: int, output_size: int):
+var model_mutex = Mutex.new()
+
+func _init(input_size: int, hidden_sizes: Array[int], output_size: int):
 	self.input_size = input_size
-	self.hidden_size = hidden_size
 	self.output_size = output_size
 
-	policy_net = NeuralNetwork.new(input_size, hidden_size, output_size)
-	value_net = NeuralNetwork.new(input_size, hidden_size, 1)
+	# Create policy and value networks with multiple hidden layers
+	policy_net = NeuralNetwork.new(input_size, hidden_sizes, output_size)
+	value_net = NeuralNetwork.new(input_size, hidden_sizes, 1)
 
 	policy_optimizer = AdamOptimizer.new(policy_net.get_parameters(), learning_rate)
 	value_optimizer = AdamOptimizer.new(value_net.get_parameters(), learning_rate)
 
 func select_action(state: PackedFloat32Array) -> int:
+	model_mutex.lock()
 	var state_tensor = Tensor.from_array(state)
 	var output = policy_net.forward(state_tensor)
 	var probs = output["output"]
-	return probs.sample()
+	var action = probs.sample()
+	model_mutex.unlock()
+	return action
 
 func update_policy(states: Tensor, actions: Tensor, old_probs: Tensor, advantages: Tensor):
+	model_mutex.lock()
 	var batch_size = advantages.size()
 	print("Update policy batch_size: ", batch_size)
-	
+	print("Advantages mean: ", advantages.mean().data[0])
 	for _epoch in range(epochs):
 		# Add debug prints before forward pass
 		print("\nEpoch ", _epoch)
-		policy_net.weights_input_hidden.debug_grad_flow("w1 before forward")
-		policy_net.weights_hidden_output.debug_grad_flow("w2 before forward")
+		# Update debug prints to handle multiple layers
+		#for i in range(policy_net.weights.size()):
+		#	policy_net.weights[i].debug_grad_flow("weights_" + str(i) + " before forward")
 		
 		var output = policy_net.forward(states)
 		var new_probs = output["output"]
@@ -86,17 +93,18 @@ func update_policy(states: Tensor, actions: Tensor, old_probs: Tensor, advantage
 		var total_loss = Tensor.from_array(combined_loss)
 		
 		policy_net.zero_gradients()
-		print("\nBefore backward:")
-		policy_net.weights_input_hidden.print_gradients("w1")
-		policy_net.weights_hidden_output.print_gradients("w2")
+		#print("\nBefore backward:")
+		#for i in range(policy_net.weights.size()):
+		#	policy_net.weights[i].print_gradients("weights_" + str(i))
 		
 		total_loss.backward()
 		
-		print("\nAfter backward:")
-		policy_net.weights_input_hidden.print_gradients("w1")
-		policy_net.weights_hidden_output.print_gradients("w2")
+		#print("\nAfter backward:")
+		#for i in range(policy_net.weights.size()):
+		#	policy_net.weights[i].print_gradients("weights_" + str(i))
 		
 		policy_optimizer.step()
+	model_mutex.unlock()
 
 func update_value(states: Tensor, returns: Tensor):
 	print("States size: ", states.size())
@@ -159,21 +167,27 @@ func compute_gae(rewards: Tensor, values: Tensor, next_values: Tensor, dones: Te
 func save_model(path: String) -> void:
 	var data = {
 		"input_size": input_size,
-		"hidden_size": hidden_size,
+		"hidden_sizes": policy_net.hidden_sizes,  # Now an array of sizes
 		"output_size": output_size,
 		"policy_net": {
-			"weights_input_hidden": Array(policy_net.weights_input_hidden.data),
-			"weights_hidden_output": Array(policy_net.weights_hidden_output.data),
-			"bias_hidden": Array(policy_net.bias_hidden.data),
-			"bias_output": Array(policy_net.bias_output.data)
+			"weights": [],  # Array of weight layers
+			"biases": []   # Array of bias layers
 		},
 		"value_net": {
-			"weights_input_hidden": Array(value_net.weights_input_hidden.data),
-			"weights_hidden_output": Array(value_net.weights_hidden_output.data),
-			"bias_hidden": Array(value_net.bias_hidden.data),
-			"bias_output": Array(value_net.bias_output.data)
+			"weights": [],
+			"biases": []
 		}
 	}
+	
+	# Save policy network weights and biases
+	for i in range(policy_net.weights.size()):
+		data.policy_net.weights.append(Array(policy_net.weights[i].data))
+		data.policy_net.biases.append(Array(policy_net.biases[i].data))
+	
+	# Save value network weights and biases
+	for i in range(value_net.weights.size()):
+		data.value_net.weights.append(Array(value_net.weights[i].data))
+		data.value_net.biases.append(Array(value_net.biases[i].data))
 	
 	var json_string = JSON.stringify(data)
 	var file = FileAccess.open(path, FileAccess.WRITE)
@@ -197,22 +211,42 @@ func load_model(path: String) -> void:
 		
 	var data = json.get_data()
 	
+	# Add debug prints
+	print("Loaded model architecture:")
+	print("  Input size: ", data.input_size)
+	print("  Hidden sizes: ", data.hidden_sizes)
+	print("  Output size: ", data.output_size)
+	
+	print("\nCurrent model architecture:")
+	print("  Input size: ", input_size)
+	print("  Hidden sizes: ", policy_net.hidden_sizes)
+	print("  Output size: ", output_size)
+	
 	# Verify model architecture matches
-	if data.input_size != input_size or data.hidden_size != hidden_size or data.output_size != output_size:
-		push_error("Model architecture mismatch")
+	if data.input_size != input_size or data.output_size != output_size:
+		push_error("Model architecture mismatch - Expected input_size: " + str(input_size) + 
+				  ", output_size: " + str(output_size) + " but got input_size: " + 
+				  str(data.input_size) + ", output_size: " + str(data.output_size))
 		return
 	
-	# Load policy network weights
-	policy_net.weights_input_hidden.data = PackedFloat32Array(data.policy_net.weights_input_hidden)
-	policy_net.weights_hidden_output.data = PackedFloat32Array(data.policy_net.weights_hidden_output)
-	policy_net.bias_hidden.data = PackedFloat32Array(data.policy_net.bias_hidden)
-	policy_net.bias_output.data = PackedFloat32Array(data.policy_net.bias_output)  # Fixed this line
+	# Verify hidden layer architecture
+	if data.hidden_sizes.size() != policy_net.hidden_sizes.size():
+		push_error("Model architecture mismatch - Expected " + str(policy_net.hidden_sizes.size()) + 
+				  " hidden layers but got " + str(data.hidden_sizes.size()))
+		push_error("Expected hidden sizes: " + str(policy_net.hidden_sizes))
+		push_error("Loaded hidden sizes: " + str(data.hidden_sizes))
+		return
 	
-	# Load value network weights
-	value_net.weights_input_hidden.data = PackedFloat32Array(data.value_net.weights_input_hidden)
-	value_net.weights_hidden_output.data = PackedFloat32Array(data.value_net.weights_hidden_output)
-	value_net.bias_hidden.data = PackedFloat32Array(data.value_net.bias_hidden)
-	value_net.bias_output.data = PackedFloat32Array(data.value_net.bias_output)
+	# Load policy network weights and biases
+	for i in range(data.policy_net.weights.size()):
+		policy_net.weights[i].data = PackedFloat32Array(data.policy_net.weights[i])
+		policy_net.biases[i].data = PackedFloat32Array(data.policy_net.biases[i])
+	
+	# Load value network weights and biases
+	for i in range(data.value_net.weights.size()):
+		value_net.weights[i].data = PackedFloat32Array(data.value_net.weights[i])
+		value_net.biases[i].data = PackedFloat32Array(data.value_net.biases[i])
+		
 
 func train(states: Tensor, actions: Tensor, rewards: Tensor, next_states: Tensor, dones: Tensor):
 	var batch_size = rewards.size()

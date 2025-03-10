@@ -150,7 +150,6 @@ func get_inputs_from_raycasts(noir:NoiR, held_purin_level:int, next_purin_level:
 
 	var _input_array: Array[float] = []
 	var _basic_suggested_output: Array[int] = []
-	var index:int = 0
 	for ray in raycasts:
 		var _input:RayCastInput = get_input(ray)
 		if is_instance_valid(ray):
@@ -177,8 +176,6 @@ func get_inputs_from_raycasts(noir:NoiR, held_purin_level:int, next_purin_level:
 				_input_array.append(0)
 			# distance
 			_input_array.append(clampf(_input.distance/sight, 0.0, 1.0))
-			
-			index += 1
 			
 		_input.queue_free()
 	return [_input_array, _basic_suggested_output]

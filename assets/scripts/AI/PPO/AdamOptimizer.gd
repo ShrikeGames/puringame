@@ -19,13 +19,29 @@ func _init(parameters: Dictionary, learning_rate: float = 0.001):
 	m = {}
 	v = {}
 	
+	# Initialize momentum and velocity for each parameter tensor
 	for key in parameters.keys():
-		m[key] = Tensor.new(PackedFloat32Array())
-		v[key] = Tensor.new(PackedFloat32Array())
+		var params = parameters[key]
+		m[key] = []
+		v[key] = []
 		
-		for _i in range(parameters[key].size()):
-			m[key].data.append(0.0)
-			v[key].data.append(0.0)
+		# Handle array of tensors
+		if params is Array:
+			for i in range(params.size()):
+				m[key].append(Tensor.new(PackedFloat32Array()))
+				v[key].append(Tensor.new(PackedFloat32Array()))
+				
+				for _j in range(params[i].size()):
+					m[key][i].data.append(0.0)
+					v[key][i].data.append(0.0)
+		# Handle single tensor
+		else:
+			m[key] = [Tensor.new(PackedFloat32Array())]
+			v[key] = [Tensor.new(PackedFloat32Array())]
+			
+			for _i in range(params.size()):
+				m[key][0].data.append(0.0)
+				v[key][0].data.append(0.0)
 
 func zero_grad():
 	for param in parameters.values():
@@ -35,20 +51,44 @@ func step():
 	t += 1
 	
 	for key in parameters.keys():
-		var param = parameters[key]
-		if not param.gradients:
-			push_error("No gradients found for parameter: " + str(key))
-			continue
-			
-		for i in range(param.size()):
-			if i >= param.gradients.size():
-				push_error("Gradient index out of bounds: " + str(i))
-				continue
+		var params = parameters[key]
+		
+		# Handle array of tensors
+		if params is Array:
+			for i in range(params.size()):
+				var param = params[i]
+				if not param.gradients:
+					push_error("No gradients found for parameter: " + str(key) + "[" + str(i) + "]")
+					continue
 				
-			m[key].data[i] = beta1 * m[key].data[i] + (1 - beta1) * param.gradients[i]
-			v[key].data[i] = beta2 * v[key].data[i] + (1 - beta2) * param.gradients[i] * param.gradients[i]
+				for j in range(param.size()):
+					if j >= param.gradients.size():
+						push_error("Gradient index out of bounds: " + str(j))
+						continue
+					
+					m[key][i].data[j] = beta1 * m[key][i].data[j] + (1 - beta1) * param.gradients[j]
+					v[key][i].data[j] = beta2 * v[key][i].data[j] + (1 - beta2) * param.gradients[j] * param.gradients[j]
+					
+					var m_hat = m[key][i].data[j] / (1 - pow(beta1, t))
+					var v_hat = v[key][i].data[j] / (1 - pow(beta2, t))
+					
+					param.data[j] -= learning_rate * m_hat / (sqrt(v_hat) + epsilon)
+		# Handle single tensor
+		else:
+			var param = params
+			if not param.gradients:
+				push_error("No gradients found for parameter: " + str(key))
+				continue
 			
-			var m_hat = m[key].data[i] / (1 - pow(beta1, t))
-			var v_hat = v[key].data[i] / (1 - pow(beta2, t))
-			
-			param.data[i] -= learning_rate * m_hat / (sqrt(v_hat) + epsilon)
+			for i in range(param.size()):
+				if i >= param.gradients.size():
+					push_error("Gradient index out of bounds: " + str(i))
+					continue
+				
+				m[key][0].data[i] = beta1 * m[key][0].data[i] + (1 - beta1) * param.gradients[i]
+				v[key][0].data[i] = beta2 * v[key][0].data[i] + (1 - beta2) * param.gradients[i] * param.gradients[i]
+				
+				var m_hat = m[key][0].data[i] / (1 - pow(beta1, t))
+				var v_hat = v[key][0].data[i] / (1 - pow(beta2, t))
+				
+				param.data[i] -= learning_rate * m_hat / (sqrt(v_hat) + epsilon)
