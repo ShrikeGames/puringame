@@ -15,7 +15,7 @@ var total_score:int = 0
 var best_score:int = 0
 var game_count:int = 0
 var training_data:Array
-var best_brain:BrainAdvanced
+var best_brain:PPO
 func _on_ready() -> void:
 	init_ai_players()
 	
@@ -26,14 +26,14 @@ func init_ai_players():
 	game_count = 0
 	total_score = 0
 	
-	if FileAccess.file_exists(ai_brain_path):
-		best_brain = BrainAdvanced.new(BrainAdvanced.methods.SGD)
-		best_brain.load_model(ai_brain_path)
-		best_brain.mutate(0.05)
-	elif FileAccess.file_exists(ai_default_brain_path):
-		best_brain = BrainAdvanced.new(BrainAdvanced.methods.SGD)
-		best_brain.load_model(ai_default_brain_path)
-		best_brain.mutate(0.005)
+#	if FileAccess.file_exists(ai_brain_path):
+#		best_brain = PPO.new(124, 128, 3)
+#		#best_brain.load_model(ai_brain_path)
+#		#best_brain.mutate(0.05)
+#	elif FileAccess.file_exists(ai_default_brain_path):
+#		best_brain = PPO.new(124, 128, 3)
+#		#best_brain.load_model(ai_default_brain_path)
+		#best_brain.mutate(0.005)
 	
 	var x_pos:int = 17
 	var y_pos:int = 0

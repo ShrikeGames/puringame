@@ -23,8 +23,8 @@ var initial_seed:String
 @export var sight:float = 800
 # Number of input neurons
 @export var input_nodes: int = -1
-# how many hidden layers and the number of nodes in them
-@export var hidden_layers: Array[int] = [64,4,4,4]
+# 
+@export var hidden_size: int = 128
 # Number of output neurons
 @export var output_nodes: int = -1
 @export var predict_every_sec:float = 0.001
@@ -49,7 +49,7 @@ var time_since_last_score:float = 0
 @export var best_icon: Sprite2D
 @export var sfx_pop_player: AudioStreamPlayer
 @export var sfx_bonk_player: AudioStreamPlayer
-@export var brain:BrainAdvanced
+@export var brain:PPO
 @export var mute_sound: bool = false
 @export var opponents: Array[PlayerController] = []
 @export var gameover_screen: Node2D
@@ -67,6 +67,7 @@ var config_json:Dictionary
 var default_config_json:Dictionary
 
 var score: int = 0
+var previous_score:int = 0
 var dropped_purin_count: int = 0
 var last_dropped_purin:Purin = null
 var last_dropped_purin_touched_something:bool = false
@@ -133,6 +134,7 @@ func set_up_game():
 	remove_all_purin()
 	# reset progress
 	score = 0
+	previous_score = 0
 	time_since_last_score = 0
 	dropped_purin_count = 0
 	time_since_last_prediction_sec = 0
@@ -172,22 +174,21 @@ func set_up_game():
 			input_nodes = 1 + ((num_raycasts + 1) * 3)
 			output_nodes = 3
 		if FileAccess.file_exists(ai_brain_path):
-			brain = BrainAdvanced.new(BrainAdvanced.methods.SGD)
+			brain = PPO.new(input_nodes, hidden_size, output_nodes)
 			brain.load_model(ai_brain_path)
 			brain.mutate(0.05)
 		elif FileAccess.file_exists(ai_default_brain_path):
-			brain = BrainAdvanced.new(BrainAdvanced.methods.SGD)
+			brain = PPO.new(input_nodes, hidden_size, output_nodes)
 			brain.load_model(ai_default_brain_path)
 			brain.mutate(0.005)
 		elif not brain:
-			brain = BrainAdvanced.new(BrainAdvanced.methods.SGD)
-			brain.learning_rate = 0.001
-			brain.add_layer(input_nodes)
-			for node_count in hidden_layers:
-				brain.add_layer(node_count, "LEAKYRELU", true, true)
-			brain.add_layer(output_nodes, "LINEAR")
-			add_child(brain)
-		
+			brain = PPO.new(input_nodes, hidden_size, output_nodes)
+			#brain.learning_rate = 0.001
+			#brain.add_layer(input_nodes)
+#		for node_count in hidden_layers:
+#			brain.add_layer(node_count, "LEAKYRELU", true, true)
+#			brain.add_layer(output_nodes, "LINEAR")
+#			add_child(brain)
 		
 	
 func remove_all_purin():
@@ -643,54 +644,6 @@ func purin_is_moving(purin:Purin):
 #
 #	return board_state_vector
 
-func predict_next_action():
-	var results:Array[Array] = eyes.get_inputs_from_raycasts(noir, noir.held_purin.level, purin_bag.get_next_purin_level())
-	var _inputs = results[0]
-	var _basic_suggestions = results[1]
-	# include player's current position
-	_inputs.append(noir.position.x/800.0)
-	
-	# make a new prediction
-	var _predictions:Array = brain.predict(_inputs)
-	#print(_predictions)
-	var highest_prediction:float = 0.0
-	var highest_prediction_index:int = 0
-	for i in range(0, _predictions.size()):
-		var _prediction:float = _predictions[i]
-		if _prediction > highest_prediction and (previous_highest_prediction_index != i or i !=1):
-			highest_prediction = _prediction
-			highest_prediction_index = i
-	previous_highest_prediction_index = highest_prediction_index
-	if player_name == "ai0" or player_name == "ai1":
-		# if there are any basic solutions then train on those
-		if _basic_suggestions.size() > 0:
-			var _basic_output:Array[int] = []
-			_basic_output.resize(output_nodes)
-			_basic_output.fill(0)
-			_basic_output[_basic_suggestions[0]] = 1
-			#print(_inputs, _basic_output)
-			#print("use basic answer of ", _basic_suggestions[0])
-			# prediction isn't confident so use basic suggestion
-			if highest_prediction < 50:
-				brain.train(_inputs, _basic_output)
-				#print("use basic answer of ", _basic_suggestions[0])
-				debug_label.text = "%s\nBS %s\nPD %s (%s)"%[hidden_layers, _basic_suggestions[0], highest_prediction_index, highest_prediction]
-				return _basic_suggestions[0]
-		elif time_since_last_dropped_purin_sec >= drop_purin_cooldown_sec * 20:
-			# it hasn't dropped anything for a long time despite being confident
-			# force it to drop and teach it
-			print("force drop")
-			var _basic_output:Array[int] = []
-			_basic_output.resize(output_nodes)
-			_basic_output.fill(0)
-			_basic_output[1] = 1
-			brain.train(_inputs, _basic_output)
-			#print("use basic answer of ", _basic_suggestions[0])
-			debug_label.text = "%s\nBS %s\nPD %s (%s)"%[hidden_layers,1, highest_prediction_index, highest_prediction]
-			return 1
-		
-	debug_label.text = "%s\nPD %s (%s)"%[hidden_layers, highest_prediction_index, highest_prediction]
-	return highest_prediction_index
 
 func process_ai(delta):
 	time_since_last_prediction_sec += delta
@@ -704,20 +657,42 @@ func process_ai(delta):
 	
 	if time_since_last_prediction_sec >= predict_every_sec:
 		
-		var action_to_do:int = predict_next_action()
+		var results:Array[Array] = eyes.get_inputs_from_raycasts(noir, noir.held_purin.level, purin_bag.get_next_purin_level())
+		# array of floats 0.0 to 1.0 that represent the inputs for the brain
+		var _inputs = results[0]
+		# include player's current position
+		_inputs.append(noir.position.x/800.0)
+
+		# Convert _inputs to PackedFloat32Array for the PPO model
+		var state = PackedFloat32Array(_inputs)
+
+		# Use PPO model to predict the next action
+		var best_action_to_do = brain.select_action(state)
+
+		debug_label.text = "%s\nPD %s"%[hidden_size, best_action_to_do]
 		time_since_last_prediction_sec = 0
-		#noir.position.x = valid_x_pos(40 + (action_to_do*(720.0/float(num_raycasts))))
-		#drop_purin()
-		if action_to_do == 0:
+		if best_action_to_do == 0:
 			# move left
 			noir.position.x = valid_x_pos(noir.position.x - (move_speed*delta))
-		elif time_since_last_dropped_purin_sec >= drop_purin_cooldown_sec and action_to_do == 1:
+		elif time_since_last_dropped_purin_sec >= drop_purin_cooldown_sec and best_action_to_do == 1:
 			# drop the purin there
 			drop_purin()
-		elif action_to_do == 2:
+		elif best_action_to_do == 2:
 			# move right
 			noir.position.x = valid_x_pos(noir.position.x + (move_speed*delta))
-#		elif action_to_do == 3:
-#			# jump immediately to the given position
-#			noir.position.x = valid_x_pos(action_to_do*800.0)
-	
+		
+		# Reward for increasing score
+		# TODO more intelligent reward function
+		var reward = score - previous_score
+		previous_score = score
+
+		# Update PPO model with the reward
+		var next_results:Array[Array] = eyes.get_inputs_from_raycasts(noir, noir.held_purin.level, purin_bag.get_next_purin_level())
+		var _next_inputs = next_results[0]
+		# include player's current position
+		_next_inputs.append(noir.position.x/800.0)
+		var next_state = PackedFloat32Array(_next_inputs)
+		# Convert action and reward to PackedFloat32Array
+		var actions = PackedFloat32Array([float(best_action_to_do)])
+		var rewards = PackedFloat32Array([float(reward)])
+		brain.train(state, actions, rewards, next_state)

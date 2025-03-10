@@ -86,21 +86,52 @@ position = Vector2(0, 1140)
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("11_i2u1v")
 
-[node name="AI" parent="." node_paths=PackedStringArray("purin_bag", "opponents") instance=ExtResource("13_3k2pk")]
+[node name="AI" parent="." node_paths=PackedStringArray("purin_bag") instance=ExtResource("13_3k2pk")]
 position = Vector2(1073, -2)
 player_name = "ai"
 config_path = "user://ai_v2.json"
 default_config_path = "res://ai_v2.json"
+ai_default_brain_path = null
+ai_brain_path = null
 ai_controlled = true
 vs_player = true
 debug = true
+fov_degrees = null
+num_raycasts = null
+sight = null
+input_nodes = null
+hidden_size = null
+output_nodes = null
+predict_every_sec = null
+random_initial_board_state = null
 purin_bag = NodePath("../PurinBagAI")
-opponents = [NodePath("../Player")]
+mute_sound = null
+move_speed = null
+last_mouse_pos = null
+max_score_history_length = null
 
-[node name="Player" parent="." node_paths=PackedStringArray("purin_bag", "opponents") instance=ExtResource("13_3k2pk")]
+[node name="Player" parent="." node_paths=PackedStringArray("purin_bag") instance=ExtResource("13_3k2pk")]
 position = Vector2(47, -2)
+player_name = null
+config_path = null
+ai_default_brain_path = null
+ai_brain_path = null
+ai_controlled = null
+vs_player = null
+debug = null
+fov_degrees = null
+num_raycasts = null
+sight = null
+input_nodes = null
+hidden_size = null
+output_nodes = null
+predict_every_sec = null
+random_initial_board_state = null
 purin_bag = NodePath("../PurinBagPlayer")
-opponents = [NodePath("../AI")]
+mute_sound = null
+move_speed = null
+last_mouse_pos = null
+max_score_history_length = null
 
 [node name="PurinBagAI" parent="." instance=ExtResource("14_gsn0q")]
 position = Vector2(1021, 82)
