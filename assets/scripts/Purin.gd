@@ -15,6 +15,7 @@ var show_debug_info: bool = false
 @export var particle_system: GPUParticles2D
 var game_over_timer_sec: float
 
+var colour:Color = Color.WHITE
 
 func _on_ready():
 	debug_line.add_point(Vector2(0, 0))

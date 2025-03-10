@@ -2,8 +2,11 @@ extends Node2D
 class_name NoiR
 @export var drop_line: Line2D
 @export var held_purin: PurinIndicator
+#@export var eyes:Eyes
 var space_state
 var purin_collide_level:int = -1
+var purin_collide_position:Vector2 = Vector2(0,0)
+
 # Called when the node enters the scene tree for the first time.
 func _on_ready():
 	drop_line.add_point(Vector2(0, 0))
@@ -31,6 +34,7 @@ func _process(_delta):
 		drop_line.set_point_position(1, to_local(result.position))
 		if is_instance_of(result.collider, Purin):
 			purin_collide_level = result.collider.get_meta("level", 0)
+			purin_collide_position = to_local(result.position)
 
 func change_held_purin(purin_info:Dictionary):
 	
@@ -43,4 +47,5 @@ func change_held_purin(purin_info:Dictionary):
 		held_purin.number_label.text = "[center][color=fff]%s[/color][/center]"%[purin_info["level"]]
 		held_purin.number_label.visible = true
 	held_purin.set_frame(purin_info["level"])
+	held_purin.level = purin_info["level"]
 	held_purin.pause()

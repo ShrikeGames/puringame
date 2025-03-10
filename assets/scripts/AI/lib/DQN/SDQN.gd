@@ -26,7 +26,7 @@ var steps: int = 0
 var update_steps: int = 0  # Counter for updating target network
 var trainings_done: int = 0
 
-var use_multi_threading: bool = true
+var use_multi_threading: bool = false
 var train_thread: Thread
 var train_mutex: Mutex
 var train_semaphore: Semaphore
@@ -99,7 +99,7 @@ func max_q_predict(state: Array) -> float:
 	return max_value
 
 
-func sample() -> Array:
+func sample_minibatch() -> Array:
 	var length: int = memory.size()
 	var indices: Array[int] = []
 	var sample: Array = []
@@ -129,9 +129,9 @@ func sample() -> Array:
 
 
 
-func train(replay_memory: Array) -> void:
+func train(_replay_memory: Array) -> void:
 	# Sample a minibatch from the replay memory
-	var minibatch: Array = sample()
+	var minibatch: Array = sample_minibatch()
 
 
 	for transition in minibatch:
@@ -169,7 +169,7 @@ func multithreaded_train() -> void:
 		print("multi-train now")
 		# Sample a minibatch from the replay memory
 		train_mutex.try_lock()
-		var minibatch: Array = sample()
+		var minibatch: Array = sample_minibatch()
 		train_mutex.unlock()
 		for transition in minibatch:
 			var state: Array = transition[0]
@@ -208,6 +208,7 @@ func add_memory(state: Array, action: int, reward: float, next_state: Array, don
 
 	# Limit memory size
 	if memory.size() > max_memory_size:
+		print("Hit max memory limit")
 		memory.pop_front()  # Remove oldest memory if memory size exceeds the limit
 
 	# Increment step count and train
@@ -234,6 +235,7 @@ func add_memory(state: Array, action: int, reward: float, next_state: Array, don
 		if use_multi_threading:
 			train_mutex.lock()
 		target_Q_network = Q_network.copy()
+		Global.brain.save_to_file(Global.ai_brain_path)
 		if use_multi_threading:
 			train_mutex.unlock()
 
@@ -263,7 +265,7 @@ func to_dict() -> Dictionary:
 	return data
 
 func from_dict(dict: Dictionary) -> void:
-	var properties: Array = self.get_script().get_script_property_list()
+	#var properties: Array = self.get_script().get_script_property_list()
 	for property in dict.keys():
 		var value = dict.get(property)
 		if property.to_lower() in ["q_network", "target_q_network"]:
@@ -272,18 +274,18 @@ func from_dict(dict: Dictionary) -> void:
 			value = data
 		self.set(property, value)
 
-func save(file_path: String) -> void:
+func save_to_file(file_path: String) -> void:
 	var file: FileAccess = FileAccess.open(file_path, FileAccess.WRITE)
 	file.store_string(JSON.stringify(self.to_dict()))
 	file.close()
 
-func load(file_path: String) -> void:
+func load_from_file(file_path: String) -> void:
 	var file: FileAccess = FileAccess.open(file_path, FileAccess.READ)
 	var data_string: String = file.get_as_text()
 	if "inf" in data_string:
 		data_string = data_string.replace("inf", "null")
 	if "nan" in data_string:
-		data_string = data_string.replace("nan", "0")
+		data_string = data_string.replace("nan", "%s"%[randf()])
 	var data: Dictionary = JSON.parse_string(data_string)
 	if data["target_Q_network"]["clip_value"] == null:
 		data["target_Q_network"]["clip_value"] = INF
@@ -292,7 +294,7 @@ func load(file_path: String) -> void:
 	file.close()
 	self.from_dict(data)
 
-static func convert(file_path: String) -> void:
+static func convert_to_file(file_path: String) -> void:
 	var file: FileAccess = FileAccess.open(file_path, FileAccess.READ)
 	var data: Dictionary = file.get_var()
 	file.close()

@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3 uid="uid://sqcxl2hda30i"]
+
+[ext_resource type="Script" path="res://assets/scripts/AI/BrainGraph.gd" id="1_7mhtt"]
+
+[node name="BrainGraph" type="Node2D" node_paths=PackedStringArray("graph_edit")]
+script = ExtResource("1_7mhtt")
+graph_edit = NodePath("GraphEdit")
+
+[node name="GraphEdit" type="GraphEdit" parent="."]
+offset_left = -2.0
+offset_top = -2.0
+offset_right = 745.0
+offset_bottom = 731.0
+scroll_offset = Vector2(-443, -40)

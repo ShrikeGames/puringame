@@ -313,3 +313,33 @@ static func max(matrix: Matrix) -> float:
 		for col in range(matrix.cols):
 			max_value = max(max_value, matrix.data[row][col])
 	return max_value
+
+
+static func mutate(a: Matrix, mutation_rate:float=0.01, mutation_min_range:float=-1.0, mutation_max_range:float=1.0) -> Matrix:
+	var result = Matrix.new(a.rows, a.cols)
+	seed(randi())
+	randomize()
+	for row in range(result.rows):
+		for col in range(result.cols):
+			if randf() < mutation_rate:
+				result.data[row][col] = a.data[row][col] + randf_range(mutation_min_range, mutation_max_range)
+			else:
+				result.data[row][col] = a.data[row][col]
+	
+	return result
+	
+
+static func cross_breed(a:Matrix, b:Matrix, percent_split:float=0.5) -> Matrix:
+	assert(a.rows == b.rows and a.cols == b.cols)
+	seed(randi())
+	randomize()
+	var result = Matrix.new(a.rows, a.cols)
+
+	for row in range(result.rows):
+		for col in range(result.cols):
+			if randf() < percent_split:
+				result.data[row][col] = a.data[row][col]
+			else:
+				result.data[row][col] = b.data[row][col]
+	
+	return result

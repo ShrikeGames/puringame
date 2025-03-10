@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://byu84wxjmhyfd"]
+
+[ext_resource type="Script" path="res://assets/scripts/Machine_Learning/Eyes.gd" id="1_bis5g"]
+
+[node name="Eyes" type="Node2D"]
+script = ExtResource("1_bis5g")

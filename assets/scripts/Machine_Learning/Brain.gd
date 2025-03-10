@@ -1,12 +1,15 @@
-# A class that implements an advanced neural network with multiple optimization methods
-class_name NeuralNetworkAdvanced
+extends Node
+class_name BrainAdvanced
 
 # Neural network state variables
 # Array to store the network layers (weights, biases, and activations)
 var network: Array
 
+# Activation functions for the network
+var ACTIVATIONS = Activation.new()
+
 # Learning rate for training the network
-var learning_rate: float = 0.01
+var learning_rate: float = 0.001
 
 # Array to store the structure of the network (number of nodes in each layer)
 var layer_structure: Array[int] = []
@@ -18,7 +21,7 @@ var bp_method: int
 
 # Adam optimiser
 var beta1: float = 0.9
-var beta2: float = 0.98
+var beta2: float = 0.999
 var epsilon: float = 1e-8
 var m_weights: Array[Matrix] = [] # First moment for weights
 var v_weights: Array[Matrix] = [] # Second moment for weights
@@ -28,48 +31,6 @@ var t: int = 0 # Time step
 var training_gradient_threshold: float = 1e-6
 var use_amsgrad: bool = false
 
-var ACTIVATIONS: Dictionary = {
-	"SIGMOID": {
-		"function": Callable(Activation, "sigmoid"),
-		"derivative": Callable(Activation, "dsigmoid"),
-		"name": "sigmoid"
-	},
-	"RELU": {
-		"function": Callable(Activation, "relu"),
-		"derivative": Callable(Activation, "drelu"),
-		"name": "relu"
-	},
-	"TANH": {
-		"function": Callable(Activation, "tanh_"),
-		"derivative": Callable(Activation, "dtanh"),
-		"name": "tanh_"
-	},
-	"ARCTAN": {
-		"function": Callable(Activation, "arcTan"),
-		"derivative": Callable(Activation, "darcTan"),
-		"name": "arcTan"
-	},
-	"PRELU": {
-		"function": Callable(Activation, "prelu"),
-		"derivative": Callable(Activation, "dprelu"),
-		"name": "prelu"
-	},
-	"ELU": {
-		"function": Callable(Activation, "elu"),
-		"derivative": Callable(Activation, "delu"),
-		"name": "elu"
-	},
-	"SOFTPLUS": {
-		"function": Callable(Activation, "softplus"),
-		"derivative": Callable(Activation, "dsoftplus"),
-		"name": "softplus"
-	},
-	"LINEAR": {
-		"function": Callable(Activation, "linear"),
-		"derivative": Callable(Activation, "dlinear"),
-		"name": "linear"
-	}
-}
 
 # Initialize the neural network with specified backpropagation method
 func _init(_bp_method: int = methods.SGD) -> void:
@@ -89,16 +50,16 @@ func add_layer(nodes: int, activation: String = "LINEAR", use_optim_init: bool =
 
 		if use_optim_init:
 			if activation in ["RELU", "LEAKYRELU", "ELU", "LINEAR"]:
-				print("Using He init")
+				#print("Using He init")
 				weights = Matrix.uniform_he_init(Matrix.new(nodes, layer_structure[-1]), layer_structure[-1])
 			elif activation in ["SIGMOID", "TANH"]:
-				print("Using Glorot init")
+				#print("Using Glorot init")
 				weights = Matrix.uniform_glorot_init(Matrix.new(nodes, layer_structure[-1]), layer_structure[-1], nodes)
 			else:
-				print("Using rand init")
+				#print("Using rand init")
 				weights = Matrix.rand(Matrix.new(nodes, layer_structure[-1]))
 		else:
-			print("Using rand init")
+			#print("Using rand init")
 			weights = Matrix.rand(Matrix.new(nodes, layer_structure[-1]))
 
 		if random_biases:
@@ -153,8 +114,8 @@ func SGD(input_array: Array, target_array: Array) -> void:
 
 	# Arrays to store outputs and unactivated outputs of each layer
 	var layer_inputs: Matrix = inputs
-	var outputs: Array[Matrix] = []
-	var unactivated_outputs: Array[Matrix] = []
+	var outputs: Array[Matrix]
+	var unactivated_outputs: Array[Matrix]
 
 	# Forward pass through each layer
 	for layer in network:
@@ -220,8 +181,8 @@ func ADAM(input_array: Array, target_array: Array) -> void:
 
 	# Arrays to store outputs and unactivated outputs of each layer
 	var layer_inputs: Matrix = inputs
-	var outputs: Array[Matrix] = []
-	var unactivated_outputs: Array[Matrix] = []
+	var outputs: Array[Matrix]
+	var unactivated_outputs: Array[Matrix]
 
 	# Forward pass through each layer
 	for layer in network:
@@ -307,8 +268,8 @@ func ADAM(input_array: Array, target_array: Array) -> void:
 
 # Create a deep copy of the neural network
 # all: if true, copies all properties; if false, copies only essential properties
-func copy(all: bool = false) -> NeuralNetworkAdvanced:
-	var copied_nna: NeuralNetworkAdvanced = NeuralNetworkAdvanced.new()
+func copy_model(all: bool = false) -> BrainAdvanced:
+	var copied_nna: BrainAdvanced = BrainAdvanced.new(bp_method)
 	if all:
 		for property in self.get_script().get_script_property_list():
 				copied_nna.set(property.name, self.get(property.name))
@@ -317,6 +278,23 @@ func copy(all: bool = false) -> NeuralNetworkAdvanced:
 		copied_nna.layer_structure = layer_structure.duplicate(true)
 		copied_nna.learning_rate = self.learning_rate
 	return copied_nna
+
+func mutate(mutation_rate:float=0.01, mutation_min_range:float=-1.0, mutation_max_range:float=1.0):
+	for layer_index in range(0, len(network)):
+		network[layer_index]["weights"] =  Matrix.mutate(network[layer_index]["weights"], mutation_rate, mutation_min_range, mutation_max_range)
+		network[layer_index]["bias"] = Matrix.mutate(network[layer_index]["bias"], mutation_rate, mutation_min_range, mutation_max_range)
+	
+
+func cross_breed(nna:BrainAdvanced, percent_split:float=0.5, all:bool=true, mutation_rate:float=0.01, mutation_min_range:float=-1.0, mutation_max_range:float=1.0) -> BrainAdvanced:
+	var child_nna:BrainAdvanced = nna.copy_model(all)
+	for layer_index in range(0, len(network)):
+		var weights1:Matrix = Matrix.mutate(network[layer_index]["weights"], mutation_rate, mutation_min_range, mutation_max_range)
+		var weights2:Matrix = Matrix.mutate(nna.network[layer_index]["weights"], mutation_rate, mutation_min_range, mutation_max_range)
+		child_nna.network[layer_index]["weights"] = Matrix.cross_breed(weights1, weights2, percent_split)
+		var bias1:Matrix = Matrix.mutate(network[layer_index]["bias"], mutation_rate, mutation_min_range, mutation_max_range)
+		var bias2:Matrix = Matrix.mutate(nna.network[layer_index]["bias"], mutation_rate, mutation_min_range, mutation_max_range)
+		child_nna.network[layer_index]["bias"] = Matrix.cross_breed(bias1, bias2, percent_split)
+	return child_nna
 
 # Serialize the neural network to a dictionary
 # Used for saving the network state
@@ -381,17 +359,17 @@ func from_dict(dict: Dictionary) -> void:
 		self.set(property, value)
 
 # Save the neural network state to a file
-func save_from_file(file_path: String) -> void:
+func save_model(file_path: String) -> void:
 	var file: FileAccess = FileAccess.open(file_path, FileAccess.WRITE)
 	file.store_string(JSON.stringify(self.to_dict()))
 	file.close()
 
 # Load the neural network state from a file
-func load_from_file(file_path: String) -> void:
+func load_model(file_path: String) -> void:
+	if not FileAccess.file_exists(file_path):
+		return
 	var file: FileAccess = FileAccess.open(file_path, FileAccess.READ)
-	var data_string: String = file.get_as_text()
-	if "inf" in data_string:
-		data_string = data_string.replace("inf", "null")
+	var data_string: String = file.get_as_text().replace("inf", "0").replace("nan", "0")
 	var data: Dictionary = JSON.parse_string(data_string)
 	file.close()
 	self.from_dict(data)

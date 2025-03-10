@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://con8stx2et0ea"]
+[gd_scene load_steps=16 format=3 uid="uid://con8stx2et0ea"]
 
 [ext_resource type="Script" path="res://assets/scripts/PlayerController.gd" id="1_anyjf"]
 [ext_resource type="AudioStream" uid="uid://borrrahqop0te" path="res://assets/audio/sfx/pop.wav" id="2_tn86m"]
@@ -11,6 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://digt3ya6lodli" path="res://assets/scenes/GameOverScreen.tscn" id="10_vwbcx"]
 [ext_resource type="Texture2D" uid="uid://brt7tyr0jdf2p" path="res://assets/images/Menu/ArrowDownBlack.png" id="11_de281"]
 [ext_resource type="FontFile" uid="uid://buytj31trs62" path="res://assets/fonts/NotoSansCJK-Bold.ttc" id="12_dx1lx"]
+[ext_resource type="PackedScene" uid="uid://byu84wxjmhyfd" path="res://assets/scenes/machine_learning/Eyes.tscn" id="12_fgv5y"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_a48te"]
 size = Vector2(895, 70)
@@ -21,9 +22,10 @@ size = Vector2(70, 890)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_u6thl"]
 size = Vector2(69, 890)
 
-[node name="PlayAreaBowl" type="Node2D" node_paths=PackedStringArray("noir", "top_edge", "left_edge", "right_edge", "bottom_edge", "purin_node", "scoreorb_node", "scoreorb_target", "prediction_icon", "best_icon", "sfx_pop_player", "sfx_bonk_player", "gameover_screen", "player_label", "debug_label", "score_label")]
+[node name="PlayAreaBowl" type="Node2D" node_paths=PackedStringArray("eyes", "noir", "top_edge", "left_edge", "right_edge", "bottom_edge", "purin_node", "scoreorb_node", "scoreorb_target", "prediction_icon", "best_icon", "sfx_pop_player", "sfx_bonk_player", "gameover_screen", "player_label", "debug_label", "score_label")]
 script = ExtResource("1_anyjf")
 default_config_path = "res://player.json"
+eyes = NodePath("Eyes")
 noir = NodePath("NoiR")
 top_edge = NodePath("TopEdge")
 left_edge = NodePath("Bowl/LeftEdge")
@@ -40,6 +42,20 @@ gameover_screen = NodePath("GameOverScreen")
 player_label = NodePath("Control/Player Label")
 debug_label = NodePath("DebugText")
 score_label = NodePath("ScoreInfo/Control/Score")
+
+[node name="DebugText" type="RichTextLabel" parent="."]
+offset_left = 6.0
+offset_top = 4.0
+offset_right = 796.0
+offset_bottom = 152.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_fonts/normal_font = ExtResource("7_xor5u")
+theme_override_fonts/bold_font = ExtResource("12_dx1lx")
+theme_override_font_sizes/normal_font_size = 24
+theme_override_font_sizes/bold_font_size = 24
+bbcode_enabled = true
+text = "test"
 
 [node name="Pop" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("2_tn86m")
@@ -182,18 +198,6 @@ scale = Vector2(0.42, 0.482)
 [node name="ScoreTarget" type="Node2D" parent="ScoreOrbs"]
 position = Vector2(399, 1019)
 
-[node name="DebugText" type="RichTextLabel" parent="."]
-offset_left = 6.0
-offset_top = 4.0
-offset_right = 796.0
-offset_bottom = 152.0
-theme_override_fonts/normal_font = ExtResource("7_xor5u")
-theme_override_fonts/bold_font = ExtResource("12_dx1lx")
-theme_override_font_sizes/normal_font_size = 24
-theme_override_font_sizes/bold_font_size = 16
-bbcode_enabled = true
-text = "test"
-
 [node name="Prediction" type="Sprite2D" parent="."]
 visible = false
 position = Vector2(457, 177)
@@ -205,5 +209,8 @@ visible = false
 position = Vector2(341, 177)
 scale = Vector2(0.25, 0.25)
 texture = ExtResource("11_de281")
+
+[node name="Eyes" parent="." instance=ExtResource("12_fgv5y")]
+position = Vector2(0, 138)
 
 [connection signal="ready" from="." to="." method="_on_ready"]

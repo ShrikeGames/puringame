@@ -2,11 +2,39 @@ extends Node2D
 class_name PlayerController
 # random number generator seed
 var initial_seed:String
+
+@export_category("Configs")
 @export var player_name: String = "player"
 @export var config_path: String = "user://player.json"
 @export var default_config_path: String = "res://default.json"
+
+@export var ai_default_brain_path: String = "res://ai_brain_model.json"
+@export var ai_brain_path: String = "user://ai_brain_model.json"
+
 @export var ai_controlled: bool = false
 @export var vs_player: bool = false
+@export var debug:bool = false
+
+@export_category("Brain")
+@export var fov_degrees:float = 120
+# how many raycasts are done within the fov
+@export var num_raycasts:int = 40
+# distance raycasts will travel to look for collisions
+@export var sight:float = 800
+# Number of input neurons
+@export var input_nodes: int = -1
+# how many hidden layers and the number of nodes in them
+@export var hidden_layers: Array[int] = [64,4,4,4]
+# Number of output neurons
+@export var output_nodes: int = -1
+@export var predict_every_sec:float = 0.001
+@export var random_initial_board_state:bool = false
+
+var time_since_last_prediction_sec:float = 0
+var time_since_last_score:float = 0
+
+@export_category("References")
+@export var eyes:Eyes
 @export var leaderboard:Leaderboard
 @export var noir: NoiR
 @export var purin_bag: PurinBag
@@ -21,22 +49,20 @@ var initial_seed:String
 @export var best_icon: Sprite2D
 @export var sfx_pop_player: AudioStreamPlayer
 @export var sfx_bonk_player: AudioStreamPlayer
+@export var brain:BrainAdvanced
 @export var mute_sound: bool = false
 @export var opponents: Array[PlayerController] = []
 @export var gameover_screen: Node2D
 @export var player_label: RichTextLabel
 @export var debug_label: RichTextLabel
 @export var score_label: RichTextLabel
-
+@export_category("Stats")
 @export var move_speed: float = 450.0
 @export var last_mouse_pos:Vector2 = Vector2(0.0, 0.0)
 @export var max_score_history_length:int = 10
 
 var can_drop_early: bool =false
 var auto_drop:bool = false
-var target_score:float = 150000
-@export var debug:bool = false
-
 var config_json:Dictionary
 var default_config_json:Dictionary
 
@@ -46,24 +72,11 @@ var last_dropped_purin:Purin = null
 var last_dropped_purin_touched_something:bool = false
 
 var time_since_last_dropped_purin_sec: float = 0
-var drop_purin_cooldown_sec: float = 2.5
+var drop_purin_cooldown_sec: float = 0.25
+var previous_highest_prediction_index:int = 0
 
 var skip_saving:bool = false
-
-@export var ai_default_brain_path: String = "res://ai_dqn_model.json"
-@export var ai_brain_path: String = "user://ai_dqn_model.json"
-var adjusted_score: int = 0
-var action_to_do: int = 0
-var previous_reward:float = 0
-var previous_adjusted_score:float = 0
-var previous_noir_position:Vector2
-var previous_state:int = -100
-var previous_action:int = -100
-var previous_board_value:float = 0
-var board_value:float = 0
-var board_state:Array = []
-var previous_board_state:Array = []
-var auto_retry:bool = true
+var training:bool = true
 func _on_ready():
 	if initial_seed:
 		seed(initial_seed.hash())
@@ -75,6 +88,7 @@ func _on_ready():
 
 
 func init():
+	#print("Init player controller for ",player_name)
 	load_configs()
 	# set up the game, can be called to restart at anytime
 	set_up_game()
@@ -111,6 +125,7 @@ func get_configurations(key: String, default_default_value = {}, random:bool=tru
 	return config_value
 
 func restart_game():
+	print("Restart game for ", player_name)
 	set_up_game()
 	
 func set_up_game():
@@ -118,9 +133,12 @@ func set_up_game():
 	remove_all_purin()
 	# reset progress
 	score = 0
+	time_since_last_score = 0
 	dropped_purin_count = 0
+	time_since_last_prediction_sec = 0
 	drop_purin_cooldown_sec = 0.25
 	time_since_last_dropped_purin_sec = drop_purin_cooldown_sec
+	previous_highest_prediction_index = 0
 	skip_saving = false
 	can_drop_early = false
 	# Generate a new bag of purin (what you get next to drop)
@@ -141,40 +159,37 @@ func set_up_game():
 	last_dropped_purin = null
 	
 	if ai_controlled:
-		noir.position.x = randi_range(0, 800)
-		previous_noir_position = noir.position
-		previous_reward = 0
-		adjusted_score = 0
-		previous_adjusted_score = 0
-		previous_state = -100
-		previous_action = -100
-		board_value = 0
-		previous_board_value = 0
+		if not eyes.initialized:
+			eyes.init(fov_degrees, num_raycasts, sight)
+		if random_initial_board_state:
+			noir.position.x = randi_range(20, 780)
+			spawn_purin(Vector2(randf_range(20,780), 780), {"level": 0, "evil": false})
+			#last_dropped_purin = purin_node.get_child(0)
+		else:
+			noir.position.x = 400
 		
-		if Global.brain == null:
-			Global.brain = SDQN.new(322, 801)
-			if FileAccess.file_exists(ai_brain_path):
-				Global.brain.load(ai_brain_path)
-			elif FileAccess.file_exists(ai_default_brain_path):
-				Global.brain.load(ai_default_brain_path)
-			else:
-				Global.brain.discount_factor = 0.99
-				Global.brain.exploration_probability = 1
-				Global.brain.min_exploration_probability = 0.001
-				Global.brain.exploration_decay = 0.99
-				Global.brain.batch_size = 64
-				Global.brain.max_steps = 1024
-				Global.brain.target_update_frequency = 1024
-				Global.brain.max_memory_size = 100000
-				Global.brain.automatic_decay = true
-				Global.brain.lr_decay_rate = 1
-				Global.brain.final_learning_rate = 0.001
-				Global.brain.use_multi_threading = true
-				Global.nna = Global.generate_new_nna()
-				Global.brain.set_Q_network(Global.nna)
-			Global.brain.use_multi_threading = true
-			Global.brain.use_threading()
-			
+		if input_nodes < 0:
+			input_nodes = 1 + ((num_raycasts + 1) * 3)
+			output_nodes = 3
+		if FileAccess.file_exists(ai_brain_path):
+			brain = BrainAdvanced.new(BrainAdvanced.methods.SGD)
+			brain.load_model(ai_brain_path)
+			brain.mutate(0.05)
+		elif FileAccess.file_exists(ai_default_brain_path):
+			brain = BrainAdvanced.new(BrainAdvanced.methods.SGD)
+			brain.load_model(ai_default_brain_path)
+			brain.mutate(0.005)
+		elif not brain:
+			brain = BrainAdvanced.new(BrainAdvanced.methods.SGD)
+			brain.learning_rate = 0.001
+			brain.add_layer(input_nodes)
+			for node_count in hidden_layers:
+				brain.add_layer(node_count, "LEAKYRELU", true, true)
+			brain.add_layer(output_nodes, "LINEAR")
+			add_child(brain)
+		
+		
+	
 func remove_all_purin():
 	for purin in purin_node.get_children():
 		purin.queue_free()
@@ -209,17 +224,6 @@ func save_results():
 	# only save the last 10 after sorting
 	config_json["history"] = history.slice(0, min(max_score_history_length+1, len(history)))
 	
-	if ai_controlled:
-		print("Saving qlearning model")
-		#Global.qnet.save_to_file(ai_model_path)
-		board_state = get_board_state()
-		board_value = evaluate_board_value()
-		previous_reward = calculate_board_state_reward()
-		# remember what the last move was and that it gameovered
-		Global.brain.add_memory(previous_board_state, previous_action, -100, board_state, true)
-		Global.brain.save(ai_brain_path)
-		#Global.nna.save(ai_model_path)
-	
 	# save the results
 	var json_string := JSON.stringify(config_json)
 	# We will need to open/create a new file for this data string
@@ -248,7 +252,7 @@ func _process(delta: float) -> void:
 func check_game_over(delta):
 	if gameover_screen.visible == true:
 		
-		if Input.is_action_pressed("retry") or (ai_controlled and auto_retry):
+		if Input.is_action_pressed("retry"):
 			#print("retry action pressed? ", Input.is_action_pressed("retry"))
 			#print("auto_retry? ", auto_retry)
 			save_results()
@@ -260,7 +264,6 @@ func check_game_over(delta):
 						opponent.gameover_screen.visible = true
 						opponent.save_results()
 						opponent.restart_game()
-			return false
 		return true
 	for purin in purin_node.get_children():
 		if not is_instance_of(purin, Purin):
@@ -269,25 +272,13 @@ func check_game_over(delta):
 		if ( 
 			purin.game_over_timer_sec >= Global.game_over_threshold_sec
 		):
-			if ai_controlled:
-				print("S:%s. AS: %s. BV: %s."%[score, adjusted_score, board_value])
-			else:
+			if not ai_controlled:
 				print("GameOver %s"%[score])
 			gameover_screen.visible = true
 			purin.game_over_timer_sec = Global.game_over_threshold_sec
 			
 			if not ai_controlled:
 				get_tree().paused = true
-			if ai_controlled:
-				#print("Saving qlearning model")
-				board_state = get_board_state()
-				board_value = evaluate_board_value()
-				previous_reward = calculate_board_state_reward()
-				# remember what the last move was and that it gameovered
-				Global.brain.add_memory(previous_board_state, previous_action, -100, board_state, true)
-				Global.brain.save(ai_brain_path)
-				#Global.nna.save(ai_model_path)
-				
 			
 			return true
 		if purin.position.x < left_edge.position.x:
@@ -379,6 +370,8 @@ func spawn_purin(
 	var purin: Purin = Global.purin_object_scene.instantiate()
 	purin.position = Vector2(valid_x_pos(initial_position.x), initial_position.y)
 	var level = purin_info["level"]
+	purin.colour = Global.purin_colours_by_level[level]
+	purin.set_meta("colour", purin.colour)
 	var evil = purin_info["evil"]
 	purin.set_meta("level", level)
 	purin.set_meta("combined", false)
@@ -398,7 +391,7 @@ func spawn_purin(
 	purin.particle_system.process_material.emission_sphere_radius = new_radius * 0.5
 	
 	# if it's an evil purin then make that visible
-	if evil:
+	if evil and not training:
 		purin.evil = true
 		# if it's evil then make have more mass than normal
 		purin.mass = pow(1.4, level+2)
@@ -468,14 +461,17 @@ func combine_purin(purin1: Purin, purin2: Purin):
 		new_purin = spawn_purin(Vector2(spawn_x, spawn_y), {"level": new_level, "evil": false})
 		# set its new values based on the combined stats
 		new_purin.rotation = spawn_rotation
-		new_purin.evil = evil
+		if training:
+			new_purin.evil = false
+		else:
+			new_purin.evil = evil
 		
-		if evil:
+		if evil and not training:
 			# if it's evil then make have more mass than normal
 			new_purin.mass = pow(1.2, new_level+2)
 		elif not opponents.is_empty() and new_level >= Global.evil_purin_spawn_level_threshold:
 			remove_dead_opponents()
-			if not opponents.is_empty():
+			if not opponents.is_empty() and not training:
 				# if it's not evil then depending on level it could spawn an evil purin in opponent's game
 				var opponent: PlayerController = opponents.pick_random()
 				if is_instance_valid(opponent) and opponent.player_name != player_name:
@@ -510,9 +506,8 @@ func combine_purin(purin1: Purin, purin2: Purin):
 	scoreorb.position = Vector2(spawn_x, spawn_y)
 	scoreorb.target_position = scoreorb_target.position
 	scoreorb_node.add_child(scoreorb)
+	time_since_last_score = 0
 	scoreorb.connect("scored", gain_score)
-	if ai_controlled:
-		adjusted_score += int(int(pow(new_level+1, 2)) * (spawn_y/800.0))
 	
 	if new_purin:
 		last_dropped_purin = new_purin
@@ -526,6 +521,7 @@ func add_evil_purin(level, opponent):
 		return
 	opponent.purin_bag.add_evil_purin(level)
 	opponent.noir.change_held_purin(opponent.purin_bag.get_current_purin())
+	
 	
 func gain_score(score_amount:int):
 	score += score_amount
@@ -554,93 +550,174 @@ func purin_is_moving(purin:Purin):
 	if (abs(purin.linear_velocity.x) >= 5 or abs(purin.linear_velocity.y) >= 5):
 		return true
 	return false
-	
-func get_ai_current_state():
-	# 0 = nothing, 1 = purin that can be combined, 2 = purin close to being able to combine, 3 = unlikely to be able to combine
-	var position_value:int = 3
-	
-	var held_purin_level:int = purin_bag.get_current_purin().get("level")
-	if noir.purin_collide_level < 0:
-		position_value = 0
-	elif noir.purin_collide_level == held_purin_level:
-		position_value = 1
-	elif noir.purin_collide_level == held_purin_level + 1:
-		position_value = 2
-	else:
-		position_value = 3
-	# this ensures a one-to-one mapping between each pair (x, y, position_value)
-	# 2.6 million possible board states
-	return int(noir.drop_line.position.y * 3200) + (noir.position.x + (position_value * 800))
 
-func evaluate_board_value():
-	var new_board_value:float = 0
-	var purin_sizes:Array = [0,0,0,0,0,0,0,0,0,0]
-	for purin in purin_node.get_children():
-		var purin_level:int = purin.get_meta("level", 0) + 1
-		var purin_radius:int = purin.get_meta("radius")
-		purin_sizes[purin_level-1] += 1
-		# should give more rewards for higher purin level and closer to bottom right
-		new_board_value += purin_level * ((purin.position.y+purin_radius)/800.0) * ((purin.position.x+purin_radius)/800.0)
-	# more purin on the board means it is less valuable
-	new_board_value /= purin_node.get_child_count()
-	# idealy have one of each which would be the optimal
-	for purin_size_count in purin_sizes:
-		if purin_size_count > 0:
-			new_board_value /= purin_size_count
-	
-	return new_board_value
+#func evaluate_board_value():
+#	if purin_node.get_child_count() <=0:
+#		return 0
+#	var new_board_value:float = 0
+#	var purin_size_counts:Array[int] = [0,0,0,0,0,0,0,0,0,0]
+#	var largest_purin_level_on_right:int = -1
+#	var largest_purin_x:float = 0
+#	var smallest_purin_level_on_left:int = -1
+#	var smallest_purin_x:float = 0
+#	var largest_purin_size:int = 0
+#	var smallest_purin_size:int = 0
+#	var noir_position_score:float = 0
+#	# give rewards for purin being roughly going from small->big on the x-axis and for being closer to the bottom
+#	for purin in purin_node.get_children():
+#		var purin_level:int = purin.get_meta("level", 0)
+#		if purin.position.x + Global.purin_sizes[purin_level] > largest_purin_x:
+#			largest_purin_x = purin.position.x + Global.purin_sizes[purin_level]
+#			largest_purin_level_on_right = purin_level
+#		elif purin.position.x - Global.purin_sizes[purin_level] < smallest_purin_x:
+#			smallest_purin_x = purin.position.x - Global.purin_sizes[purin_level]
+#			smallest_purin_level_on_left = purin_level
+#		if purin_level > largest_purin_size:
+#			largest_purin_size = purin_level
+#		elif purin_level < smallest_purin_size:
+#			smallest_purin_size = purin_level
+#
+#		purin_size_counts[purin_level] += 1
+#
+#	new_board_value += noir_position_score
+#	if noir.held_purin.level >= largest_purin_size-1:
+#		# have a matching size for the largest available purin
+#		# should drop on it, so reward being closer
+#		var noir_target:Vector2 = Vector2(largest_purin_x, 0)
+#		noir_position_score += (200 - abs(noir_target.distance_to(noir.position)))*2
+#
+#	# rewards for largest on the right, smallest on the left
+#	if largest_purin_size == largest_purin_level_on_right:
+#		new_board_value += pow(largest_purin_size+1, 2)
+#	if smallest_purin_size == smallest_purin_level_on_left:
+#		new_board_value += pow(smallest_purin_size+1, 2)
+#
+#	# reward only having 0 or 1 of each
+#	for i in range(0, 10):
+#		if purin_size_counts[i] <= 1:
+#			new_board_value += (purin_size_counts[i]+1)*pow(i+1, 2)
+#
+#	return new_board_value
+#
+#func calculate_board_state_reward():
+#	# how much score did we get between last action and now
+#	var score_reward:float = (adjusted_score - previous_adjusted_score) * 0
+#	# how much did the board's overall state improve
+#	var board_value_reward:float = (board_value - previous_board_value) * 0.1
+#
+#	var total_reward:float = score_reward + board_value_reward - inactivity_punishment - overactivity_punishment
+#	return total_reward
+#
+#func get_board_state():
+#	var board_state_vector:Array = []
+#	# noir x position
+#	board_state_vector.append(min(1,max(0.0001,noir.position.x/800.0)))
+#	# score (normalized)
+#	board_state_vector.append(min(1,max(0.0001,score/999999.0)))
+#	# held purin level (normalized)
+#	board_state_vector.append((noir.held_purin.level+1)/10.0)
+#	board_state_vector.append((purin_bag.get_next_purin().get("level", 0)+1)/10.0)
+#	# for each purin give the level, x, y
+#	# first is always what is directly under noir
+#	if noir.purin_collide_level >= 0:
+#		board_state_vector.append((noir.purin_collide_level+1)/10.0)
+#		board_state_vector.append((0.5+(noir.purin_collide_level-noir.held_purin.level)/10.0))
+#		board_state_vector.append(min(1,max(0.0001,int(pow(noir.purin_collide_level+2, 2))/999999.0)))
+#	# then the rest of them starting from the highest band to lowest
+#	for y in range(0, 800, 10):
+#		for purin in purin_node.get_children():
+#			if is_instance_valid(purin) and purin.position.y >= y and purin.position.y < y + 10:
+#				var purin_level:int = purin.get_meta("level", 0)
+#				#var target:Vector2 = Vector2(Global.purin_sizes[purin_level], 800-Global.purin_sizes[purin_level])
+#				board_state_vector.append((purin_level+1)/10.0)
+#				board_state_vector.append(min(1,max(0.0001,purin.position.x/800.0)))
+#				board_state_vector.append(min(1,max(0.0001,purin.position.y/800.0)))
+#				#board_state_vector.append(min(1,max(0.0001,abs(target.x-purin.position.x)/800.0)))
+#				#board_state_vector.append(min(1,max(0.0001,abs(target.x-purin.position.y)/800.0)))
+#	# if the vector is not long enough pad it out to INPUT_SIZE with 0s
+#	if len(board_state_vector) < Global.INPUT_SIZE:
+#		for i in range(len(board_state_vector), Global.INPUT_SIZE):
+#			board_state_vector.append(0)
+#	if len(board_state_vector) > Global.INPUT_SIZE:
+#		board_state_vector = board_state_vector.slice(0, Global.INPUT_SIZE)
+#
+#	return board_state_vector
 
-func calculate_board_state_reward():
-	# how much score did we get between last action and now
-	var score_reward:float = (adjusted_score - previous_adjusted_score) * 0.05
-	# how much did the board's overall state improve
-	var board_value_reward:float = (previous_board_value - board_value) * 0.95
+func predict_next_action():
+	var results:Array[Array] = eyes.get_inputs_from_raycasts(noir, noir.held_purin.level, purin_bag.get_next_purin_level())
+	var _inputs = results[0]
+	var _basic_suggestions = results[1]
+	# include player's current position
+	_inputs.append(noir.position.x/800.0)
 	
-	return score_reward + board_value_reward
-
-func get_board_state():
-	var board_state_vector:Array = []
-	# score (normalized)
-	board_state_vector.append(score/999999.0)
-	# held purin level (normalized)
-	board_state_vector.append(score/10.0)
-	# for each purin give the level, x, y, xvel, yvel
-	for purin in purin_node.get_children():
-		board_state_vector.append((purin.get_meta("level")+1)/10.0)
-		board_state_vector.append(purin.position.x/800.0)
-		board_state_vector.append(purin.position.y/800.0)
-		board_state_vector.append(purin.linear_velocity.x/9999.0)
-		board_state_vector.append(purin.linear_velocity.y/9999.0)
-	# if the vector is not long enough pad it out to 322 with 0s
-	if len(board_state_vector) < 322:
-		for i in range(len(board_state_vector), 322):
-			board_state_vector.append(0)
-	return board_state_vector
+	# make a new prediction
+	var _predictions:Array = brain.predict(_inputs)
+	#print(_predictions)
+	var highest_prediction:float = 0.0
+	var highest_prediction_index:int = 0
+	for i in range(0, _predictions.size()):
+		var _prediction:float = _predictions[i]
+		if _prediction > highest_prediction and (previous_highest_prediction_index != i or i !=1):
+			highest_prediction = _prediction
+			highest_prediction_index = i
+	previous_highest_prediction_index = highest_prediction_index
+	if player_name == "ai0" or player_name == "ai1":
+		# if there are any basic solutions then train on those
+		if _basic_suggestions.size() > 0:
+			var _basic_output:Array[int] = []
+			_basic_output.resize(output_nodes)
+			_basic_output.fill(0)
+			_basic_output[_basic_suggestions[0]] = 1
+			#print(_inputs, _basic_output)
+			#print("use basic answer of ", _basic_suggestions[0])
+			# prediction isn't confident so use basic suggestion
+			if highest_prediction < 50:
+				brain.train(_inputs, _basic_output)
+				#print("use basic answer of ", _basic_suggestions[0])
+				debug_label.text = "%s\nBS %s\nPD %s (%s)"%[hidden_layers, _basic_suggestions[0], highest_prediction_index, highest_prediction]
+				return _basic_suggestions[0]
+		elif time_since_last_dropped_purin_sec >= drop_purin_cooldown_sec * 20:
+			# it hasn't dropped anything for a long time despite being confident
+			# force it to drop and teach it
+			print("force drop")
+			var _basic_output:Array[int] = []
+			_basic_output.resize(output_nodes)
+			_basic_output.fill(0)
+			_basic_output[1] = 1
+			brain.train(_inputs, _basic_output)
+			#print("use basic answer of ", _basic_suggestions[0])
+			debug_label.text = "%s\nBS %s\nPD %s (%s)"%[hidden_layers,1, highest_prediction_index, highest_prediction]
+			return 1
+		
+	debug_label.text = "%s\nPD %s (%s)"%[hidden_layers, highest_prediction_index, highest_prediction]
+	return highest_prediction_index
 
 func process_ai(delta):
+	time_since_last_prediction_sec += delta
+	time_since_last_score += delta
 	if gameover_screen.visible:
 		return
-	board_state = get_board_state()
-	board_value = evaluate_board_value()
-	previous_reward = calculate_board_state_reward()
 	
-	self.debug_label.text = "Board Value: %s. Previous Action: %s. Previous Reward: %s. Adjusted Score: %s. Steps: %s. Update Steps: %s. Trainings Done: %s. Exploration Probability: %s"%[snapped(board_value, 0.01), snapped(previous_action, 0.01), snapped(previous_reward, 0.01), snapped(adjusted_score, 0.01), Global.brain.steps,  Global.brain.update_steps,  Global.brain.trainings_done, snapped(Global.brain.exploration_probability, 0.01)]
 	# wait for the last dropped purin to stop before taking another action
 	if is_instance_valid(last_dropped_purin) and purin_is_moving(last_dropped_purin):
 		return
-	if time_since_last_dropped_purin_sec >= drop_purin_cooldown_sec:
-		# if there was a previous action we took then let's record how it went
-		if previous_action >= 0 and Global.brain:
-			Global.brain.add_memory(previous_board_state, previous_action, previous_reward, board_state, false)
+	
+	if time_since_last_prediction_sec >= predict_every_sec:
 		
-		# make a new prediction
-		action_to_do = Global.brain.choose_action(board_state)
-		# drop the purin there
-		noir.position.x = action_to_do
-		drop_purin()
-		# remember what we just did so next update we can see the results of it
-		previous_noir_position = noir.position
-		previous_action = action_to_do
-		previous_board_state = board_state
-		previous_board_value = board_value
-		previous_adjusted_score = adjusted_score
+		var action_to_do:int = predict_next_action()
+		time_since_last_prediction_sec = 0
+		#noir.position.x = valid_x_pos(40 + (action_to_do*(720.0/float(num_raycasts))))
+		#drop_purin()
+		if action_to_do == 0:
+			# move left
+			noir.position.x = valid_x_pos(noir.position.x - (move_speed*delta))
+		elif time_since_last_dropped_purin_sec >= drop_purin_cooldown_sec and action_to_do == 1:
+			# drop the purin there
+			drop_purin()
+		elif action_to_do == 2:
+			# move right
+			noir.position.x = valid_x_pos(noir.position.x + (move_speed*delta))
+#		elif action_to_do == 3:
+#			# jump immediately to the given position
+#			noir.position.x = valid_x_pos(action_to_do*800.0)
+	

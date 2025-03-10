@@ -93,9 +93,9 @@ config_path = "user://ai_v2.json"
 default_config_path = "res://ai_v2.json"
 ai_controlled = true
 vs_player = true
+debug = true
 purin_bag = NodePath("../PurinBagAI")
 opponents = [NodePath("../Player")]
-debug = true
 
 [node name="Player" parent="." node_paths=PackedStringArray("purin_bag", "opponents") instance=ExtResource("13_3k2pk")]
 position = Vector2(47, -2)
