@@ -1,0 +1,3113 @@
+Godot Engine v4.1.1.stable.official.bd6af8e0e - https://godotengine.org
+ 
+
+Running tests...
+Testing learning over episodes...
+[1, 0, 0] -> [0, 1, 0] via 1 reward was -1
+Avg Return: -2.53472927622678
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.54552700677338
+Avg Advantage: nan
+Episode 0: Avg Return = -2.000
+✗ Fail: The average return did not improve in episode 0!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.53798326522567
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.54901310655039
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.53913072651603
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.54308263861661
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.55487724181675
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.54376569403768
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.54818936419279
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.56074838192287
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.54840817389054
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.55330354086358
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.5666266279497
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.55305825291284
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.55842526786697
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.57251208118611
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.55771601828506
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.56355464477391
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.57840484313288
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.5623815575339
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.56869177149262
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 1!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.57021276614788
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.58593198528631
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.56860664256039
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.57536015631061
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.59184219959572
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 2!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.57867379434883
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.59538310625723
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.57639100837719
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.58383459275429
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.60130596663967
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.58108884996958
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.5890035308438
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.60723663207554
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.58579490255156
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.59418071028045
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.61317520546709
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 3!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.59752327756628
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.61674241051593
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.59363752677377
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.60271448314229
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.62269423152312
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.59836598147486
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.60791419657899
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.62865422863806
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.60310297497976
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.61312252089324
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 4!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.61467030834931
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 5!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.61621891365673
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.63793405590893
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.61102655796299
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.62144128437565
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.64391629500372
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.61578738616109
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.62667252955911
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.64990707923309
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.6205570837858
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.63191275364107
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.6559065134197
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.62533574336923
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.63716206145077
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.66191470265515
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.63012345784886
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.64242055821724
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.66793175230399
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.63492032057184
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.64768834957386
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.67395776800783
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.63972642529934
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.65296554156288
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.67999285568937
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.64454186621086
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.65825224064002
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.68603712155654
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.6493667379086
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.66354855367905
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.69209067210653
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 6!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.66700510951795
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.6957617094286
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.65744063184456
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.67231778637217
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.70183076898802
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.66229124787427
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.67764035859792
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.70790939219511
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.66715164301358
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.68297293464291
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.7139976866661
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.67202191389731
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 7!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.68831562339424
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 8!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.68991258722577
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.72180336129608
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.67855809827134
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.69526859945666
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.72791455613023
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.68345216083667
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.70063497399557
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 9!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.70224033682906
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.73575234127105
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.69002413562357
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.70762035984673
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.74188700755299
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.69494252942635
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.71301099730483
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.74803194937208
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.69987135054435
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.71841236067344
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.75418727652576
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.70481069868025
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.72382456189314
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.76035309914706
+Avg Advantage: nan
+Episode 10: Avg Return = -10.091
+✗ Fail: The average return did not improve in episode 10!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.72738900217361
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.76412153379842
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 11!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.73095972060667
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.76789522002776
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.71645558713765
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.73639794425495
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.77408551341806
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.72143114585093
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.74184737233788
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.7802866606756
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.7264176659808
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.74730811889656
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 12!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.74894697860283
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.78825052408465
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.73312909548604
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.75442262094445
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.79447731562964
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 13!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.7580442841003
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.79829649434128
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.7415420542182
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.76353946739128
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.80454182586966
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.7465740999329
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.76904641966778
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.81079856282953
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.75161762029846
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.77456525750519
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.81706681878855
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.75667272019102
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 14!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.78009609799886
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.82334670769307
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.76173950501267
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.78563905876905
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.82963834387234
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.76681808069629
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.79119425796593
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.83594184204275
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.77190855371042
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.79676181427453
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.84225731731214
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 15!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.80046763532793
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.84615170224783
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.78049178326691
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.80605627270384
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.85248717053829
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 16!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.80978072200286
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.85639778415227
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.78911347906915
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.81539077727264
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.86275356154173
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 17!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.81913411868948
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.86668061720556
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.79777420168195
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.82476593173143
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.87305702225601
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.80293922930158
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.83041081324347
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.87944609036262
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.80811691281597
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.83606888581313
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.88584793957954
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.81330736318262
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.84174027260292
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.89226268838678
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.8185106919394
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.84742509735556
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.89869045569457
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.82372701120972
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.85312348439911
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.90513136084776
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.82895643370759
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.85883555865218
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.9115855236302
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.83419907274284
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.86456144562916
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.91805306426909
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.83945504222627
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.87030127144542
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.92453410343946
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.84472445667489
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.87605516282258
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.93102876226853
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.85000743121715
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.88182324709383
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.93753716234015
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 18!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.8857095731141
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 19!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.88745887646097
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.94345861737637
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.86082343836139
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.89325560023761
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.94999450653967
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.86614878106221
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.89906689413915
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.95654449722552
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.87148814937459
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.9048928880124
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.96310871295209
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.87684166157677
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.91073371234221
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.9696872777166
+Avg Advantage: nan
+Episode 20: Avg Return = -10.048
+✗ Fail: The average return did not improve in episode 20!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.91468429142207
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.9737979428526
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.88592489054502
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.92055049450918
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.98040051062254
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.89131717365049
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.92643187638178
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.98701775768554
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.89672404047783
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.93232856992132
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -2.99364980986923
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.90214561236918
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.93824070867257
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 21!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.94003586767965
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 22!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.94183237932626
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.00412883229315
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.91144334954784
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.94776958937984
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.01080066251013
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.91690599707047
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.95372259390243
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.01748775655076
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.92238379796873
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.95969152893102
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 23!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.96150559236065
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.02612546710395
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.92983334558632
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.96749548814842
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.03284851666303
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.93534764682619
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.9735016295804
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.03958725635055
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.94087751810054
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.97952415501927
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.04634181622356
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 24!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.9836348554036
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.05059343543587
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.95029322547971
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 25!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.98968547534515
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.05737450842629
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.95586583626885
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -2.99575284984952
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.06417174941299
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.96145448725487
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.00183711991692
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.07098529048714
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.96705930795101
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.00793842727626
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.07781526429477
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 26!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.01211854061636
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 27!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.01398145400815
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.08411331704179
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.97864099057763
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.02011728060973
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.09097628260816
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.98429648494572
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.02627056795594
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.09785607836125
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.98996867564663
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.0324414607732
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.10475283929367
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 28!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.03668187698814
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.10911738543908
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -2.9996522230616
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.04288300790275
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.11604262490022
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.00537029518492
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.04910213279113
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.12298519162973
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.01110555838665
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.05533939920425
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.12994522281245
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.01685814879608
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.06159495547238
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.13692285623033
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.02262820332965
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.06786895071107
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.14391823026736
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.02841585969722
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.0741615348271
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.15093148391454
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.03422125640828
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.08047285852455
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.15796275677478
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.04004453277818
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.0868030733108
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 29!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.08873920740745
+Avg Advantage: nan
+Episode 30: Avg Return = -9.613
+✗ Fail: The average return did not improve in episode 30!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.09067695658914
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.16913811745271
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.05014078689859
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.09703792779295
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.17621785972729
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.05601408793342
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.10341818963187
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.18331613471781
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 31!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.10784166729838
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.18784034641508
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.06607603605617
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.114255136315
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.19496980677684
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.07199957606879
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.12068830978906
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.20211818213521
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.07794189982125
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.12714134450357
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.20928561686877
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.08390315276369
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.13361439808989
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.21647225601062
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.08988348120531
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.14010762903403
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.22367824525344
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.09588303232101
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.1466211966829
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.23090373095473
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.10190195415796
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.15315526125061
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.23814886014197
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.10794039564229
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.15970998382482
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.24541378051784
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.11399850658577
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.16628552637301
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 32!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.16830378383436
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 33!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.17032379995716
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.25699527091268
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.12456134378132
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.17693331009903
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.26431349620735
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.13067453983014
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.18356406909034
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.2716520584085
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 34!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.18820579352341
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.27636571351223
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 35!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.19285980772658
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.28108929100044
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.14557866946145
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.19954258007901
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.28847608287126
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.1517620219158
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.20624715815048
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.29588372218521
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.15796612771501
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.21297371033619
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.30331236245388
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.16419114407974
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.21972240596311
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.31076215791287
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.17043722917812
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.22649341529655
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.31823326352728
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.17670454213279
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 36!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.23328690954675
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.32572583499716
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.18299324302804
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.24010306087556
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.333240028763
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.18930349291695
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.24694204240302
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.34077600201127
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.19563545382861
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.25380402821411
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 37!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.25591799462263
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.35057993773629
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.20436408835047
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.2628103756743
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.35816730194686
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.21074842890053
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 38!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.26972616794606
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.36577697534654
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.21715502821094
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.27666554880827
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.37340911847232
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.22358405262442
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.28362869662556
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.38106389263721
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.23003566949852
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.29061579076362
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.38874145993593
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.23651004721303
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.29762701159609
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.3964419832506
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.24300735517748
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.30466254051139
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.40416562625649
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.24952776383872
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.31172255991966
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.41191255342781
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.25607144468843
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.31880725325963
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.41968293004342
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.26263857027078
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.32591680500563
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.4274769221927
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.26922931419006
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.33305140067451
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.43529469678142
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.27584385111843
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.34021122683268
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.44313642153752
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.28248235680361
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.34739647110311
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.45100226501709
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.28914500807671
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.35460732217241
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.45889239661027
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.29583198286004
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 39!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.36184396979787
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.46680698654718
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.302543460175
+Avg Advantage: nan
+Episode 40: Avg Return = -10.268
+✗ Fail: The average return did not improve in episode 40!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.36910660481461
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.47474620590396
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.30927962015
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 41!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.37639541914267
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.48271022660873
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.31604064402842
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.38371060579419
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.49069922144766
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.32282671417662
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.39105235888058
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.49871336407104
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.32963801409198
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.39842087361973
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.50675282899938
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.33647472841103
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.40581634634325
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.51481779162956
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.34333704291758
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.4132389745037
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.52290842824095
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.35022514455088
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.42068895668192
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 42!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.42300080044207
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.53347525449673
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.35978995965639
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.4304870448542
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.54162660771296
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.36674034827554
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.43800110953057
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.54980423184567
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.37371715711066
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 43!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.44554319689819
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 44!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.44788550000262
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.56049004683358
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.38341447345686
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.45546475355966
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.56872982055219
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.39045510688872
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.4630725053582
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.57699647286135
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.39752280700162
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.47070896175616
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.58529018715666
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.40461776986985
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.47837433029686
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.59361114777159
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.41174019279555
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.48606881971648
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.60195953998394
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.41889027431732
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.49379263995164
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.61033555002236
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.42606821421888
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.50154600214693
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.6187393650729
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.43327421353783
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 45!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.5093291186625
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.6271711732856
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 46!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.51497612519602
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 47!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.51740678356756
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 48!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.51983984440719
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.63789553571022
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.45148444878237
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 49!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.52769406894251
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.64639467426497
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.45879066680589
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.53557877066808
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.65492245903848
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.46612584609119
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.54349416743899
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.66347908270039
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.47349019459159
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.55144047836753
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.67206473892134
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.48088392157046
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.55941792383088
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.68067962237968
+Avg Advantage: nan
+Episode 50: Avg Return = -9.765
+✗ Fail: The average return did not improve in episode 50!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.5652306878659
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.686397610537
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.49380442051086
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.57326249134462
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.69506255529359
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.50127978005554
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.58132603144488
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.70375726242051
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.50878530968181
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.58942153331199
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.71248193046478
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.51632122497331
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 51!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.59754922339287
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.72123675901412
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.52388774287618
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.60570932944395
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.73002194870397
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.53148508170841
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.61390208053905
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.73883770122456
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.53911346116924
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.62212770707736
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.74768421932801
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.54677310234866
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.63038644079131
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.75656170683546
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.55446422773688
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.63867851475459
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.76547036864428
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.56218706123391
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.64700416339016
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.77441041073531
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.56994182815917
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 52!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.65536362247819
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 53!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.65798132483699
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.78614493034847
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.58080855580244
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.66638582688301
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.79515946000016
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.58864056773774
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.67482469591272
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.80420607156725
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.59650527744175
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.68329817234197
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.81328497590464
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.60440291649555
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.69180649797925
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.82239638499025
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.61233371795143
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.70034991603378
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.83154051193258
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.62029791634282
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.7089286711237
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.84071757097815
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.62829574769427
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.71754300928422
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.84992777751914
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.63632744953151
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.72619317797585
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.85917134810098
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.64439326089152
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.73487942609256
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.86844850043002
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.65249342233266
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.74360200397007
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.87775945338121
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.66062817594489
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.75236116339407
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.8871044270059
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.66879776536
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.76115715760853
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.89648364253958
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.67700243576192
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.76999024132395
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.90589732240976
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.68524243389705
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.77886067072571
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.91534569024385
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 54!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.78545216858402
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.92172328460712
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.69975773355916
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.79438819250697
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 55!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.79720264754576
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.93419414888438
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.71145132309595
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.80618917083595
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.94375029670621
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.71984046135596
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.81521409550978
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.95334206671526
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.72826620757091
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.82427768540838
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.96296968892486
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.73672881819839
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.83338020589888
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.97263339459786
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.7452285513325
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.84252192388277
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.98233341625483
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.75376566671461
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.85170310780444
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.99206998768237
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 56!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.85856285077676
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -3.99867247345277
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.76883811311894
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.8678134665618
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.00847234017535
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.77747965593991
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.87710428630209
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.01830940585112
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.78615956843165
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.8864355842665
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.02818390914798
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.79487811829574
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.89580763630681
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.0380960900401
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 57!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.9028324958046
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.04483629053431
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.81029146819492
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 58!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.91227631554978
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.05481381737715
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.81911802683695
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.92176164831213
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.06482968905809
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 59!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.92888352943036
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.07165011559892
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.83473345058223
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.93844200286971
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.08173254360127
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.84367013827738
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.94804276055586
+Avg Advantage: nan
+Episode 60: Avg Return = -10.311
+✗ Fail: The average return did not improve in episode 60!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.9510864494178
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.09504670979475
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.85632260908292
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.96074390886805
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.10522166175048
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.86535655978247
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.97044432839404
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.11543623280507
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.87443159115793
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.98018799821664
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.12569067511353
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.88354798818312
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.98997521022425
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.13598524222463
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.892706037652
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -3.99980625798143
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.14632018909004
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.90190602819023
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.00968143673763
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.15669577207347
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.91114825026687
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.01960104343584
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.16711224895989
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.92043299620609
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.02956537672129
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.17756987896474
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.92976056019893
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.0395747369502
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.18806892274334
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.93913123831515
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.04962942619844
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.19860964240021
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.94854532851508
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.05972974827029
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.20919230149854
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.95800313066154
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.06987600870717
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.21981716506968
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.96750494653184
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.08006851479634
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.2304844996227
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.97705107982978
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.09030757557968
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.24119457315403
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -3.98664183619774
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.10059350186243
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 61!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.10387522677476
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.25538045819003
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.00028663257123
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.11422421041031
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.26619280172928
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.0099856034533
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 62!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.12462079959183
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.27704880584259
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 63!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.13253372087546
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.28453031018862
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.02724164018836
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.14301452807217
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.29546259846411
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.0370678080599
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.15354381048556
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 64!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.15690933554839
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.3099556276747
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.05106785472953
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.16750390845033
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.3209936491373
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.06100611635419
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.17814771911168
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.33207676783542
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.07099166548804
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 65!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.18884109372298
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.34320526665714
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.08102482660659
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.19958436032196
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.35437943008303
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.09110592625119
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.21037784880229
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.36559954419648
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.10124424385611
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.2212219241587
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.37689941922448
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.11154522627038
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.23215091355526
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 66!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.23567719946631
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.39192530789698
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.1262703584106
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.24667616814702
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.40333959466513
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.13669300813959
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.25772775531025
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.41480253626466
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.14716714023218
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.26883231019902
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.42631444003472
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.15769310509307
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.27999018406001
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.43787561508141
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.16827125532273
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 67!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.29120173015299
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.44948637228907
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 68!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.29982185587049
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.45756405119201
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.18717116332839
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.31112858542945
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.46926190028976
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.19789559434342
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.3224899631929
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 69!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.32616722232398
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.48484078713892
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.21325830944055
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.3376025404603
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.49665923943279
+Avg Advantage: nan
+Episode 70: Avg Return = -10.437
+✗ Fail: The average return did not improve in episode 70!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.34641010020565
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.5048924543221
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.23256590253897
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.35794324302547
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.51680038631279
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.24351535682607
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.36953252520682
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 71!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.37328808695736
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.53266926837664
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.2592147908914
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.38495337945556
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 72!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.38873281195159
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.54863459015359
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.27502621902659
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.40047480179405
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.56073912296957
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.28618575366742
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.41227431820292
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.57289668994008
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.29740171181612
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.4241317385902
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.58510762392793
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.30867447458568
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.43604744249999
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.59737225972232
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.32000442546005
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.44802181161787
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.60969093405103
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.33139195030758
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.46005522978018
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.62206398559269
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.34283743739447
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 73!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.47214808298333
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.63449175498919
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.35434127739832
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.48430075939305
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.64697458485808
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 74!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.49371964707667
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.65571798620317
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.37496037303445
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 75!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.50597862683534
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.66829793383421
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.38662808386384
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.51829850346521
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.68093390481268
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.39835563971865
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.53067967331694
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.69362624940191
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.41014344292787
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.54312253495406
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.70637531990142
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.42199189830945
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.55562748916218
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.7191814706598
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.43390141318407
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 76!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.56819493895815
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.73204505808764
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.4458723973888
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.58082528959913
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.74496644067055
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.45790526329084
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.59351894859172
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.75794597898229
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.47000042580133
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 77!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.60627632570106
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.77098403569793
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.48215830238909
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 78!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.61909783295979
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.78408097560709
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.49437931309446
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.63198388467716
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.79723716562731
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.50666388054309
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.64493489744796
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.81045297481747
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.51901242995982
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.6579512901615
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.82372877439126
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.53142538918254
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.67103348401053
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.83706493773078
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 79!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.68125455812913
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.84647686025538
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.5537476180874
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.69445393138675
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.85991996294809
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.56634180753674
+Avg Advantage: nan
+Episode 80: Avg Return = -10.222
+✗ Fail: The average return did not improve in episode 80!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.70772027224264
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.87342448244282
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.57900204295716
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.72105401057919
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.88699080052644
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.59172876480567
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.73445557862408
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.90061930122034
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.60452241623156
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.74792541095898
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.9143103707945
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 81!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.75847774852229
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.92399645779351
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.62755502346675
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.77206922375428
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 82!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.7765400565811
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.94242540115004
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.64623134018461
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.790225650106
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 83!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.79472576085055
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.96097288795369
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.66504633486646
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.80850630163204
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 84!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.81303587979577
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.97963989015889
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 85!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.82385648679701
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -4.98954534089315
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.69444408854515
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.83778738005889
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -5.00366639057908
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.70777106954596
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.85178992569211
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -5.01785311332146
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.72116889466111
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.86586457918164
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -5.0321059160189
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.73463803322933
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.8800117984511
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -5.04642520795643
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.74817895742435
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.89423204387111
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -5.06081140082038
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.76179214226892
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.90852577826756
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -5.07526490871333
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.77547806564863
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 86!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.92289346692983
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -5.08978614816916
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.78923720832593
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 87!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.93733557761902
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -5.10437553816814
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.80307005395397
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.95185258057604
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -5.11903350015219
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.81697708909052
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.9664449485297
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 88!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.9712659880884
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -5.13873727405656
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.8371477180248
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -4.98596136154636
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -5.15356166190029
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.85123436751778
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -5.0007332361852
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -5.16845608200783
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.86539685549455
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -5.015582093311
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -5.18342096688011
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.87963568121195
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -5.03050841675353
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -5.19845675156174
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.89395134690453
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -5.04551269287399
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -5.2135638736568
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.90834435779839
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -5.06059541057278
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -5.22874277334465
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.92281522212487
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -5.07575706129713
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -5.24399389339586
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.93736445113432
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -5.09099813904869
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -5.25931767918818
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.95199255910975
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -5.1063191403911
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -5.27471457872264
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.9667000633805
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -5.12172056445747
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -5.29018504263972
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.98148748433587
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -5.13720291295772
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -5.30572952423564
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -4.99635534543867
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -5.152766690186
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 89!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -5.15793902375304
+Avg Advantage: nan
+Episode 90: Avg Return = -10.132
+✗ Fail: The average return did not improve in episode 90!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -5.16311513038979
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -5.33200735133941
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -5.02467612285692
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 91!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -5.17882020361018
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 92!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -5.18403039685853
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -5.35312820157214
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -5.04651109682089
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -5.19984825893575
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -5.36899033016963
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -5.06172104223127
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -5.21574967734447
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 93!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -5.22102494793191
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -5.39035939989954
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 94!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -5.23363361679569
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -5.40174163159585
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 95!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -5.24629088858953
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -5.41316159730978
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -5.10834772179157
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -5.26243728181891
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -5.42932846722191
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -5.1238905509561
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -5.27866925329719
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -5.44557371026287
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -5.13951862726709
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -5.29498733148051
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -5.46189780804079
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -5.15523250485838
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -5.31139204748489
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -5.47830124499804
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -5.17103274107644
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -5.3278839350929
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -5.49478450842839
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -5.18691989649332
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 96!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -5.34446353076011
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -5.51134808849424
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -5.20289453491956
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 97!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -5.36113137362164
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -5.52799247824394
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -5.21895722341704
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -5.37788800549844
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -5.54471817362917
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -5.23510853231174
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -5.39473397090362
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -5.56152567352247
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -5.25134903520645
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -5.41166981704866
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -5.57841547973479
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -5.26767930899335
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -5.42869609384949
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -5.59538809703314
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -5.28409993386656
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -5.44581335393257
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -5.61244403315835
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -5.30061149333458
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -5.46302215264079
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -5.62958379884287
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -5.31721457423264
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -5.48032304803937
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -5.6468079078287
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -5.33390976673497
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -5.4977166009216
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -5.66411687688536
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -5.35069766436696
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -5.51520337481454
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -5.68151122582796
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -5.36757886401721
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -5.53278393598459
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -5.69899147753538
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -5.38455396594956
+Avg Advantage: nan
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -5.55045885344302
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -5.71655815796847
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -5.40162357381486
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 98!
+[1, 0, 0] -> [0, 1, 0] via -1 reward was -1
+Avg Return: -5.56822869895133
+Avg Advantage: nan
+[0, 1, 0] -> [0, 0, 1] via -1 reward was -1
+Avg Return: -5.73421179618836
+Avg Advantage: nan
+[0, 0, 1] -> [1, 0, 0] via -1 reward was -1
+Avg Return: -5.41878829466283
+Avg Advantage: nan
+✗ Fail: The average return did not improve in episode 99!
+✗ Fail: Learning did not reach the expected return threshold.
+Learning test passed.
+
+Test Results:
+Total: 1
+Passed: 0
+Failed: 101

@@ -1,59 +1,59 @@
 extends Node
 # This class is always available
-var settings_config_location:String = "user://settings.json"
-var default_settings_config_location:String = "res://settings.json"
+var settings_config_location: String = "user://user_settings.json"
+var default_settings_config_location: String = "res://user_settings.json"
 var purin_sizes = [50, 100, 125, 156, 175, 195, 250, 275, 300, 343]
-var purin_colours_by_level:Array[Color] = [Color.WHITE, Color.DARK_ORANGE, Color.RED, Color.PINK, Color.PURPLE, Color.BLUE, Color.GREEN, Color.YELLOW, Color.BLACK, Color.GOLD, Color.WHITE]
+var purin_colours_by_level: Array[Color] = [Color.WHITE, Color.DARK_ORANGE, Color.RED, Color.PINK, Color.PURPLE, Color.BLUE, Color.GREEN, Color.YELLOW, Color.BLACK, Color.GOLD, Color.WHITE]
 var highest_possible_purin_level = 9
 var game_over_threshold_sec = 6
 var evil_purin_spawn_level_threshold = 9
 
 # audio sliders 0.0 - 1.0
-var volume_master:float = 0.5
-var volume_menu:float = 0.5
-var volume_game_sfx:float = 0.5
-var volume_voices:float = 0.5
-var volume_music:float = 0.5
+var volume_master: float = 0.5
+var volume_menu: float = 0.5
+var volume_game_sfx: float = 0.5
+var volume_voices: float = 0.5
+var volume_music: float = 0.5
 
 # graphics
-var enable_rain:bool = true
-var fullscreen:bool = false
+var enable_rain: bool = true
+var fullscreen: bool = false
 
 # controls
-var active_controls:String = "mouse"
+var active_controls: String = "mouse"
 # enable or disable control types (applies to menus and in-game)
-var controls_mouse:bool = true
-var controls_keyboard:bool = true
-var controls_controller:bool = true
-var controls_move_speed:float = 50.0
+var controls_mouse: bool = true
+var controls_keyboard: bool = true
+var controls_controller: bool = true
+var controls_move_speed: float = 50.0
 # add additional keybinds for the actions, allow overlap with drop (applies to menus and in-game)
-var custom_key_up:Key = KEY_W
-var custom_key_down:Key = KEY_S
-var custom_key_left:Key = KEY_A
-var custom_key_right:Key = KEY_D
+var custom_key_up: Key = KEY_W
+var custom_key_down: Key = KEY_S
+var custom_key_left: Key = KEY_A
+var custom_key_right: Key = KEY_D
 # for menus primarily
-var cusom_key_accept:Key = KEY_ENTER
-var custom_key_drop:Key = KEY_S
-var custom_key_retry:Key = KEY_R
-var custom_key_pause:Key = KEY_ESCAPE
-var zoom_in:Key = KEY_PLUS
-var zoom_out:Key = KEY_MINUS
+var cusom_key_accept: Key = KEY_ENTER
+var custom_key_drop: Key = KEY_S
+var custom_key_retry: Key = KEY_R
+var custom_key_pause: Key = KEY_ESCAPE
+var zoom_in: Key = KEY_PLUS
+var zoom_out: Key = KEY_MINUS
 
 # language: "en" or "jp"
-var language:String = "en"
+var language: String = "en"
 
 # Accessibility settings
 # if true show the purin's "level" on them
-var numbered_purin:bool = false
+var numbered_purin: bool = false
 # if enabled will drop continuously until you press the key again
-var drop_troggle:bool = true
+var drop_troggle: bool = true
 # how often it should auto drop
-var auto_drop_cooldown_sec:float = 1.0
+var auto_drop_cooldown_sec: float = 1.0
 
 # the normal game speed, slow it down to be easier. 0.5-1.0
-var game_speed:float = 1
+var game_speed: float = 1
 # if enabled the AI will only drop purin after you do
-var turn_based_mode:bool = false
+var turn_based_mode: bool = false
 
 var score_orb_scene: Resource = load("res://assets/scenes/ScoreOrb.tscn")
 var evil_orb_scene: Resource = load("res://assets/scenes/EvilOrb.tscn")
@@ -66,18 +66,19 @@ const purin_file_path_root = "res://assets/images/game/"
 
 var ai_default_brain_path: String = "res://ai_brain_model.json"
 var ai_brain_path: String = "user://ai_brain_model.json"
-var best_brain:PPO
-var BRAIN_HIDDEN_LAYERS:Array[int] = [64,64,16,16,8,8]
-var OUTPUT_NODES:int = 800
+var best_brain: PPO
+var INPUT_NODES: int = 67
+var BRAIN_HIDDEN_LAYERS: Array[int] = [128, 64, 64, 32]
+var OUTPUT_NODES: int = 3
 
-var experience_pool:ExperiencePool = ExperiencePool.new()
+var experience_pool: ExperiencePool = ExperiencePool.new()
 var buffer_size = 1024
-var batch_size = 512
-var training_interval = 512
+var batch_size = 128
+var training_interval = 128
 var steps_since_training = 0
-var async_trainer:AsyncTrainer = AsyncTrainer.new()
+var async_trainer: AsyncTrainer = AsyncTrainer.new()
 	
-func read_json(path:String) -> Dictionary:
+func read_json(path: String) -> Dictionary:
 	if not FileAccess.file_exists(path):
 		return {}
 	var json_string = FileAccess.get_file_as_string(path)
@@ -86,8 +87,8 @@ func read_json(path:String) -> Dictionary:
 	return json_dict
 	
 func load_settings():
-	var config_json:Dictionary = read_json(settings_config_location)
-	var default_config_json:Dictionary = read_json(default_settings_config_location)
+	var config_json: Dictionary = read_json(settings_config_location)
+	var default_config_json: Dictionary = read_json(default_settings_config_location)
 	if config_json.is_empty():
 		config_json = default_config_json
 	# audio sliders 0.0 - 1.0
@@ -112,7 +113,7 @@ func load_settings():
 	custom_key_up = config_json.get("custom_key_up", custom_key_up)
 	custom_key_down = config_json.get("custom_key_down", custom_key_down)
 	custom_key_left = config_json.get("custom_key_left", custom_key_left)
-	custom_key_right =config_json.get("custom_key_right", custom_key_right)
+	custom_key_right = config_json.get("custom_key_right", custom_key_right)
 	# for menus primarily
 	cusom_key_accept = config_json.get("cusom_key_accept", cusom_key_accept)
 	custom_key_drop = config_json.get("custom_key_drop", custom_key_drop)
@@ -141,15 +142,15 @@ func load_settings():
 	update_all_volumes()
 	
 	if FileAccess.file_exists(ai_brain_path):
-		best_brain = PPO.new(124, BRAIN_HIDDEN_LAYERS, OUTPUT_NODES)
+		best_brain = PPO.new(INPUT_NODES, BRAIN_HIDDEN_LAYERS, OUTPUT_NODES)
 		best_brain.load_model(ai_brain_path)
 	elif FileAccess.file_exists(ai_default_brain_path):
-		best_brain = PPO.new(124, BRAIN_HIDDEN_LAYERS, OUTPUT_NODES)
+		best_brain = PPO.new(INPUT_NODES, BRAIN_HIDDEN_LAYERS, OUTPUT_NODES)
 		best_brain.load_model(ai_default_brain_path)
 	
 
 func save_settings():
-	var config_json:Dictionary = read_json(settings_config_location)
+	var config_json: Dictionary = read_json(settings_config_location)
 	# audio sliders 0.0 - 1.0
 	config_json["volume_master"] = volume_master
 	config_json["volume_menu"] = volume_menu
@@ -204,8 +205,8 @@ func save_settings():
 	file_access.store_line(json_string)
 	file_access.close()
 	
-func update_volume(audio_bus_index:int, linear_value:float):
-	var volume_db = 20 * (log(linear_value*0.01) / log(10))
+func update_volume(audio_bus_index: int, linear_value: float):
+	var volume_db = 20 * (log(linear_value * 0.01) / log(10))
 	AudioServer.set_bus_volume_db(audio_bus_index, volume_db)
 
 func update_all_volumes():
@@ -227,12 +228,10 @@ func load_purin():
 		var evil_image_path = "%spurin%d_evil.png" % [purin_file_path_root, i]
 		evil_purin_textures.append(load(evil_image_path))
 
-func add_experience(experience:Dictionary):
+func add_experience(experience: Dictionary):
 	experience_pool.add_experience(experience)
 	# Trim buffer if too large
 	if experience_pool.buffer.size() > buffer_size:
 		experience_pool.buffer.pop_front()
 	
 	Global.steps_since_training += 1
-
-

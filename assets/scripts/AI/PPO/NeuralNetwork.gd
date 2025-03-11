@@ -1,204 +1,158 @@
-extends Node
-
+extends Object
 class_name NeuralNetwork
 
-var input_size: int
-var hidden_sizes: Array[int]  # Now an array of hidden layer sizes
-var output_size: int
+# The network is defined by the list of layer sizes.
+var layers: Array = [] # Array[int]
+var weights: Array = [] # Array of 2D arrays (each is Array[Array[float]])
+var biases: Array = [] # Array of vectors (each is Array[float])
 
-var weights: Array[Tensor]  # Array of weight tensors for all layers
-var biases: Array[Tensor]   # Array of bias tensors for all layers
-var gradients: Dictionary
+# Coefficients used in the policy loss (entropy bonus) and a small constant for numerical stability.
+const ENTROPY_COEFF: float = 0.01
+const EPSILON: float = 1e-8
 
-func _init(_input_size: int, _hidden_sizes: Array[int], _output_size: int):
-	self.input_size = _input_size
-	self.hidden_sizes = _hidden_sizes
-	self.output_size = _output_size
-	
-	# Value network should output a single value per state
-	if output_size == 1:
-		self.output_size = 1  # Keep it as 1 for value network
-	
-	initialize_parameters()
-	initialize_gradients()
-
-func initialize_parameters():
+func _init(input_size: int, hidden_layers: Array, output_size: int) -> void:
+	layers = []
 	weights = []
 	biases = []
+	layers.append(input_size)
+	for layer_size in hidden_layers:
+		layers.append(layer_size)
+	layers.append(output_size)
 	
-	# Input to first hidden layer
-	var prev_size = input_size
-	for hidden_size in hidden_sizes:
-		var w_std = sqrt(2.0 / prev_size)
-		var w_data = PackedFloat32Array()
-		for _i in range(prev_size * hidden_size):
-			w_data.append(randfn(0, w_std))
-		weights.append(Tensor.new(w_data, true))
-		
-		var b_data = PackedFloat32Array()
-		for _i in range(hidden_size):
-			b_data.append(0.0)
-		biases.append(Tensor.new(b_data, true))
-		
-		prev_size = hidden_size
-	
-	# Last hidden layer to output
-	var w_std = sqrt(2.0 / prev_size)
-	var w_data = PackedFloat32Array()
-	for _i in range(prev_size * output_size):
-		w_data.append(randfn(0, w_std))
-	weights.append(Tensor.new(w_data, true))
-	
-	var b_data = PackedFloat32Array()
-	for _i in range(output_size):
-		b_data.append(0.0)
-	biases.append(Tensor.new(b_data, true))
+	for i in range(layers.size() - 1):
+		weights.append(rand_matrix(layers[i], layers[i + 1]))
+		biases.append(rand_vector(layers[i + 1]))
 
-func initialize_gradients():
-	# Initialize gradients dictionary
-	gradients = {
-		"weights": weights,  # Use the actual tensors instead of creating new ones
+# Returns a matrix (Array of Arrays) of size [rows x cols] with random values scaled using Xavier initialization.
+func rand_matrix(rows: int, cols: int) -> Array:
+	var matrix: Array = []
+	# Compute scale factor for Xavier initialization.
+	var scale: float = sqrt(2.0 / float(rows + cols))
+	for i in range(rows):
+		var row: Array = []
+		for j in range(cols):
+			row.append(randf_range(-1.0, 1.0) * scale)
+		matrix.append(row)
+	return matrix
+
+# Returns a vector (Array) of the given size with random values scaled appropriately.
+# Alternatively, you might set biases to zero.
+func rand_vector(size: int) -> Array:
+	var vector: Array = []
+	# Option 1: Initialize biases with small random values.
+	var scale: float = sqrt(2.0 / float(size))
+	for i in range(size):
+		vector.append(randf_range(-1.0, 1.0) * scale)
+	# Option 2: Alternatively, you can set biases to zero:
+	# for i in range(size):
+	#	 vector.append(0.0)
+	return vector
+
+# Forward pass for one sample (inputs is an Array[float]).
+func forward(inputs: Array) -> Array:
+	var current_output: Array = inputs.duplicate()
+	for i in range(weights.size()):
+		# Multiply by weights and add biases.
+		#print("weights[%s].size(): "%[i], weights[i].size())
+		#print("biases[%s].size(): "%[i], biases[i].size())
+		#print("current_output: ", current_output)
+		current_output = Tensor.vector_add(Tensor.matrix_vector_mul(weights[i], current_output), biases[i])
+		# For the final layer, use softmax if more than one output (policy); otherwise linear.
+		if i == weights.size() - 1:
+			if layers[layers.size() - 1] > 1:
+				current_output = Tensor.softmax(current_output)
+			# Else, value network: no activation (linear output)
+		else:
+			current_output = Tensor.relu(current_output)
+	return current_output
+
+# Backward pass performing gradient descent on a batch.
+# If actions is nonempty, assume a policy network (using targets as advantages); if empty, assume a value network (using targets as returns).
+func backward(states: Array, actions: Array, targets: Array, learning_rate: float) -> void:
+	var batch_size: int = states.size()
+	# Initialize gradient accumulators with the same dimensions as weights and biases.
+	var grad_weights: Array = []
+	var grad_biases: Array = []
+	for i in range(weights.size()):
+		grad_weights.append(Tensor.zeros_matrix(weights[i].size(), weights[i][0].size()))
+		grad_biases.append(Tensor.zeros_vector(biases[i].size()))
+	
+	# Process each sample in the batch.
+	for sample_idx in range(batch_size):
+		var x: Array = states[sample_idx]
+		# Store activations and pre-activations (z) for each layer.
+		var activations: Array = []
+		var pre_activations: Array = []
+		activations.append(x)
+		var a: Array = x.duplicate()
+		# Forward pass (store each layer’s output).
+		for i in range(weights.size()):
+			var z: Array = Tensor.vector_add(Tensor.matrix_vector_mul(weights[i], a), biases[i])
+			pre_activations.append(z)
+			if i == weights.size() - 1:
+				if layers[layers.size() - 1] > 1:
+					a = Tensor.softmax(z)
+				else:
+					a = z.duplicate() # linear output for value network
+			else:
+				a = Tensor.relu(z)
+			activations.append(a)
+		
+		# Compute delta (error) at the output layer.
+		var delta: Array = []
+		if actions.size() > 0:
+			# Policy network: use cross-entropy loss with advantage and an entropy bonus.
+			var probs: Array = activations[activations.size() - 1]
+			var action: int = int(actions[sample_idx])
+			var advantage: float = targets[sample_idx]
+			delta.resize(probs.size())
+			for j in range(probs.size()):
+				var indicator: float = 0
+				if j == action:
+					indicator = 1.0
+				# For the softmax output, the gradient becomes (p - one_hot)*advantage plus entropy regularization.
+				delta[j] = (probs[j] - indicator) * advantage + ENTROPY_COEFF * (log(probs[j] + EPSILON) + 1.0)
+		else:
+			# Value network: using mean squared error loss.
+			var prediction: float = activations[activations.size() - 1][0]
+			var target: float = targets[sample_idx]
+			delta.append(prediction - target)
+		
+		# Backpropagate the error.
+		for layer_idx in range(weights.size() - 1, -1, -1):
+			# Gradient for weights: outer product of activation from previous layer and delta.
+			var a_prev: Array = activations[layer_idx]
+			var delta_matrix: Array = Tensor.outer_product(a_prev, delta)
+			grad_weights[layer_idx] = Tensor.matrix_add(grad_weights[layer_idx], delta_matrix)
+			grad_biases[layer_idx] = Tensor.vector_add(grad_biases[layer_idx], delta)
+			
+			if layer_idx > 0:
+				# Compute delta for the previous layer.
+				var wt_transposed: Array = Tensor.transpose(weights[layer_idx])
+				var delta_prev: Array = Tensor.matrix_vector_mul(wt_transposed, delta)
+				# Multiply elementwise by the derivative of the ReLU activation.
+				var relu_deriv: Array = Tensor.relu_derivative(pre_activations[layer_idx - 1])
+				delta = Tensor.elementwise_multiply(delta_prev, relu_deriv)
+	# End of batch loop
+	
+	# Average the gradients over the batch and update parameters.
+	for i in range(weights.size()):
+		grad_weights[i] = Tensor.scalar_divide(grad_weights[i], float(batch_size))
+		grad_biases[i] = Tensor.vector_divide(grad_biases[i], float(batch_size))
+		weights[i] = Tensor.matrix_subtract(weights[i], Tensor.matrix_scalar_multiply(grad_weights[i], learning_rate))
+		biases[i] = Tensor.vector_subtract(biases[i], Tensor.vector_scalar_multiply(grad_biases[i], learning_rate))
+
+# Returns the internal state of the network as a Dictionary.
+func get_state() -> Dictionary:
+	var state: Dictionary = {
+		"layers": layers,
+		"weights": weights,
 		"biases": biases
 	}
-	
-	# Ensure all tensors have gradients initialized
-	for weight in weights:
-		weight.zero_gradients()
-	for bias in biases:
-		bias.zero_gradients()
+	return state
 
-func backward(gradient: Tensor, cache: Dictionary) -> void:
-	var batch_size = cache["input"].data.size() / input_size
-	
-	# Output layer gradients
-	var d_output = gradient.data
-	var hidden = cache["hidden"][-1]["activated"].data
-	
-	for i in range(output_size):
-		for j in range(hidden.size()):
-			var weight_idx = j * output_size + i
-			if weight_idx < weights[-1].gradients.size():
-				weights[-1].gradients[weight_idx] += d_output[i] * hidden[j] / batch_size
-		if i < biases[-1].gradients.size():
-			biases[-1].gradients[i] += d_output[i] / batch_size
-
-	# Add debug prints
-	print("weights gradients size: ", weights[-1].gradients.size())
-	print("biases gradients size: ", biases[-1].gradients.size())
-
-func forward(input: Tensor) -> Dictionary:
-	# Calculate batch size from input
-	var batch_size = input.data.size() / input_size
-	var current = input
-	var hidden_outputs = []
-	
-	# Debug input size
-	#print("Input tensor size: ", input.data.size(), " input_size: ", input_size, " batch_size: ", batch_size)
-	
-	# Process through all hidden layers
-	for i in range(weights.size() - 1):
-		var hidden = PackedFloat32Array()
-		var hidden_raw = PackedFloat32Array()
-		
-		# For each sample in batch
-		for b in range(batch_size):
-			# For each neuron in current hidden layer
-			for j in range(hidden_sizes[i]):
-				var sum = 0.0
-				# For each input to this layer
-				for k in range(input_size if i == 0 else hidden_sizes[i-1]):
-					var input_idx = b * (input_size if i == 0 else hidden_sizes[i-1]) + k
-					var weight_idx = k * hidden_sizes[i] + j
-					if input_idx < current.data.size() and weight_idx < weights[i].data.size():
-						sum += current.data[input_idx] * weights[i].data[weight_idx]
-				sum += biases[i].data[j]
-				hidden_raw.append(sum)
-				hidden.append(tanh(sum))  # Use tanh activation for hidden layers
-		
-		current = Tensor.from_array(hidden)
-		hidden_outputs.append({"raw": Tensor.from_array(hidden_raw), "activated": current})
-		
-		# Debug layer sizes
-		#print("Layer ", i, " output size: ", hidden.size())
-	
-	# Output layer
-	var output_raw = PackedFloat32Array()
-	var output = PackedFloat32Array()
-	
-	# For each sample in batch
-	for b in range(batch_size):
-		# For each output neuron
-		for i in range(output_size):
-			var sum = 0.0
-			# For each input from last hidden layer
-			for j in range(hidden_sizes[-1]):
-				var input_idx = b * hidden_sizes[-1] + j
-				var weight_idx = j * output_size + i
-				if input_idx < current.data.size() and weight_idx < weights[-1].data.size():
-					sum += current.data[input_idx] * weights[-1].data[weight_idx]
-			sum += biases[-1].data[i]
-			output_raw.append(sum)
-	
-	# Apply softmax to output layer for policy network per batch
-	if output_size > 1:
-		var final_output = PackedFloat32Array()
-		for b in range(batch_size):
-			var batch_output = PackedFloat32Array()
-			for i in range(output_size):
-				batch_output.append(output_raw[b * output_size + i])
-			var softmaxed = softmax(batch_output)
-			final_output.append_array(softmaxed)
-		output = final_output
-	else:
-		output = output_raw  # No activation for value network
-	
-	# Debug output size
-	#print("Final output size: ", output.size())
-	
-	return {
-		"input": input,
-		"hidden": hidden_outputs,
-		"output_raw": Tensor.from_array(output_raw),
-		"output": Tensor.from_array(output)
-	}
-
-func softmax(x: PackedFloat32Array) -> PackedFloat32Array:
-	var result = PackedFloat32Array()
-	var max_val = -INF
-	for val in x:
-		if val > max_val:
-			max_val = val
-
-	var sum = 0.0
-	for val in x:
-		var exp_val = exp(val - max_val)
-		result.append(exp_val)
-		sum += exp_val
-	
-	for i in range(result.size()):
-		result[i] /= sum
-	
-	return result
-
-func get_gradients() -> Dictionary:
-	return gradients
-
-func zero_gradients() -> void:
-	for grad in gradients.weights:
-		for i in range(grad.data.size()):
-			grad.data[i] = 0.0
-	for grad in gradients.biases:
-		for i in range(grad.data.size()):
-			grad.data[i] = 0.0
-			
-func randfn(mean: float, std_dev: float) -> float:
-	var u1 = randf()
-	var u2 = randf()
-	var z0 = sqrt(-2.0 * log(u1)) * cos(2.0 * PI * u2)
-	return mean + z0 * std_dev
-
-func get_parameters() -> Dictionary:
-	return {
-			"weights": weights,
-			"biases": biases
-	}
+# Loads the internal state of the network from a Dictionary.
+func load_state(state: Dictionary) -> void:
+	layers = state.get("layers", [])
+	weights = state.get("weights", [])
+	biases = state.get("biases", [])

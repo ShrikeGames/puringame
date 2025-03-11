@@ -7,8 +7,8 @@ signal training_error(error_message: String)
 
 var daemon_thread: Thread
 var queue_mutex: Mutex = Mutex.new()
-var training_queue: Array[Dictionary] = []
-var is_running:bool = false
+var training_queue: Array = []
+var is_running: bool = false
 
 func _init() -> void:
 	start_daemon()
@@ -23,7 +23,6 @@ func start_daemon() -> void:
 
 func _daemon_loop() -> void:
 	while true:
-		#print("asFASDGDS")
 		queue_mutex.lock()
 		var training_data = _get_next_training_item()
 		queue_mutex.unlock()
@@ -31,21 +30,10 @@ func _daemon_loop() -> void:
 		#print("Got training item: ", training_data)
 		
 		# Changed condition to properly check dictionary
-		if training_data:
+		if training_data.size() > 0:
 			print("_notify_training_started")
-			# Create thread-local copy by creating new Tensors with same data
-			var local_data := {
-				"states": Tensor.from_array(training_data.states.data),
-				"actions": Tensor.from_array(training_data.actions.data),
-				"rewards": Tensor.from_array(training_data.rewards.data),
-				"next_states": Tensor.from_array(training_data.next_states.data),
-				"dones": Tensor.from_array(training_data.dones.data),
-				"ppo": training_data.ppo
-			}
-			print("Local data created, attempting training...")
-			
 			# Perform training
-			var success = _try_train(local_data.ppo, local_data)
+			var success = _try_train(training_data)
 			print("Training result: ", success)
 			if success:
 				print("_notify_training_completed")
@@ -54,37 +42,30 @@ func _daemon_loop() -> void:
 			OS.delay_msec(100)
 	
 
-func _get_next_training_item() -> Dictionary:
+func _get_next_training_item() -> Array:
 	if not training_queue.is_empty():
 		return training_queue.pop_front()
-	return {}
+	return []
 
-func _verify_training_data(data: Dictionary) -> bool:
-	return (data != null
-		and data.has("states")
-		and data.has("actions")
-		and data.has("rewards")
-		and data.has("next_states")
-		and data.has("dones")
-		and data.has("ppo")
-		and is_instance_valid(data.ppo))
+func _verify_training_data(data: Array) -> bool:
+	return (data != null and data.size() == 4)
 
-func _try_train(ppo, local_data: Dictionary) -> bool:
+func _try_train(local_data: Array) -> bool:
 	print("try train")
-	if not is_instance_valid(ppo):
-		call_deferred("_notify_training_error", "Invalid PPO instance")
+	if not _verify_training_data(local_data):
+		print("Invalid training data")
 		return false
-	
-	ppo.thread_safe_train(local_data)
-	# new brain was trained, replace the global one
-	Global.best_brain = ppo
+	print("Before train function")
+	Global.best_brain.train(local_data[0], local_data[1], local_data[2], local_data[3])
+	print("After train function")
 	Global.best_brain.save_model(Global.ai_brain_path)
+	print("After save function")
 	return true
 
-func enqueue_training(data: Dictionary) -> void:
-	print("enqueue_training data size:", data.size())
+func enqueue_training(states_data:Array, actions_data:Array, rewards_data:Array, next_states_data:Array) -> void:
+	print("enqueue_training data")
 	queue_mutex.lock()
-	training_queue.append(data)
+	training_queue.append([states_data, actions_data, rewards_data, next_states_data])
 	queue_mutex.unlock()
 	print("training_queue size:", training_queue.size())
 

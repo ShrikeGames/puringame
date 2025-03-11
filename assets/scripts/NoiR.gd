@@ -2,7 +2,7 @@ extends Node2D
 class_name NoiR
 @export var drop_line: Line2D
 @export var held_purin: PurinIndicator
-#@export var eyes:Eyes
+
 var space_state
 var purin_collide_level:int = -1
 var purin_collide_position:Vector2 = Vector2(0,0)

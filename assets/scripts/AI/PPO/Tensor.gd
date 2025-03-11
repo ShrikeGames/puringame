@@ -1,216 +1,174 @@
-extends Resource
-
+extends Object
 class_name Tensor
 
-var data: PackedFloat32Array
-var gradients: PackedFloat32Array
-var requires_grad: bool = true
-var grad_fn: Callable
-
-func _init(_data: PackedFloat32Array, _requires_grad: bool = true):
-	self.data = _data
-	self.requires_grad = _requires_grad
-	# Initialize gradients array with same size as data
-	self.gradients = PackedFloat32Array()
-	for _i in range(data.size()):
-		self.gradients.append(0.0)
-
-func zero_gradients() -> void:
-	if gradients.size() != data.size():
-		# Reinitialize gradients if sizes don't match
-		gradients = PackedFloat32Array()
-		for _i in range(data.size()):
-			gradients.append(0.0)
-	else:
-		# Zero out existing gradients
-		for i in range(gradients.size()):
-			gradients[i] = 0.0
-
-static func from_array(array: PackedFloat32Array) -> Tensor:
-	return Tensor.new(array)
-
-func size() -> int:
-	return data.size()
-
-func sample() -> int:
-	# Assuming the tensor represents probabilities, sample an index based on these probabilities
-	var cumulative_sum = 0.0
-	var random_value = randf()
-	for i in range(data.size()):
-		cumulative_sum += data[i]
-		if random_value < cumulative_sum:
-			return i
-	return data.size() - 1
-
-
-func __sub(other: Tensor) -> Tensor:
-	if data.size() != other.data.size():
-		push_error("Tensor size mismatch in __sub")
-		return Tensor.new(PackedFloat32Array())
-		
-	var result_data = PackedFloat32Array()
-	for i in range(data.size()):
-		result_data.append(data[i] - other.data[i])
-	
-	var result = Tensor.new(result_data, requires_grad or other.requires_grad)
-	if result.requires_grad:
-		var self_ref = self
-		var other_ref = other
-		result.grad_fn = func(grad: PackedFloat32Array):
-			if self_ref.requires_grad:
-				for i in range(data.size()):
-					self_ref.gradients[i] += grad[i]
-			if other_ref.requires_grad:
-				for i in range(data.size()):
-					other_ref.gradients[i] += -grad[i]
+# Multiply a matrix (Array of Arrays) by a vector.
+# Assumes:
+# - matrix is of dimensions [rows x cols]
+# - vector is of length equal to rows.
+# Returns a vector of length equal to cols.
+static func matrix_vector_mul(matrix: Array, vector: Array) -> Array:
+	var result: Array = []
+	if matrix.size() == 0:
+		return result
+	var rows: int = matrix.size()
+	var cols: int = matrix[0].size()
+	# For each column j, sum over rows: matrix[i][j] * vector[i]
+	for j in range(cols):
+		var sum: float = 0.0
+		for i in range(rows):
+			sum += matrix[i][j] * vector[i]
+		result.append(sum)
 	return result
 
-func pow(_exponent: float) -> Tensor:
-	var result_data = PackedFloat32Array()
-	for i in range(data.size()):
-		result_data.append(pow(data[i], _exponent))
-	
-	var result = Tensor.new(result_data, requires_grad)
-	if requires_grad:
-		var self_ref = self
-		var exponent = _exponent
-		result.grad_fn = func(grad: PackedFloat32Array):
-			for i in range(self_ref.data.size()):
-				self_ref.gradients[i] += grad[i] * exponent * pow(self_ref.data[i], exponent - 1.0)
+# Elementwise addition of two vectors.
+static func vector_add(v1: Array, v2: Array) -> Array:
+	var result: Array = []
+	for i in range(v1.size()):
+		result.append(v1[i] + v2[i])
 	return result
 
-func clamp(min_value: float, max_value: float) -> Tensor:
-	var result_data = PackedFloat32Array()
-	for i in range(data.size()):
-		result_data.append(clamp(data[i], min_value, max_value))
-	
-	var result = Tensor.new(result_data, requires_grad)
-	if requires_grad:
-		var self_ref = self
-		var min_val = min_value
-		var max_val = max_value
-		result.grad_fn = func(grad: PackedFloat32Array):
-			for i in range(self_ref.data.size()):
-				if self_ref.data[i] > min_val and self_ref.data[i] < max_val:
-					self_ref.gradients[i] += grad[i]
+# Elementwise subtraction of two vectors.
+static func vector_subtract(v1: Array, v2: Array) -> Array:
+	var result: Array = []
+	for i in range(v1.size()):
+		result.append(v1[i] - v2[i])
 	return result
 
-func debug_grad_flow(name: String = "") -> void:
-	if requires_grad:
-		print(name + " - data size: ", data.size(), 
-			  " gradients size: ", gradients.size(),
-			  " has grad_fn: ", grad_fn != null)
-		if gradients.size() > 0:
-			var grad_mean = 0.0
-			for g in gradients:
-				grad_mean += abs(g)
-			grad_mean /= gradients.size()
-			print("  grad mean: ", grad_mean)
-	else:
-		print(name + " - requires_grad: false")
-
-func backward(gradient: PackedFloat32Array = PackedFloat32Array()) -> void:
-	if not requires_grad:
-		return
-	
-	# Initialize gradient if not provided
-	if gradient.size() == 0:
-		gradient = PackedFloat32Array()
-		for _i in range(data.size()):
-			gradient.append(1.0)
-	elif gradient.size() != data.size():
-		push_error("Gradient size mismatch: expected " + str(data.size()) + ", got " + str(gradient.size()))
-		return
-	
-	# Apply gradient function if it exists
-	if grad_fn:
-		grad_fn.call(gradient)
-	else:
-		# Default behavior for leaf tensors
-		for i in range(data.size()):
-			gradients[i] += gradient[i]
-
-# Add debug function to check gradients
-func print_gradients(name: String = "") -> void:
-	print(name, " gradients: size=", gradients.size())#, " values=", gradients)
-
-# Update operation functions to properly track gradients
-func __mul(other: Tensor) -> Tensor:
-	if data.size() != other.data.size():
-		push_error("Tensor size mismatch in __mul")
-		return Tensor.new(PackedFloat32Array())
-		
-	var result_data = PackedFloat32Array()
-	for i in range(data.size()):
-		result_data.append(data[i] * other.data[i])
-	
-	var result = Tensor.new(result_data, requires_grad or other.requires_grad)
-	if result.requires_grad:
-		var self_ref = self
-		var other_ref = other
-		result.grad_fn = func(grad: PackedFloat32Array):
-			if self_ref.requires_grad:
-				for i in range(data.size()):
-					self_ref.gradients[i] += grad[i] * other_ref.data[i]
-			if other_ref.requires_grad:
-				for i in range(data.size()):
-					other_ref.gradients[i] += grad[i] * self_ref.data[i]
+# Elementwise addition of two matrices.
+static func matrix_add(m1: Array, m2: Array) -> Array:
+	var result: Array = []
+	for i in range(m1.size()):
+		var row: Array = []
+		for j in range(m1[i].size()):
+			row.append(m1[i][j] + m2[i][j])
+		result.append(row)
 	return result
 
-func __div(other: Tensor) -> Tensor:
-	if data.size() != other.data.size():
-		push_error("Tensor size mismatch in __div")
-		return Tensor.new(PackedFloat32Array())
-		
-	var result_data = PackedFloat32Array()
-	for i in range(data.size()):
-		result_data.append(data[i] / other.data[i])
-	
-	var result = Tensor.new(result_data, requires_grad or other.requires_grad)
-	if result.requires_grad:
-		var self_ref = self
-		var other_ref = other
-		result.grad_fn = func(grad: PackedFloat32Array):
-			if self_ref.requires_grad:
-				for i in range(data.size()):
-					self_ref.gradients[i] += grad[i] / other_ref.data[i]
-			if other_ref.requires_grad:
-				for i in range(data.size()):
-					other_ref.gradients[i] += -grad[i] * self_ref.data[i] / (other_ref.data[i] * other_ref.data[i])
+# Elementwise subtraction of two matrices.
+static func matrix_subtract(m1: Array, m2: Array) -> Array:
+	var result: Array = []
+	for i in range(m1.size()):
+		var row: Array = []
+		for j in range(m1[i].size()):
+			row.append(m1[i][j] - m2[i][j])
+		result.append(row)
 	return result
 
-func __log() -> Tensor:
-	var result_data = PackedFloat32Array()
-	for value in data:
-		result_data.append(log(value + 1e-8))
-	var result = Tensor.new(result_data, requires_grad)
-	if requires_grad:
-		result.grad_fn = func(grad: PackedFloat32Array):
-			for i in range(data.size()):
-				gradients[i] += grad[i] / (data[i] + 1e-8)
+# Outer product of two vectors: returns a matrix.
+static func outer_product(v1: Array, v2: Array) -> Array:
+	var result: Array = []
+	for i in range(v1.size()):
+		var row: Array = []
+		for j in range(v2.size()):
+			row.append(v1[i] * v2[j])
+		result.append(row)
 	return result
 
-func mean() -> Tensor:
-	if data.size() == 0:
-		push_error("Cannot compute mean of empty tensor")
-		return Tensor.new(PackedFloat32Array([0.0]))
-	
-	var sum = 0.0
-	for value in data:
-		sum += value
-	
-	var mean_value = sum / data.size()
-	var result = Tensor.new(PackedFloat32Array([mean_value]), requires_grad)
-	
-	if requires_grad:
-		result.grad_fn = func(grad: PackedFloat32Array):
-			var scale = grad[0] / data.size()
-			for i in range(data.size()):
-				gradients[i] += scale
-	
+# Transpose of a matrix.
+static func transpose(matrix: Array) -> Array:
+	if matrix.size() == 0:
+		return []
+	var result: Array = []
+	var rows: int = matrix.size()
+	var cols: int = matrix[0].size()
+	for j in range(cols):
+		var new_row: Array = []
+		for i in range(rows):
+			new_row.append(matrix[i][j])
+		result.append(new_row)
 	return result
 
-func zero_grad() -> void:
-	for i in range(gradients.size()):
-		gradients[i] = 0.0
+# ReLU activation applied elementwise.
+static func relu(vector: Array) -> Array:
+	var result: Array = []
+	for v in vector:
+		result.append(max(0.0, v))
+	return result
 
+# Derivative of ReLU applied elementwise.
+static func relu_derivative(vector: Array) -> Array:
+	var result: Array = []
+	for v in vector:
+		var v2: float = 0
+		if v > 0.0:
+			v2 = 1.0
+		result.append(v2)
+	return result
+
+# Softmax activation.
+static func softmax(vector: Array) -> Array:
+	var max_val: float = - INF
+	for v in vector:
+		if v > max_val:
+			max_val = v
+	var exps: Array = []
+	var sum_exp: float = 0.0
+	for v in vector:
+		var exp_val: float = exp(v - max_val)
+		exps.append(exp_val)
+		sum_exp += exp_val
+	var result: Array = []
+	for val in exps:
+		result.append(val / sum_exp)
+	return result
+
+# Returns a vector (Array) of zeros of the given size.
+static func zeros_vector(size: int) -> Array:
+	var result: Array = []
+	for i in range(size):
+		result.append(0.0)
+	return result
+
+# Returns a matrix of zeros with the given number of rows and columns.
+static func zeros_matrix(rows: int, cols: int) -> Array:
+	var result: Array = []
+	for i in range(rows):
+		var row: Array = []
+		for j in range(cols):
+			row.append(0.0)
+		result.append(row)
+	return result
+
+# Divide every element of a matrix (or vector) by a scalar.
+static func scalar_divide(mat: Array, scalar: float) -> Array:
+	var result: Array = []
+	for i in range(mat.size()):
+		if mat[i] is Array:
+			var row: Array = []
+			for j in range(mat[i].size()):
+				row.append(mat[i][j] / scalar)
+			result.append(row)
+		else:
+			result.append(mat[i] / scalar)
+	return result
+
+# Multiply every element of a matrix by a scalar.
+static func matrix_scalar_multiply(mat: Array, scalar: float) -> Array:
+	var result: Array = []
+	for i in range(mat.size()):
+		var row: Array = []
+		for j in range(mat[i].size()):
+			row.append(mat[i][j] * scalar)
+		result.append(row)
+	return result
+
+# Multiply every element of a vector by a scalar.
+static func vector_scalar_multiply(vector: Array, scalar: float) -> Array:
+	var result: Array = []
+	for v in vector:
+		result.append(v * scalar)
+	return result
+
+# Divide every element of a vector by a scalar.
+static func vector_divide(vector: Array, scalar: float) -> Array:
+	var result: Array = []
+	for v in vector:
+		result.append(v / scalar)
+	return result
+
+# Elementwise multiplication of two vectors.
+static func elementwise_multiply(v1: Array, v2: Array) -> Array:
+	var result: Array = []
+	for i in range(v1.size()):
+		result.append(v1[i] * v2[i])
+	return result

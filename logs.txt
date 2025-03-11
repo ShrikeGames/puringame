@@ -1,214 +1,429 @@
-- [Metric] Value Loss: 2.9486
-- [Metric] Policy Loss: -0.2210
-- [Metric] Entropy: 0.0084
-- [Metric] Mean Advantage: 0.3610
-- [Metric] Mean Value Estimate: -0.3674
-- [Metric] Mean Probability Ratio: 1.0488
-- [Metric] Value Loss: 6.2056
-- [Metric] Policy Loss: -0.8994
-- [Metric] Entropy: 0.0084
-- [Metric] Mean Advantage: 1.1033
-- [Metric] Mean Value Estimate: -0.1014
-- [Metric] Mean Probability Ratio: 0.7975
-[Metric] Average Score: 30202 from 1 games
-- [Metric] Value Loss: 9.3621
-- [Metric] Policy Loss: -1.4238
-- [Metric] Entropy: 0.0084
-- [Metric] Mean Advantage: 1.4238
-- [Metric] Mean Value Estimate: 0.0000
-- [Metric] Mean Probability Ratio: 1.0000
-[Metric] Average Score: 26469.5 from 2 games
-[Metric] Average Score: 27874.6666666667 from 3 games
-[Metric] Average Score: 28748.75 from 4 games
-[Metric] Average Score: 31092.6 from 5 games
-[Metric] Average Score: 33225.1666666667 from 6 games
-[Metric] Average Score: 34278 from 7 games
-[Metric] Average Score: 32650.25 from 8 games
-[Metric] Average Score: 31835.5555555556 from 9 games
-- [Metric] Value Loss: 6.0766
-- [Metric] Policy Loss: -1.0618
-- [Metric] Entropy: 0.0084
-- [Metric] Mean Advantage: 1.0618
-- [Metric] Mean Value Estimate: 0.0000
-- [Metric] Mean Probability Ratio: 1.0000
-[Metric] Average Score: 33129.4 from 10 games
-[Metric] Average Score: 35276.8181818182 from 11 games
-[Metric] Average Score: 36465.8333333333 from 12 games
-[Metric] Average Score: 36850.3846153846 from 13 games
-[Metric] Average Score: 36468.2142857143 from 14 games
-[Metric] Average Score: 36053.4 from 15 games
-[Metric] Average Score: 35654.8125 from 16 games
-[Metric] Average Score: 35597.2941176471 from 17 games
-[Metric] Average Score: 36501.7222222222 from 18 games
-[Metric] Average Score: 36495.7368421053 from 19 games
-[Metric] Average Score: 34708.45 from 20 games
-[Metric] Average Score: 35454.4285714286 from 21 games
-[Metric] Average Score: 38082.6363636364 from 22 games
-[Metric] Average Score: 37821.5217391304 from 23 games
-[Metric] Average Score: 38190.375 from 24 games
-[Metric] Average Score: 38001.48 from 25 games
-[Metric] Average Score: 38354.9615384615 from 26 games
-[Metric] Average Score: 39247.8888888889 from 27 games
-[Metric] Average Score: 39498.1785714286 from 28 games
-[Metric] Average Score: 40300.3103448276 from 29 games
-- [Metric] Value Loss: 7.6726
-- [Metric] Policy Loss: -1.3476
-- [Metric] Entropy: 0.0084
-- [Metric] Mean Advantage: 1.3476
-- [Metric] Mean Value Estimate: 0.0000
-- [Metric] Mean Probability Ratio: 1.0000
-[Metric] Average Score: 40814.1333333333 from 30 games
-[Metric] Average Score: 40702.6774193548 from 31 games
-[Metric] Average Score: 41288.25 from 32 games
-- [Metric] Value Loss: 6.0590
-- [Metric] Policy Loss: -0.9241
-- [Metric] Entropy: 0.0084
-- [Metric] Mean Advantage: 0.9241
-- [Metric] Mean Value Estimate: 0.0000
-- [Metric] Mean Probability Ratio: 1.0000
-[Metric] Average Score: 42022.7272727273 from 33 games
-- [Metric] Value Loss: 12.3093
-- [Metric] Policy Loss: -1.5416
-- [Metric] Entropy: 0.0084
-- [Metric] Mean Advantage: 1.5416
-- [Metric] Mean Value Estimate: 0.0000
-- [Metric] Mean Probability Ratio: 1.0000
-[Metric] Average Score: 41289.5 from 34 games
-- [Metric] Value Loss: 6.7607
-- [Metric] Policy Loss: -0.6572
-- [Metric] Entropy: 0.0084
-- [Metric] Mean Advantage: 0.6572
-- [Metric] Mean Value Estimate: 0.0000
-- [Metric] Mean Probability Ratio: 1.0000
-[Metric] Average Score: 40540.2857142857 from 35 games
-[Metric] Average Score: 40613.2777777778 from 36 games
-[Metric] Average Score: 40136.8648648649 from 37 games
-[Metric] Average Score: 40257.6052631579 from 38 games
-[Metric] Average Score: 40548 from 39 games
-[Metric] Average Score: 40257.4 from 40 games
-- [Metric] Value Loss: 4.4978
-- [Metric] Policy Loss: -0.2271
-- [Metric] Entropy: 0.0084
-- [Metric] Mean Advantage: 0.2271
-- [Metric] Mean Value Estimate: 0.0000
-- [Metric] Mean Probability Ratio: 1.0000
-[Metric] Average Score: 40697.7073170732 from 41 games
-[Metric] Average Score: 40475.8095238095 from 42 games
-[Metric] Average Score: 40474.1860465116 from 43 games
-[Metric] Average Score: 40315.1818181818 from 44 games
-[Metric] Average Score: 40293.6 from 45 games
-[Metric] Average Score: 40442.5652173913 from 46 games
-[Metric] Average Score: 40811.4255319149 from 47 games
-[Metric] Average Score: 40952.2083333333 from 48 games
-[Metric] Average Score: 41349.4897959184 from 49 games
-[Metric] Average Score: 40923.12 from 50 games
-[Metric] Average Score: 40841.3921568627 from 51 games
-[Metric] Average Score: 40714.5576923077 from 52 games
-- [Metric] Value Loss: 2.6335
-- [Metric] Policy Loss: -0.0974
-- [Metric] Entropy: 0.0084
-- [Metric] Mean Advantage: 0.0974
-- [Metric] Mean Value Estimate: 0.0000
-- [Metric] Mean Probability Ratio: 1.0000
-[Metric] Average Score: 40356.6037735849 from 53 games
-[Metric] Average Score: 40120.4074074074 from 54 games
-[Metric] Average Score: 39928.3454545455 from 55 games
-[Metric] Average Score: 39653.3571428571 from 56 games
-[Metric] Average Score: 39940.6666666667 from 57 games
-[Metric] Average Score: 39966.0517241379 from 58 games
-[Metric] Average Score: 39710.593220339 from 59 games
-[Metric] Average Score: 39974.6333333333 from 60 games
-[Metric] Average Score: 40366.1803278689 from 61 games
-[Metric] Average Score: 40779.5483870968 from 62 games
-[Metric] Average Score: 41217.0793650794 from 63 games
-- [Metric] Value Loss: 3.5870
-- [Metric] Policy Loss: -0.0974
-- [Metric] Entropy: 0.0084
-- [Metric] Mean Advantage: 0.0974
-- [Metric] Mean Value Estimate: 0.0000
-- [Metric] Mean Probability Ratio: 1.0000
-[Metric] Average Score: 41737.625 from 64 games
-- [Metric] Value Loss: 5.0398
-- [Metric] Policy Loss: -0.7694
-- [Metric] Entropy: 0.0084
-- [Metric] Mean Advantage: 0.7694
-- [Metric] Mean Value Estimate: 0.0000
-- [Metric] Mean Probability Ratio: 1.0000
-[Metric] Average Score: 41821.9230769231 from 65 games
-- [Metric] Value Loss: 4.9601
-- [Metric] Policy Loss: -0.9882
-- [Metric] Entropy: 0.0084
-- [Metric] Mean Advantage: 0.9882
-- [Metric] Mean Value Estimate: 0.0000
-- [Metric] Mean Probability Ratio: 1.0000
-[Metric] Average Score: 41634.5454545455 from 66 games
-[Metric] Average Score: 41686.3880597015 from 67 games
-[Metric] Average Score: 41400.9264705882 from 68 games
-- [Metric] Value Loss: 8.5378
-- [Metric] Policy Loss: -1.2811
-- [Metric] Entropy: 0.0084
-- [Metric] Mean Advantage: 1.2811
-- [Metric] Mean Value Estimate: 0.0000
-- [Metric] Mean Probability Ratio: 1.0000
-[Metric] Average Score: 41542.1449275362 from 69 games
-[Metric] Average Score: 41412.2428571429 from 70 games
-[Metric] Average Score: 41484.0563380282 from 71 games
-[Metric] Average Score: 41661.3472222222 from 72 games
-[Metric] Average Score: 41884.4246575342 from 73 games
-[Metric] Average Score: 41890.3108108108 from 74 games
-[Metric] Average Score: 41616.4 from 75 games
-[Metric] Average Score: 41378.5263157895 from 76 games
-[Metric] Average Score: 41074.1688311688 from 77 games
-- [Metric] Value Loss: 5.9599
-- [Metric] Policy Loss: -1.0350
-- [Metric] Entropy: 0.0084
-- [Metric] Mean Advantage: 1.0350
-- [Metric] Mean Value Estimate: 0.0000
-- [Metric] Mean Probability Ratio: 1.0000
-[Metric] Average Score: 40715.7692307692 from 78 games
-[Metric] Average Score: 40658.7974683544 from 79 games
-[Metric] Average Score: 40761.0875 from 80 games
-[Metric] Average Score: 40922.7160493827 from 81 games
-[Metric] Average Score: 40908.6341463415 from 82 games
-[Metric] Average Score: 40587.9277108434 from 83 games
-[Metric] Average Score: 40555.4880952381 from 84 games
-[Metric] Average Score: 40471.2117647059 from 85 games
-[Metric] Average Score: 40954.6279069767 from 86 games
-[Metric] Average Score: 41124.6666666667 from 87 games
-[Metric] Average Score: 40928.1363636364 from 88 games
-[Metric] Average Score: 40943.7640449438 from 89 games
-[Metric] Average Score: 40929.6777777778 from 90 games
-- [Metric] Value Loss: 8.0603
-- [Metric] Policy Loss: -1.1300
-- [Metric] Entropy: 0.0084
-- [Metric] Mean Advantage: 1.1300
-- [Metric] Mean Value Estimate: 0.0000
-- [Metric] Mean Probability Ratio: 1.0000
-[Metric] Average Score: 40878.1428571429 from 91 games
-[Metric] Average Score: 41342.347826087 from 92 games
-[Metric] Average Score: 41491.5161290323 from 93 games
-[Metric] Average Score: 41660.170212766 from 94 games
-[Metric] Average Score: 41556.2 from 95 games
-[Metric] Average Score: 41579.3229166667 from 96 games
-- [Metric] Value Loss: 4.2074
-- [Metric] Policy Loss: -0.6789
-- [Metric] Entropy: 0.0084
-- [Metric] Mean Advantage: 0.6789
-- [Metric] Mean Value Estimate: 0.0000
-- [Metric] Mean Probability Ratio: 1.0000
-[Metric] Average Score: 41771.7216494845 from 97 games
-[Metric] Average Score: 41553.8367346939 from 98 games
-- [Metric] Value Loss: 4.8553
-- [Metric] Policy Loss: -0.4705
-- [Metric] Entropy: 0.0084
-- [Metric] Mean Advantage: 0.4705
-- [Metric] Mean Value Estimate: 0.0000
-- [Metric] Mean Probability Ratio: 1.0000
-[Metric] Average Score: 41288.3838383838 from 99 games
-[Metric] Average Score: 41162.22 from 100 games
-- [Metric] Value Loss: 5.2367
-- [Metric] Policy Loss: -0.3751
-- [Metric] Entropy: 0.0084
-- [Metric] Mean Advantage: 0.3751
-- [Metric] Mean Value Estimate: 0.0000
-- [Metric] Mean Probability Ratio: 1.0000
+Godot Engine v4.1.1.stable.official.bd6af8e0e - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 560.35.03 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4070 Ti
+ 
+Linux
+Begin Generation 1
+[Metrics] probabilities -> action: [0.11019103229046, 0.30952477455139, 0.58028417825699] -> 2
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.10914647579193, 0.31135874986649, 0.57949477434158] -> 2
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.10847946256399, 0.31255224347115, 0.57896828651428] -> 2
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.10782763361931, 0.31373536586761, 0.57843697071075] -> 1
+[Metrics] total reward: -9.4825
+[Metrics] probabilities -> action: [0.39007833600044, 0, 0.60992169380188] -> 0
+[Metrics] total reward: 0.11357419967651
+[Metrics] probabilities -> action: [0.39151668548584, 0, 0.60848331451416] -> 2
+[Metrics] total reward: 0.30904420852661
+[Metrics] probabilities -> action: [0.38754925131798, 0, 0.6124507188797] -> 2
+[Metrics] total reward: 0.41704730987549
+[Metrics] probabilities -> action: [0.38093239068985, 0, 0.61906760931015] -> 0
+[Metrics] total reward: 0.66015872955322
+[Metrics] probabilities -> action: [0.38002818822861, 0, 0.61997181177139] -> 2
+[Metrics] total reward: 0.71153938293457
+[Metrics] probabilities -> action: [0.13201673328876, 0.51245385408401, 0.35552939772606] -> 1
+[Metrics] total reward: -11
+[Metrics] probabilities -> action: [0.22407890856266, 0, 0.7759211063385] -> 2
+[Metrics] total reward: 0.11357419967651
+[Metrics] probabilities -> action: [0.22703585028648, 0, 0.77296417951584] -> 2
+[Metrics] total reward: 0.30904420852661
+[Metrics] probabilities -> action: [0.23403216898441, 0, 0.76596784591675] -> 2
+[Metrics] total reward: 0.49999843597412
+[Metrics] probabilities -> action: [0.24586042761803, 0, 0.7541396021843] -> 2
+[Metrics] total reward: 0.68654148101807
+[Metrics] probabilities -> action: [0.26245352625847, 0, 0.73754644393921] -> 0
+[Metrics] total reward: 0.86877502441406
+[Metrics] probabilities -> action: [0.36069482564926, 0, 0.63930517435074] -> 2
+[Metrics] total reward: 1
+[Metrics] probabilities -> action: [0.36325797438622, 0, 0.63674205541611] -> 0
+[Metrics] total reward: 0.07634635416667
+[Metrics] probabilities -> action: [0.36886838078499, 0, 0.63113164901733] -> 2
+[Metrics] total reward: 0.06949951171875
+[Metrics] probabilities -> action: [0.13740763068199, 0.49160850048065, 0.37098386883736] -> 1
+[Metrics] total reward: -11
+[Metrics] probabilities -> action: [0.21377569437027, 0, 0.78622430562973] -> 2
+[Metrics] total reward: 0.11357419967651
+[Metrics] probabilities -> action: [0.28222435712814, 0, 0.71777564287186] -> 2
+[Metrics] total reward: 0.30904420852661
+[Metrics] probabilities -> action: [0.27725130319595, 0, 0.72274869680405] -> 2
+[Metrics] total reward: 0.49999843597412
+[Metrics] probabilities -> action: [0.26944527029991, 0, 0.73055469989777] -> 2
+[Metrics] total reward: 0.68654148101807
+[Metrics] probabilities -> action: [0.2585471868515, 0, 0.7414528131485] -> 0
+[Metrics] total reward: 0.76455963134766
+[Metrics] probabilities -> action: [0.26143723726273, 0, 0.73856276273727] -> 2
+[Metrics] total reward: 0.00168321736654
+[Metrics] probabilities -> action: [0.26085612177849, 0, 0.73914384841919] -> 2
+[Metrics] total reward: 0.03152494303385
+[Metrics] probabilities -> action: [0.26309680938721, 0, 0.73690319061279] -> 0
+[Metrics] total reward: 0.07556900024414
+[Metrics] probabilities -> action: [0.26967194676399, 0, 0.73032802343369] -> 2
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.27047312259674, 0, 0.72952687740326] -> 2
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.27363735437393, 0, 0.72636264562607] -> 2
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.27655640244484, 0, 0.72344362735748] -> 2
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.27924209833145, 0, 0.72075790166855] -> 2
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.28170773386955, 0, 0.71829223632812] -> 2
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.28396746516228, 0, 0.71603256464005] -> 2
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.28603544831276, 0, 0.71396452188492] -> 0
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.2912637591362, 0, 0.7087362408638] -> 2
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.28965225815773, 0, 0.71034771203995] -> 2
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.2912278175354, 0, 0.7087721824646] -> 0
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.2961705327034, 0, 0.7038294672966] -> 2
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.29397487640381, 0, 0.70602512359619] -> 0
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.29876357316971, 0, 0.70123642683029] -> 2
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.29611510038376, 0, 0.70388489961624] -> 0
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.30082437396049, 0, 0.69917559623718] -> 0
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.30502465367317, 0, 0.69497537612915] -> 0
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.30737480521202, 0, 0.69262516498566] -> 2
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.30684193968773, 0, 0.69315809011459] -> 2
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.30437922477722, 0, 0.69562077522278] -> 2
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.30126506090164, 0, 0.69873493909836] -> 2
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.30187928676605, 0, 0.69812071323395] -> 2
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.30243834853172, 0, 0.69756162166595] -> 0
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.30682101845741, 0, 0.69317901134491] -> 2
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.30341029167175, 0, 0.69658970832825] -> 2
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.30383178591728, 0, 0.6961681842804] -> 2
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.3041627407074, 0, 0.6958372592926] -> 2
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.30451661348343, 0, 0.69548338651657] -> 2
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.30479443073273, 0, 0.69520556926727] -> 2
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.30509150028229, 0, 0.69490849971771] -> 2
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.30536192655563, 0, 0.69463807344437] -> 2
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.30560800433159, 0, 0.69439196586609] -> 0
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.30980989336967, 0, 0.690190076828] -> 0
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.31342178583145, 0, 0.68657821416855] -> 2
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.31021335721016, 0, 0.68978661298752] -> 2
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.3063902258873, 0, 0.6936097741127] -> 0
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.31054759025574, 0, 0.68945240974426] -> 2
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.30668380856514, 0, 0.69331622123718] -> 0
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.31082448363304, 0, 0.68917554616928] -> 2
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.30692708492279, 0, 0.69307291507721] -> 0
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.31103894114494, 0, 0.68896108865738] -> 0
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.31457242369652, 0, 0.6854276061058] -> 2
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.31123831868172, 0, 0.68876171112061] -> 2
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.30729141831398, 0, 0.69270861148834] -> 2
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.30735799670219, 0, 0.69264197349548] -> 2
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.13207824528217, 0.43316158652306, 0.43476015329361] -> 0
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.13324819505215, 0.43525171279907, 0.43150010704994] -> 2
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.13209336996078, 0.4332429766655, 0.43466365337372] -> 0
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.1332543194294, 0.43528479337692, 0.43146088719368] -> 2
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.13209336996078, 0.4332429766655, 0.43466365337372] -> 2
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.13209336996078, 0.4332429766655, 0.43466365337372] -> 2
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.13209336996078, 0.4332429766655, 0.43466365337372] -> 1
+[Metrics] total reward: -11
+[Metrics] probabilities -> action: [0.13555862009525, 0, 0.86444139480591] -> 2
+[Metrics] total reward: 0.11357322692871
+[Metrics] probabilities -> action: [0.1368942707777, 0, 0.86310571432114] -> 2
+[Metrics] total reward: 0.30903396606445
+[Metrics] probabilities -> action: [0.14038583636284, 0, 0.85961419343948] -> 2
+[Metrics] total reward: 0.49998229980469
+[Metrics] probabilities -> action: [0.14785192906857, 0, 0.85214805603027] -> 2
+[Metrics] total reward: 0.68652191162109
+[Metrics] probabilities -> action: [0.16147893667221, 0, 0.83852106332779] -> 2
+[Metrics] total reward: 0.78431488037109
+[Metrics] probabilities -> action: [0.16260994970798, 0, 0.83739006519318] -> 2
+[Metrics] total reward: -0.02244569905599
+[Metrics] probabilities -> action: [0.16337104141712, 0, 0.83662897348404] -> 0
+[Metrics] total reward: -0.00508280944824
+[Metrics] probabilities -> action: [0.16541178524494, 0, 0.83458822965622] -> 0
+[Metrics] total reward: 0.01219902038574
+[Metrics] probabilities -> action: [0.16722828149796, 0, 0.83277171850204] -> 2
+[Metrics] total reward: -0.03242134094238
+[Metrics] probabilities -> action: [0.08100003004074, 0.38558554649353, 0.53341442346573] -> 2
+[Metrics] total reward: -0.04760481770833
+[Metrics] probabilities -> action: [0.08074381947517, 0.38606548309326, 0.53319072723389] -> 2
+[Metrics] total reward: -0.04333561197917
+[Metrics] probabilities -> action: [0.0808117389679, 0.38631537556648, 0.5328728556633] -> 1
+[Metrics] total reward: -11
+[Metrics] probabilities -> action: [0.14133462309837, 0, 0.8586653470993] -> 2
+[Metrics] total reward: 0.10508894983927
+[Metrics] probabilities -> action: [0.14484524726868, 0, 0.85515475273132] -> 2
+[Metrics] total reward: 0.24891651789347
+[Metrics] probabilities -> action: [0.15186841785908, 0, 0.84813159704208] -> 0
+[Metrics] total reward: 0.47017826334635
+[Metrics] probabilities -> action: [0.20001594722271, 0, 0.79998403787613] -> 2
+[Metrics] total reward: 0.65903428141276
+[Metrics] probabilities -> action: [0.18241837620735, 0, 0.81758165359497] -> 2
+[Metrics] total reward: 0.84308366394043
+[Metrics] probabilities -> action: [0.07830303907394, 0.37885338068008, 0.54284358024597] -> 1
+[Metrics] total reward: -11
+[Metrics] probabilities -> action: [0.14730177819729, 0, 0.85269820690155] -> 0
+[Metrics] total reward: 0.06551119486491
+[Metrics] probabilities -> action: [0.21023133397102, 0, 0.7897686958313] -> 2
+[Metrics] total reward: 0.25930751164754
+[Metrics] probabilities -> action: [0.15720234811306, 0, 0.84279763698578] -> 2
+[Metrics] total reward: 0.45180531692505
+[Metrics] probabilities -> action: [0.16636137664318, 0, 0.83363860845566] -> 0
+[Metrics] total reward: 0.53702667999268
+[Metrics] probabilities -> action: [0.19012697041035, 0, 0.80987304449081] -> 0
+[Metrics] total reward: 0.79734654998779
+[Metrics] probabilities -> action: [0.18650092184544, 0, 0.81349909305573] -> 2
+[Metrics] total reward: 0.15642815144857
+[Metrics] probabilities -> action: [0.19417458772659, 0, 0.80582541227341] -> 2
+[Metrics] total reward: -0.00094822184245
+[Metrics] probabilities -> action: [0.19474336504936, 0, 0.80525660514832] -> 2
+[Metrics] total reward: 0.02191474405925
+[Metrics] probabilities -> action: [0.19761456549168, 0, 0.80238544940948] -> 2
+[Metrics] total reward: 0.0242900390625
+[Metrics] probabilities -> action: [0.19929240643978, 0, 0.80070757865906] -> 2
+[Metrics] total reward: -0.01389192708333
+[Metrics] probabilities -> action: [0.09565535187721, 0.35753086209297, 0.54681378602982] -> 2
+[Metrics] total reward: -0.01264599609375
+[Metrics] probabilities -> action: [0.09588562697172, 0.35860225558281, 0.54551213979721] -> 1
+[Metrics] total reward: -11
+[Metrics] probabilities -> action: [0.10673403739929, 0, 0.89326596260071] -> 2
+[Metrics] total reward: 0.10309373474121
+[Metrics] probabilities -> action: [0.10802286118269, 0, 0.89197713136673] -> 2
+[Metrics] total reward: 0.24486006291707
+[Metrics] probabilities -> action: [0.11034387350082, 0, 0.88965612649918] -> 2
+[Metrics] total reward: 0.46417510859171
+[Metrics] probabilities -> action: [0.11444652080536, 0, 0.88555347919464] -> 2
+[Metrics] total reward: 0.652126953125
+[Metrics] probabilities -> action: [0.12132113426924, 0, 0.87867885828018] -> 2
+[Metrics] total reward: 0.83568885803223
+[Metrics] probabilities -> action: [0.09470079094172, 0.35583570599556, 0.54946351051331] -> 2
+[Metrics] total reward: 0.13400840759277
+[Metrics] probabilities -> action: [0.16536271572113, 0, 0.83463728427887] -> 2
+[Metrics] total reward: 1
+[Metrics] probabilities -> action: [0.16577334702015, 0, 0.83422666788101] -> 0
+[Metrics] total reward: -0.01865250651042
+[Metrics] probabilities -> action: [0.16881604492664, 0, 0.83118396997452] -> 2
+[Metrics] total reward: 0.98281477864583
+[Metrics] probabilities -> action: [0.16651783883572, 0, 0.83348214626312] -> 2
+[Metrics] total reward: -0.01564420572917
+[Metrics] probabilities -> action: [0.16684752702713, 0, 0.83315247297287] -> 2
+[Metrics] total reward: -0.01424104817708
+[Metrics] probabilities -> action: [0.16715109348297, 0, 0.83284890651703] -> 2
+[Metrics] total reward: -0.0129638671875
+[Metrics] probabilities -> action: [0.16743019223213, 0, 0.83256983757019] -> 2
+[Metrics] total reward: -0.01180126953125
+[Metrics] probabilities -> action: [0.16765134036541, 0, 0.83234864473343] -> 2
+[Metrics] total reward: -0.00926928710938
+[Metrics] probabilities -> action: [0.16785682737827, 0, 0.83214318752289] -> 2
+[Metrics] total reward: -0.00855208333333
+[Metrics] probabilities -> action: [0.16807813942432, 0, 0.83192187547684] -> 0
+[Metrics] total reward: -0.00914469401042
+[Metrics] probabilities -> action: [0.17107260227203, 0, 0.82892739772797] -> 2
+[Metrics] total reward: -0.00832446289063
+[Metrics] probabilities -> action: [0.16846677660942, 0, 0.83153319358826] -> 2
+[Metrics] total reward: -0.00757796223958
+[Metrics] probabilities -> action: [0.16863690316677, 0, 0.83136308193207] -> 0
+[Metrics] total reward: -0.0068984375
+Experience buffer size: 128
+Training on batch of size: 128
+enqueue_training data size:5
+training_queue size:1
+_notify_training_started
+Local data created, attempting training...
+try train
+Start train step: 1
+Training batch size: 128
+[Metrics] probabilities -> action: [0.1716160774231, 0, 0.8283839225769] -> 2
+[Metrics] total reward: -0.00627978515625
+[Metrics] probabilities -> action: [0.16893489658833, 0, 0.83106511831284] -> 2
+[Metrics] total reward: -0.00571655273437
+[Metrics] probabilities -> action: [0.16906501352787, 0, 0.83093500137329] -> 2
+[Metrics] total reward: -0.00520385742188
+[Metrics] probabilities -> action: [0.1691839247942, 0, 0.83081609010696] -> 2
+[Metrics] total reward: -0.00473722330729
+[Metrics] probabilities -> action: [0.16931790113449, 0, 0.83068209886551] -> 2
+[Metrics] total reward: -0.00431233723958
+[Metrics] probabilities -> action: [0.16944991052151, 0, 0.83055007457733] -> 2
+[Metrics] total reward: -0.00392569986979
+[Metrics] probabilities -> action: [0.16957041621208, 0, 0.83042961359024] -> 2
+[Metrics] total reward: -0.00357356770833
+[Metrics] probabilities -> action: [0.16968035697937, 0, 0.83031964302063] -> 2
+[Metrics] total reward: -0.00325301106771
+[Metrics] probabilities -> action: [0.16978065669537, 0, 0.83021932840347] -> 2
+[Metrics] total reward: -0.00296134440104
+[Metrics] probabilities -> action: [0.1698721498251, 0, 0.83012783527374] -> 0
+[Metrics] total reward: -0.00269563802083
+[Metrics] probabilities -> action: [0.17284215986729, 0, 0.82715785503387] -> 2
+[Metrics] total reward: -0.00245385742187
+[Metrics] probabilities -> action: [0.17003166675568, 0, 0.82996833324432] -> 2
+[Metrics] total reward: -0.00223388671875
+[Metrics] probabilities -> action: [0.17010101675987, 0, 0.82989901304245] -> 2
+[Metrics] total reward: -0.00203361002604
+[Metrics] probabilities -> action: [0.17016422748566, 0, 0.82983577251434] -> 2
+[Metrics] total reward: -0.00185107421875
+[Metrics] probabilities -> action: [0.17022183537483, 0, 0.82977813482285] -> 2
+[Metrics] total reward: -0.00168522135417
+[Metrics] probabilities -> action: [0.17027434706688, 0, 0.8297256231308] -> 2
+[Metrics] total reward: -0.00153409830729
+[Metrics] probabilities -> action: [0.17032219469547, 0, 0.82967782020569] -> 2
+[Metrics] total reward: -0.00139656575521
+[Metrics] probabilities -> action: [0.08018533885479, 0.37552627921104, 0.54428839683533] -> 2
+[Metrics] total reward: -0.00127124023437
+[Metrics] probabilities -> action: [0.08019275218248, 0.3755387365818, 0.54426848888397] -> 2
+[Metrics] total reward: -0.00115730794271
+[Metrics] probabilities -> action: [0.08019950985909, 0.37555015087128, 0.54425036907196] -> 2
+[Metrics] total reward: -0.00105362955729
+[Metrics] probabilities -> action: [0.0802004262805, 0.37555167078972, 0.54424792528152] -> 2
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.0802004262805, 0.37555167078972, 0.54424792528152] -> 2
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.0802004262805, 0.37555167078972, 0.54424792528152] -> 2
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.0802004262805, 0.37555167078972, 0.54424792528152] -> 2
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.0802004262805, 0.37555167078972, 0.54424792528152] -> 1
+[Metrics] total reward: -11
+[Metrics] probabilities -> action: [0.16087681055069, 0, 0.83912318944931] -> 2
+[Metrics] total reward: 0.11357322692871
+[Metrics] probabilities -> action: [0.16384924948215, 0, 0.83615076541901] -> 2
+[Metrics] total reward: 0.30903396606445
+[Metrics] probabilities -> action: [0.16995909810066, 0, 0.83004093170166] -> 0
+[Metrics] total reward: 0.49998229980469
+Start policy update
+[Metrics] probabilities -> action: [0.2077618688345, 0, 0.79223811626434] -> 2
+Epoch: 0
+[Metrics] total reward: 0.68652191162109
+Epoch: 1
+Epoch: 2
+States size: 8576
+Returns size: 128
+[Metrics] probabilities -> action: [0.5, 0, 0.5] -> 2
+[Metrics] total reward: 0.87338859558105
+[Metrics] probabilities -> action: [0.33333334326744, 0.33333334326744, 0.33333334326744] -> 0
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.33333334326744, 0.33333334326744, 0.33333334326744] -> 0
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.33333334326744, 0.33333334326744, 0.33333334326744] -> 2
+[Metrics] total reward: 0
+[Metrics] probabilities -> action: [0.33333334326744, 0.33333334326744, 0.33333334326744] -> 1
+[Metrics] total reward: -11
+[Metrics] probabilities -> action: [0.5, 0, 0.5] -> 0
+[Metrics] total reward: 0.11357419967651
+[Metrics] probabilities -> action: [0.5, 0, 0.5] -> 2
+[Metrics] total reward: 0.30904420852661
+[Metrics] probabilities -> action: [0.5, 0, 0.5] -> 2
+[Metrics] total reward: 0.49971515146891
+[Metrics] probabilities -> action: [0.5, 0, 0.5] -> 2
+[Metrics] total reward: 0.68560788726807
+[Metrics] probabilities -> action: [0.5, 0, 0.5] -> 2
+[Metrics] total reward: 0.86792525227865
+[Metrics] probabilities -> action: [0.5, 0, 0.5] -> 0
+[Metrics] total reward: 1
+[Metrics] probabilities -> action: [0.5, 0, 0.5] -> 0
+[Metrics] total reward: -0.00070426432292
+[Metrics] probabilities -> action: [0.5, 0, 0.5] -> 2
+[Metrics] total reward: 0.79487459309896
+[Metrics] probabilities -> action: [0.5, 0, 0.5] -> 0
+[Metrics] total reward: -0.00670776367188
+[Metrics] probabilities -> action: [0.5, 0, 0.5] -> 2
+[Metrics] total reward: -0.00610538736979
+[Metrics] probabilities -> action: [0.5, 0, 0.5] -> 2
+[Metrics] total reward: -0.01115152994792
+[Metrics] probabilities -> action: [0.5, 0, 0.5] -> 2
+[Metrics] total reward: -0.00873933919271
+[Metrics] probabilities -> action: [0.5, 0, 0.5] -> 0
+[Metrics] total reward: -0.00539526367188
+[Metrics] probabilities -> action: [0.5, 0, 0.5] -> 2
+[Metrics] total reward: -0.00491178385417
+[Metrics] probabilities -> action: [0.5, 0, 0.5] -> 0
+[Metrics] total reward: -0.00447127278646
+[Metrics] probabilities -> action: [0.5, 0, 0.5] -> 0
+[Metrics] total reward: -0.00407014973958
+[Metrics] probabilities -> action: [0.5, 0, 0.5] -> 2
+[Metrics] total reward: 1
+[Metrics] probabilities -> action: [0.5, 0, 0.5] -> 0
+[Metrics] total reward: -0.01282316080729
+[Metrics] probabilities -> action: [0.5, 0, 0.5] -> 2
+[Metrics] total reward: -0.01167325846354
+[Metrics] probabilities -> action: [0.5, 0, 0.5] -> 2
+[Metrics] total reward: -0.00916861979167
+[Metrics] probabilities -> action: [0.5, 0, 0.5] -> 2
+[Metrics] total reward: -0.00980403645833
+[Metrics] probabilities -> action: [0.5, 0, 0.5] -> 0
+[Metrics] total reward: -0.00892472330729
+[Metrics] probabilities -> action: [0.5, 0, 0.5] -> 0
+[Metrics] total reward: -0.00812451171875
+[Metrics] probabilities -> action: [0.5, 0, 0.5] -> 2
+[Metrics] total reward: -0.00638126627604
+[Metrics] probabilities -> action: [0.5, 0, 0.5] -> 2
+[Metrics] total reward: -0.00682356770833
+[Metrics] probabilities -> action: [0.5, 0, 0.5] -> 0
+[Metrics] total reward: -0.00621158854167
+Collect metrics
+collect_metrics
+Training Metrics:
+- [Metric] Value Loss: 126.4725
+- [Metric] Policy Loss: 0.2055
+- [Metric] Entropy: 1.0986
+- [Metric] Mean Advantage: -0.0000
+- [Metric] Mean Value Estimate: -1.0249
+- [Metric] Mean Probability Ratio: 0.9863
+
+Done train
+Training result: true
+_notify_training_completed
+[Metrics] probabilities -> action: [0.5, 0, 0.5] -> 2
+[Metrics] total reward: -0.00565462239583
+[Metrics] probabilities -> action: [0.5, 0, 0.5] -> 2
+[Metrics] total reward: -0.00444132486979
+[Metrics] probabilities -> action: [0.5, 0, 0.5] -> 2
+[Metrics] total reward: -0.00474910481771
+[Metrics] probabilities -> action: [0.5, 0, 0.5] -> 0
+[Metrics] total reward: -0.00432316080729
+[Metrics] probabilities -> action: [0.5, 0, 0.5] -> 2
+[Metrics] total reward: -0.00393546549479
+[Metrics] probabilities -> action: [0.5, 0, 0.5] -> 2
+[Metrics] total reward: -0.00358260091146
+[Metrics] probabilities -> action: [0.5, 0, 0.5] -> 0
+[Metrics] total reward: -0.00326131184896
+[Metrics] probabilities -> action: [0.5, 0, 0.5] -> 2
+[Metrics] total reward: -0.00296883138021
+[Metrics] probabilities -> action: [0.5, 0, 0.5] -> 0
+[Metrics] total reward: -0.00270239257812
+[Metrics] probabilities -> action: [0.5, 0, 0.5] -> 0
+--- Debugging process stopped ---

@@ -20,28 +20,28 @@ func _init(_parameters: Dictionary, _learning_rate: float = 0.001):
 	v = {}
 	
 	# Initialize momentum and velocity for each parameter tensor
-	for key in parameters.keys():
-		var params = parameters[key]
-		m[key] = []
-		v[key] = []
+	# for key in parameters.keys():
+	# 	var params = parameters[key]
+	# 	m[key] = []
+	# 	v[key] = []
 		
-		# Handle array of tensors
-		if params is Array:
-			for i in range(params.size()):
-				m[key].append(Tensor.new(PackedFloat32Array()))
-				v[key].append(Tensor.new(PackedFloat32Array()))
+	# 	# Handle array of tensors
+	# 	if params is Array:
+	# 		for i in range(params.size()):
+	# 			m[key].append(Tensor.new(PackedFloat32Array()))
+	# 			v[key].append(Tensor.new(PackedFloat32Array()))
 				
-				for _j in range(params[i].size()):
-					m[key][i].data.append(0.0)
-					v[key][i].data.append(0.0)
-		# Handle single tensor
-		else:
-			m[key] = [Tensor.new(PackedFloat32Array())]
-			v[key] = [Tensor.new(PackedFloat32Array())]
+	# 			for _j in range(params[i].size()):
+	# 				m[key][i].data.append(0.0)
+	# 				v[key][i].data.append(0.0)
+	# 	# Handle single tensor
+	# 	else:
+	# 		m[key] = [Tensor.new(PackedFloat32Array())]
+	# 		v[key] = [Tensor.new(PackedFloat32Array())]
 			
-			for _i in range(params.size()):
-				m[key][0].data.append(0.0)
-				v[key][0].data.append(0.0)
+	# 		for _i in range(params.size()):
+	# 			m[key][0].data.append(0.0)
+	# 			v[key][0].data.append(0.0)
 
 func zero_grad():
 	for param in parameters.values():

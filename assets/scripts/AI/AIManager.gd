@@ -1,9 +1,9 @@
 extends Node2D
 
-@export var num_ai: int = 32
+@export var num_ai: int = 16
 var play_package: Resource = load("res://assets/scenes/PlayAreaBowl.tscn")
 @export var ai_games_node: Node2D
-@export var time_scale: float = 1.0
+@export var time_scale: float = 2.0
 @export var camera:Camera2D
 
 @export var generation:int = 1
