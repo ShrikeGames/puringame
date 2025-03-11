@@ -12,9 +12,9 @@ var m: Dictionary
 var v: Dictionary
 var t: int = 0
 
-func _init(parameters: Dictionary, learning_rate: float = 0.001):
-	self.parameters = parameters
-	self.learning_rate = learning_rate
+func _init(_parameters: Dictionary, _learning_rate: float = 0.001):
+	self.parameters = _parameters
+	self.learning_rate = _learning_rate
 	
 	m = {}
 	v = {}

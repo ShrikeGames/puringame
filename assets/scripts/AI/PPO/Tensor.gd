@@ -7,9 +7,9 @@ var gradients: PackedFloat32Array
 var requires_grad: bool = true
 var grad_fn: Callable
 
-func _init(data: PackedFloat32Array, requires_grad: bool = true):
-	self.data = data
-	self.requires_grad = requires_grad
+func _init(_data: PackedFloat32Array, _requires_grad: bool = true):
+	self.data = _data
+	self.requires_grad = _requires_grad
 	# Initialize gradients array with same size as data
 	self.gradients = PackedFloat32Array()
 	for _i in range(data.size()):
@@ -65,18 +65,18 @@ func __sub(other: Tensor) -> Tensor:
 					other_ref.gradients[i] += -grad[i]
 	return result
 
-func pow(exponent: float) -> Tensor:
+func pow(_exponent: float) -> Tensor:
 	var result_data = PackedFloat32Array()
 	for i in range(data.size()):
-		result_data.append(pow(data[i], exponent))
+		result_data.append(pow(data[i], _exponent))
 	
 	var result = Tensor.new(result_data, requires_grad)
 	if requires_grad:
 		var self_ref = self
-		var exp = exponent
+		var exponent = _exponent
 		result.grad_fn = func(grad: PackedFloat32Array):
 			for i in range(self_ref.data.size()):
-				self_ref.gradients[i] += grad[i] * exp * pow(self_ref.data[i], exp - 1.0)
+				self_ref.gradients[i] += grad[i] * exponent * pow(self_ref.data[i], exponent - 1.0)
 	return result
 
 func clamp(min_value: float, max_value: float) -> Tensor:

@@ -10,10 +10,10 @@ var weights: Array[Tensor]  # Array of weight tensors for all layers
 var biases: Array[Tensor]   # Array of bias tensors for all layers
 var gradients: Dictionary
 
-func _init(input_size: int, hidden_sizes: Array[int], output_size: int):
-	self.input_size = input_size
-	self.hidden_sizes = hidden_sizes
-	self.output_size = output_size
+func _init(_input_size: int, _hidden_sizes: Array[int], _output_size: int):
+	self.input_size = _input_size
+	self.hidden_sizes = _hidden_sizes
+	self.output_size = _output_size
 	
 	# Value network should output a single value per state
 	if output_size == 1:
@@ -89,7 +89,6 @@ func backward(gradient: Tensor, cache: Dictionary) -> void:
 func forward(input: Tensor) -> Dictionary:
 	# Calculate batch size from input
 	var batch_size = input.data.size() / input_size
-	var cache = {"input": input}
 	var current = input
 	var hidden_outputs = []
 	

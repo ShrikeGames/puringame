@@ -21,24 +21,28 @@ var value_optimizer: AdamOptimizer
 
 var model_mutex = Mutex.new()
 
-func _init(input_size: int, hidden_sizes: Array[int], output_size: int):
-	self.input_size = input_size
-	self.output_size = output_size
+func _init(_input_size: int, _hidden_sizes: Array[int], _output_size: int):
+	self.input_size = _input_size
+	self.output_size = _output_size
 
 	# Create policy and value networks with multiple hidden layers
-	policy_net = NeuralNetwork.new(input_size, hidden_sizes, output_size)
-	value_net = NeuralNetwork.new(input_size, hidden_sizes, 1)
+	self.policy_net = NeuralNetwork.new(self.input_size, _hidden_sizes, self.output_size)
+	self.value_net = NeuralNetwork.new(self.input_size, _hidden_sizes, 1)
 
-	policy_optimizer = AdamOptimizer.new(policy_net.get_parameters(), learning_rate)
-	value_optimizer = AdamOptimizer.new(value_net.get_parameters(), learning_rate)
+	self.policy_optimizer = AdamOptimizer.new(self.policy_net.get_parameters(), self.learning_rate)
+	self.value_optimizer = AdamOptimizer.new(self.value_net.get_parameters(), self.learning_rate)
 
 func select_action(state: PackedFloat32Array) -> int:
 	model_mutex.lock()
+	var action = _internal_select_action(state)
+	model_mutex.unlock()
+	return action
+
+func _internal_select_action(state: PackedFloat32Array) -> int:
 	var state_tensor = Tensor.from_array(state)
 	var output = policy_net.forward(state_tensor)
 	var probs = output["output"]
 	var action = probs.sample()
-	model_mutex.unlock()
 	return action
 
 func update_policy(states: Tensor, actions: Tensor, old_probs: Tensor, advantages: Tensor):
@@ -280,3 +284,22 @@ func train(states: Tensor, actions: Tensor, rewards: Tensor, next_states: Tensor
 	
 	update_policy(states, actions, old_probs, advantages)
 	update_value(states, returns)
+
+func thread_safe_train(data: Dictionary):
+	# Convert data back to Tensor objects
+	var training_tensors = {
+		"states": Tensor.from_array(data.states.data),
+		"actions": Tensor.from_array(data.actions.data),
+		"rewards": Tensor.from_array(data.rewards.data),
+		"next_states": Tensor.from_array(data.next_states.data),
+		"dones": Tensor.from_array(data.dones.data)
+	}
+	
+	var result = train(
+		training_tensors.states,
+		training_tensors.actions,
+		training_tensors.rewards,
+		training_tensors.next_states,
+		training_tensors.dones
+	)
+	return result

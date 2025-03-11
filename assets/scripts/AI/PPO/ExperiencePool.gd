@@ -4,9 +4,9 @@ class_name ExperiencePool
 var buffer = []
 var mutex = Mutex.new()
 
-func add_experience(exp: Dictionary):
+func add_experience(experience: Dictionary):
 	mutex.lock()
-	buffer.append(exp)
+	buffer.append(experience)
 	mutex.unlock()
 
 func get_buffer_size():

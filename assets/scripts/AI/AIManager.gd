@@ -42,22 +42,22 @@ func init_ai_players():
 			x_pos = 17
 			y_pos += 1080
 		ai_games_node.add_child(game)
-		game_count += 1
 		
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	for game in ai_games_node.get_children():
 		if game.time_since_last_score >= max_idle_time + (ai_games_node.get_child_count()*0.5) or game.gameover_screen.visible:
 			if game.score > 0:
 				total_score += game.score
+				game_count += 1
 				if game.score > best_score:
 					best_score = game.score
 					print("New best score of %s from %s"%[best_score, game.player_name])
 					Global.best_brain.save_model(Global.ai_brain_path)
 				else:
 					print("Score of %s from %s"%[game.score, game.player_name])
-				print("Average Score: %s"%[total_score/float(game_count)])
+				print("Average Score: %s from %s games"%[total_score/float(game_count), game_count])
 				print("training steps: ", Global.steps_since_training)
-				game_count += 1
+				
 			game.restart_game()
 			
 

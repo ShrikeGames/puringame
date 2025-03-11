@@ -139,7 +139,7 @@ func set_up_game():
 	remove_all_purin()
 	# reset progress
 	score = 0
-	board_value
+	board_value = 0
 	time_since_last_score = 0
 	previous_state = null
 	previous_action = -1
@@ -766,9 +766,6 @@ func calculate_reward(old_score: int) -> float:
 	return reward
 
 func train_on_batch():
-	if Global.async_trainer.is_training:
-		return
-	Global.steps_since_training = 0
 	print("Experience buffer size: ", Global.experience_pool.get_buffer_size())
 	
 	# Ensure we have enough experiences
@@ -788,25 +785,25 @@ func train_on_batch():
 	var dones_data = PackedFloat32Array()
 	
 	# Collect batch data
-	for exp in batch:
+	for experience in batch:
 		# Each state has input_nodes elements
 		for i in range(input_nodes):
-			if i < exp["state"].data.size():
-				states_data.append(exp["state"].data[i])
+			if i < experience["state"].data.size():
+				states_data.append(experience["state"].data[i])
 			else:
 				states_data.append(0.0)
 				
-		actions_data.append(exp["action"])
-		rewards_data.append(exp["reward"])
+		actions_data.append(experience["action"])
+		rewards_data.append(experience["reward"])
 		
 		# Each next_state has input_nodes elements
 		for i in range(input_nodes):
-			if i < exp["next_state"].data.size():
-				next_states_data.append(exp["next_state"].data[i])
+			if i < experience["next_state"].data.size():
+				next_states_data.append(experience["next_state"].data[i])
 			else:
 				next_states_data.append(0.0)
 				
-		dones_data.append(1.0 if exp["done"] else 0.0)
+		dones_data.append(1.0 if experience["done"] else 0.0)
 	
 	# Create tensors from batch data
 	var states_tensor = Tensor.from_array(states_data)
@@ -814,15 +811,20 @@ func train_on_batch():
 	var rewards_tensor = Tensor.from_array(rewards_data)
 	var next_states_tensor = Tensor.from_array(next_states_data)
 	var dones_tensor = Tensor.from_array(dones_data)
-	
+	# save current best brain
+	Global.best_brain.save_model(Global.ai_brain_path)
+	# load it as a new brain to avoid conflicts
+	var new_brain:PPO = PPO.new(124, Global.BRAIN_HIDDEN_LAYERS, Global.OUTPUT_NODES)
+	new_brain.load_model(Global.ai_brain_path)
 	# Train on batch
 	var training_data = {
-		"ppo": Global.best_brain,
 		"states": states_tensor,
 		"actions": actions_tensor,
 		"rewards": rewards_tensor,
 		"next_states": next_states_tensor,
-		"dones": dones_tensor
+		"dones": dones_tensor,
+		"ppo": new_brain,
 	}
 	
-	Global.async_trainer.start_training(training_data)
+	Global.async_trainer.enqueue_training(training_data)
+	Global.steps_since_training = 0

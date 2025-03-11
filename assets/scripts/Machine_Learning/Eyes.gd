@@ -22,7 +22,7 @@ var use_cone:bool = false
 @export var COLLISION_COLOUR:Color = Color(0.9,0.5,0.5,0.75)
 
 
-func init(_fov_degrees:float, _num_raycasts:int, _sight:int):
+func init(_fov_degrees:float, _num_raycasts:int, _sight:float):
 	if initialized:
 		return
 	# Called once when Agent is created
