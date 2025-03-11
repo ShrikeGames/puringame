@@ -9,10 +9,10 @@ var output_size: int
 var learning_rate: float = 0.001
 var gamma: float = 0.99
 var epsilon: float = 0.2
-var epochs: int = 10
-var clip_range: float = 0.2
+var epochs: int = 5
+var clip_range: float = 0.2#0.3 increase when learning is stable
 var value_coef: float = 0.5
-var entropy_coef: float = 0.001
+var entropy_coef: float = 0.001#0.05 increase for more exploration
 
 var policy_net: NeuralNetwork
 var value_net: NeuralNetwork
@@ -20,6 +20,8 @@ var policy_optimizer: AdamOptimizer
 var value_optimizer: AdamOptimizer
 
 var model_mutex = Mutex.new()
+var training_metrics = TrainingMetrics.new()
+var training_metrics_history:Array[TrainingMetrics] = []
 
 func _init(_input_size: int, _hidden_sizes: Array[int], _output_size: int):
 	self.input_size = _input_size
@@ -47,6 +49,7 @@ func _internal_select_action(state: PackedFloat32Array) -> int:
 
 func update_policy(states: Tensor, actions: Tensor, old_probs: Tensor, advantages: Tensor):
 	model_mutex.lock()
+	var metrics:Dictionary = {}
 	var batch_size = advantages.size()
 	print("Update policy batch_size: ", batch_size)
 	print("Advantages mean: ", advantages.mean().data[0])
@@ -108,11 +111,19 @@ func update_policy(states: Tensor, actions: Tensor, old_probs: Tensor, advantage
 		#	policy_net.weights[i].print_gradients("weights_" + str(i))
 		
 		policy_optimizer.step()
+		# Store metrics before returning
+		metrics = {
+			"policy_loss": policy_loss.data[0],
+			"entropy": entropy_value,
+			"ratio": ratio
+		}
 	model_mutex.unlock()
+	return metrics
 
 func update_value(states: Tensor, returns: Tensor):
 	print("States size: ", states.size())
 	print("Returns size: ", returns.size())
+	var metrics:Dictionary = {}
 	
 	for _epoch in range(epochs):
 		var output = value_net.forward(states)
@@ -128,6 +139,11 @@ func update_value(states: Tensor, returns: Tensor):
 		value_net.zero_gradients()
 		value_loss.backward()
 		value_optimizer.step()
+		# Store value loss before returning
+		metrics = {
+			"value_loss": value_loss.data[0]
+		}
+	return metrics
 
 func compute_gae(rewards: Tensor, values: Tensor, next_values: Tensor, dones: Tensor) -> Dictionary:
 	# Add debug prints to check sizes
@@ -282,8 +298,17 @@ func train(states: Tensor, actions: Tensor, rewards: Tensor, next_states: Tensor
 	var output = policy_net.forward(states)
 	var old_probs = output["output"]
 	
-	update_policy(states, actions, old_probs, advantages)
-	update_value(states, returns)
+	var policy_metrics = update_policy(states, actions, old_probs, advantages)
+	var value_metrics = update_value(states, returns)
+	print("Collect metrics")
+	training_metrics.collect_metrics(
+		value_metrics.value_loss,
+		policy_metrics.policy_loss,
+		policy_metrics.entropy,
+		advantages,
+		values,
+		policy_metrics.ratio
+	)
 
 func thread_safe_train(data: Dictionary):
 	# Convert data back to Tensor objects

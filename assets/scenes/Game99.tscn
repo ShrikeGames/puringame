@@ -92,9 +92,8 @@ texture = ExtResource("11_bhs5c")
 
 [node name="AIGames" type="Node2D" parent="."]
 
-[node name="PlayAreaBowl" parent="." node_paths=PackedStringArray("purin_bag") instance=ExtResource("13_gy0je")]
+[node name="PlayAreaBowl" parent="." instance=ExtResource("13_gy0je")]
 position = Vector2(48, -2)
-purin_bag = NodePath("../PurinBagPlayer")
 
 [node name="PurinBagPlayer" parent="." instance=ExtResource("15_qafyh")]
 position = Vector2(887, 82)

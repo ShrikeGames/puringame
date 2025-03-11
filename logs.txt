@@ -1,0 +1,214 @@
+- [Metric] Value Loss: 2.9486
+- [Metric] Policy Loss: -0.2210
+- [Metric] Entropy: 0.0084
+- [Metric] Mean Advantage: 0.3610
+- [Metric] Mean Value Estimate: -0.3674
+- [Metric] Mean Probability Ratio: 1.0488
+- [Metric] Value Loss: 6.2056
+- [Metric] Policy Loss: -0.8994
+- [Metric] Entropy: 0.0084
+- [Metric] Mean Advantage: 1.1033
+- [Metric] Mean Value Estimate: -0.1014
+- [Metric] Mean Probability Ratio: 0.7975
+[Metric] Average Score: 30202 from 1 games
+- [Metric] Value Loss: 9.3621
+- [Metric] Policy Loss: -1.4238
+- [Metric] Entropy: 0.0084
+- [Metric] Mean Advantage: 1.4238
+- [Metric] Mean Value Estimate: 0.0000
+- [Metric] Mean Probability Ratio: 1.0000
+[Metric] Average Score: 26469.5 from 2 games
+[Metric] Average Score: 27874.6666666667 from 3 games
+[Metric] Average Score: 28748.75 from 4 games
+[Metric] Average Score: 31092.6 from 5 games
+[Metric] Average Score: 33225.1666666667 from 6 games
+[Metric] Average Score: 34278 from 7 games
+[Metric] Average Score: 32650.25 from 8 games
+[Metric] Average Score: 31835.5555555556 from 9 games
+- [Metric] Value Loss: 6.0766
+- [Metric] Policy Loss: -1.0618
+- [Metric] Entropy: 0.0084
+- [Metric] Mean Advantage: 1.0618
+- [Metric] Mean Value Estimate: 0.0000
+- [Metric] Mean Probability Ratio: 1.0000
+[Metric] Average Score: 33129.4 from 10 games
+[Metric] Average Score: 35276.8181818182 from 11 games
+[Metric] Average Score: 36465.8333333333 from 12 games
+[Metric] Average Score: 36850.3846153846 from 13 games
+[Metric] Average Score: 36468.2142857143 from 14 games
+[Metric] Average Score: 36053.4 from 15 games
+[Metric] Average Score: 35654.8125 from 16 games
+[Metric] Average Score: 35597.2941176471 from 17 games
+[Metric] Average Score: 36501.7222222222 from 18 games
+[Metric] Average Score: 36495.7368421053 from 19 games
+[Metric] Average Score: 34708.45 from 20 games
+[Metric] Average Score: 35454.4285714286 from 21 games
+[Metric] Average Score: 38082.6363636364 from 22 games
+[Metric] Average Score: 37821.5217391304 from 23 games
+[Metric] Average Score: 38190.375 from 24 games
+[Metric] Average Score: 38001.48 from 25 games
+[Metric] Average Score: 38354.9615384615 from 26 games
+[Metric] Average Score: 39247.8888888889 from 27 games
+[Metric] Average Score: 39498.1785714286 from 28 games
+[Metric] Average Score: 40300.3103448276 from 29 games
+- [Metric] Value Loss: 7.6726
+- [Metric] Policy Loss: -1.3476
+- [Metric] Entropy: 0.0084
+- [Metric] Mean Advantage: 1.3476
+- [Metric] Mean Value Estimate: 0.0000
+- [Metric] Mean Probability Ratio: 1.0000
+[Metric] Average Score: 40814.1333333333 from 30 games
+[Metric] Average Score: 40702.6774193548 from 31 games
+[Metric] Average Score: 41288.25 from 32 games
+- [Metric] Value Loss: 6.0590
+- [Metric] Policy Loss: -0.9241
+- [Metric] Entropy: 0.0084
+- [Metric] Mean Advantage: 0.9241
+- [Metric] Mean Value Estimate: 0.0000
+- [Metric] Mean Probability Ratio: 1.0000
+[Metric] Average Score: 42022.7272727273 from 33 games
+- [Metric] Value Loss: 12.3093
+- [Metric] Policy Loss: -1.5416
+- [Metric] Entropy: 0.0084
+- [Metric] Mean Advantage: 1.5416
+- [Metric] Mean Value Estimate: 0.0000
+- [Metric] Mean Probability Ratio: 1.0000
+[Metric] Average Score: 41289.5 from 34 games
+- [Metric] Value Loss: 6.7607
+- [Metric] Policy Loss: -0.6572
+- [Metric] Entropy: 0.0084
+- [Metric] Mean Advantage: 0.6572
+- [Metric] Mean Value Estimate: 0.0000
+- [Metric] Mean Probability Ratio: 1.0000
+[Metric] Average Score: 40540.2857142857 from 35 games
+[Metric] Average Score: 40613.2777777778 from 36 games
+[Metric] Average Score: 40136.8648648649 from 37 games
+[Metric] Average Score: 40257.6052631579 from 38 games
+[Metric] Average Score: 40548 from 39 games
+[Metric] Average Score: 40257.4 from 40 games
+- [Metric] Value Loss: 4.4978
+- [Metric] Policy Loss: -0.2271
+- [Metric] Entropy: 0.0084
+- [Metric] Mean Advantage: 0.2271
+- [Metric] Mean Value Estimate: 0.0000
+- [Metric] Mean Probability Ratio: 1.0000
+[Metric] Average Score: 40697.7073170732 from 41 games
+[Metric] Average Score: 40475.8095238095 from 42 games
+[Metric] Average Score: 40474.1860465116 from 43 games
+[Metric] Average Score: 40315.1818181818 from 44 games
+[Metric] Average Score: 40293.6 from 45 games
+[Metric] Average Score: 40442.5652173913 from 46 games
+[Metric] Average Score: 40811.4255319149 from 47 games
+[Metric] Average Score: 40952.2083333333 from 48 games
+[Metric] Average Score: 41349.4897959184 from 49 games
+[Metric] Average Score: 40923.12 from 50 games
+[Metric] Average Score: 40841.3921568627 from 51 games
+[Metric] Average Score: 40714.5576923077 from 52 games
+- [Metric] Value Loss: 2.6335
+- [Metric] Policy Loss: -0.0974
+- [Metric] Entropy: 0.0084
+- [Metric] Mean Advantage: 0.0974
+- [Metric] Mean Value Estimate: 0.0000
+- [Metric] Mean Probability Ratio: 1.0000
+[Metric] Average Score: 40356.6037735849 from 53 games
+[Metric] Average Score: 40120.4074074074 from 54 games
+[Metric] Average Score: 39928.3454545455 from 55 games
+[Metric] Average Score: 39653.3571428571 from 56 games
+[Metric] Average Score: 39940.6666666667 from 57 games
+[Metric] Average Score: 39966.0517241379 from 58 games
+[Metric] Average Score: 39710.593220339 from 59 games
+[Metric] Average Score: 39974.6333333333 from 60 games
+[Metric] Average Score: 40366.1803278689 from 61 games
+[Metric] Average Score: 40779.5483870968 from 62 games
+[Metric] Average Score: 41217.0793650794 from 63 games
+- [Metric] Value Loss: 3.5870
+- [Metric] Policy Loss: -0.0974
+- [Metric] Entropy: 0.0084
+- [Metric] Mean Advantage: 0.0974
+- [Metric] Mean Value Estimate: 0.0000
+- [Metric] Mean Probability Ratio: 1.0000
+[Metric] Average Score: 41737.625 from 64 games
+- [Metric] Value Loss: 5.0398
+- [Metric] Policy Loss: -0.7694
+- [Metric] Entropy: 0.0084
+- [Metric] Mean Advantage: 0.7694
+- [Metric] Mean Value Estimate: 0.0000
+- [Metric] Mean Probability Ratio: 1.0000
+[Metric] Average Score: 41821.9230769231 from 65 games
+- [Metric] Value Loss: 4.9601
+- [Metric] Policy Loss: -0.9882
+- [Metric] Entropy: 0.0084
+- [Metric] Mean Advantage: 0.9882
+- [Metric] Mean Value Estimate: 0.0000
+- [Metric] Mean Probability Ratio: 1.0000
+[Metric] Average Score: 41634.5454545455 from 66 games
+[Metric] Average Score: 41686.3880597015 from 67 games
+[Metric] Average Score: 41400.9264705882 from 68 games
+- [Metric] Value Loss: 8.5378
+- [Metric] Policy Loss: -1.2811
+- [Metric] Entropy: 0.0084
+- [Metric] Mean Advantage: 1.2811
+- [Metric] Mean Value Estimate: 0.0000
+- [Metric] Mean Probability Ratio: 1.0000
+[Metric] Average Score: 41542.1449275362 from 69 games
+[Metric] Average Score: 41412.2428571429 from 70 games
+[Metric] Average Score: 41484.0563380282 from 71 games
+[Metric] Average Score: 41661.3472222222 from 72 games
+[Metric] Average Score: 41884.4246575342 from 73 games
+[Metric] Average Score: 41890.3108108108 from 74 games
+[Metric] Average Score: 41616.4 from 75 games
+[Metric] Average Score: 41378.5263157895 from 76 games
+[Metric] Average Score: 41074.1688311688 from 77 games
+- [Metric] Value Loss: 5.9599
+- [Metric] Policy Loss: -1.0350
+- [Metric] Entropy: 0.0084
+- [Metric] Mean Advantage: 1.0350
+- [Metric] Mean Value Estimate: 0.0000
+- [Metric] Mean Probability Ratio: 1.0000
+[Metric] Average Score: 40715.7692307692 from 78 games
+[Metric] Average Score: 40658.7974683544 from 79 games
+[Metric] Average Score: 40761.0875 from 80 games
+[Metric] Average Score: 40922.7160493827 from 81 games
+[Metric] Average Score: 40908.6341463415 from 82 games
+[Metric] Average Score: 40587.9277108434 from 83 games
+[Metric] Average Score: 40555.4880952381 from 84 games
+[Metric] Average Score: 40471.2117647059 from 85 games
+[Metric] Average Score: 40954.6279069767 from 86 games
+[Metric] Average Score: 41124.6666666667 from 87 games
+[Metric] Average Score: 40928.1363636364 from 88 games
+[Metric] Average Score: 40943.7640449438 from 89 games
+[Metric] Average Score: 40929.6777777778 from 90 games
+- [Metric] Value Loss: 8.0603
+- [Metric] Policy Loss: -1.1300
+- [Metric] Entropy: 0.0084
+- [Metric] Mean Advantage: 1.1300
+- [Metric] Mean Value Estimate: 0.0000
+- [Metric] Mean Probability Ratio: 1.0000
+[Metric] Average Score: 40878.1428571429 from 91 games
+[Metric] Average Score: 41342.347826087 from 92 games
+[Metric] Average Score: 41491.5161290323 from 93 games
+[Metric] Average Score: 41660.170212766 from 94 games
+[Metric] Average Score: 41556.2 from 95 games
+[Metric] Average Score: 41579.3229166667 from 96 games
+- [Metric] Value Loss: 4.2074
+- [Metric] Policy Loss: -0.6789
+- [Metric] Entropy: 0.0084
+- [Metric] Mean Advantage: 0.6789
+- [Metric] Mean Value Estimate: 0.0000
+- [Metric] Mean Probability Ratio: 1.0000
+[Metric] Average Score: 41771.7216494845 from 97 games
+[Metric] Average Score: 41553.8367346939 from 98 games
+- [Metric] Value Loss: 4.8553
+- [Metric] Policy Loss: -0.4705
+- [Metric] Entropy: 0.0084
+- [Metric] Mean Advantage: 0.4705
+- [Metric] Mean Value Estimate: 0.0000
+- [Metric] Mean Probability Ratio: 1.0000
+[Metric] Average Score: 41288.3838383838 from 99 games
+[Metric] Average Score: 41162.22 from 100 games
+- [Metric] Value Loss: 5.2367
+- [Metric] Policy Loss: -0.3751
+- [Metric] Entropy: 0.0084
+- [Metric] Mean Advantage: 0.3751
+- [Metric] Mean Value Estimate: 0.0000
+- [Metric] Mean Probability Ratio: 1.0000

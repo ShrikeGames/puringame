@@ -67,13 +67,13 @@ const purin_file_path_root = "res://assets/images/game/"
 var ai_default_brain_path: String = "res://ai_brain_model.json"
 var ai_brain_path: String = "user://ai_brain_model.json"
 var best_brain:PPO
-var BRAIN_HIDDEN_LAYERS:Array[int] = [64,8,8,8]
+var BRAIN_HIDDEN_LAYERS:Array[int] = [64,64,16,16,8,8]
 var OUTPUT_NODES:int = 800
 
 var experience_pool:ExperiencePool = ExperiencePool.new()
-var buffer_size = 2024
-var batch_size = 128
-var training_interval = 256
+var buffer_size = 1024
+var batch_size = 512
+var training_interval = 512
 var steps_since_training = 0
 var async_trainer:AsyncTrainer = AsyncTrainer.new()
 	

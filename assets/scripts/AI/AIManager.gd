@@ -55,8 +55,7 @@ func _process(_delta: float) -> void:
 					Global.best_brain.save_model(Global.ai_brain_path)
 				else:
 					print("Score of %s from %s"%[game.score, game.player_name])
-				print("Average Score: %s from %s games"%[total_score/float(game_count), game_count])
-				print("training steps: ", Global.steps_since_training)
+				print("[Metric] Average Score: %s from %s games"%[total_score/float(game_count), game_count])
 				
 			game.restart_game()
 			

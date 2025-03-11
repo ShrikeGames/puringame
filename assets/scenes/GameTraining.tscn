@@ -80,10 +80,11 @@ texture = ExtResource("17_2odgw")
 
 [node name="AIGames" type="Node2D" parent="."]
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="Camera2D" type="Camera2D" parent="." node_paths=PackedStringArray("ai_games_node")]
 position = Vector2(964.647, 538)
 script = ExtResource("15_1ghtr")
 camera_move_speed = 1500.0
+ai_games_node = NodePath("../AIGames")
 
 [node name="LocalizedMenuButton" parent="Camera2D" instance=ExtResource("14_65ufy")]
 visible = false

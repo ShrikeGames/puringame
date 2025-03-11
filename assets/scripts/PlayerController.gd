@@ -81,7 +81,7 @@ var previous_state: Tensor = null
 var previous_action: int = -1
 var previous_score: int = 0
 var waiting_for_action_resolution: bool = false
-
+var previous_purin_count:int = 0
 func _on_ready():
 	if initial_seed:
 		seed(initial_seed.hash())
@@ -144,6 +144,7 @@ func set_up_game():
 	previous_state = null
 	previous_action = -1
 	previous_score = 0
+	previous_purin_count = 0
 	previous_board_value = 0
 	waiting_for_action_resolution = false
 	dropped_purin_count = 0
@@ -612,11 +613,26 @@ func evaluate_board_value():
 
 func calculate_board_state_reward():
 	# how much score did we get between last action and now
-	var score_reward:float = (score - previous_score) * 0.5
+	#var score_reward:float = (score - previous_score) * 0.5
 	# how much did the board's overall state improve
-	var board_value_reward:float = (board_value - previous_board_value) * 0.5
+	#var board_value_reward:float = (board_value - previous_board_value) * 0.5
 	
-	var total_reward:float = score_reward + board_value_reward
+	#var total_reward:float = score_reward + board_value_reward
+	var total_reward:float = 0
+	if last_dropped_purin_touched_something:
+		total_reward += 0.5
+	else:
+		total_reward -= 0.5
+	if score > previous_score:
+		total_reward += 0.5
+	else:
+		total_reward -= 0.5
+		
+	var purin_count = purin_node.get_child_count()
+	var count_diff = purin_count - previous_purin_count
+	# merged so there's less stuff on the board is great
+	if count_diff < 0:
+		total_reward += abs(count_diff) * 2
 #	if total_reward !=0:
 #		print("score_reward", score_reward)
 #		print("board_value_reward", board_value_reward)
@@ -707,6 +723,7 @@ func process_ai(delta):
 			# Store current state and score before action
 		previous_state = state
 		previous_score = score
+		previous_purin_count = purin_node.get_child_count()
 		previous_board_value = board_value
 		
 		# Get action from policy
@@ -828,3 +845,4 @@ func train_on_batch():
 	
 	Global.async_trainer.enqueue_training(training_data)
 	Global.steps_since_training = 0
+	Global.experience_pool.buffer.clear()

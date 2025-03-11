@@ -86,7 +86,7 @@ position = Vector2(0, 1140)
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("11_i2u1v")
 
-[node name="AI" parent="." node_paths=PackedStringArray("purin_bag") instance=ExtResource("13_3k2pk")]
+[node name="AI" parent="." instance=ExtResource("13_3k2pk")]
 position = Vector2(1073, -2)
 player_name = "ai"
 config_path = "user://ai_v2.json"
@@ -94,11 +94,9 @@ default_config_path = "res://ai_v2.json"
 ai_controlled = true
 vs_player = true
 debug = true
-purin_bag = NodePath("../PurinBagAI")
 
-[node name="Player" parent="." node_paths=PackedStringArray("purin_bag") instance=ExtResource("13_3k2pk")]
+[node name="Player" parent="." instance=ExtResource("13_3k2pk")]
 position = Vector2(47, -2)
-purin_bag = NodePath("../PurinBagPlayer")
 
 [node name="PurinBagAI" parent="." instance=ExtResource("14_gsn0q")]
 position = Vector2(1021, 82)
