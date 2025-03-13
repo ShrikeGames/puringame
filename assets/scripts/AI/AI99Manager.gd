@@ -16,7 +16,7 @@ func _on_ready():
 func init_ai_players():
 	games = []
 	var x_pos:int = 1040
-	var y_pos:int = 0
+	var y_pos:int = 62
 	for i in range(0, num_ai):
 		var game:PlayerController = play_package.instantiate()
 		game.ai_controlled = true

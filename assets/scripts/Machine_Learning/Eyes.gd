@@ -12,7 +12,7 @@ class_name Eyes
 # how many raycasts are done within the fov
 @export var num_raycasts:int = 12
 # distance raycasts will travel to look for collisions
-@export var sight:float = 800.0
+@export var sight:float = 900.0
 var initialized:bool = false
 var use_cone:bool = false
 
@@ -39,6 +39,7 @@ func init(_fov_degrees:float, _num_raycasts:int, _sight:float):
 	raycasts = []
 	raycast_visuals = []
 	if use_cone:
+		self.rotation_degrees = -90
 		var _degree_diff:float = fov_degrees / float(num_raycasts)
 		# create raycasts evenly distributed across the field of view
 		for i in range(0, num_raycasts+1):
@@ -48,6 +49,7 @@ func init(_fov_degrees:float, _num_raycasts:int, _sight:float):
 			# Compute x and y using trigonometry
 			var x:float = cos(angle) * sight
 			var y:float = sin(angle) * sight
+			raycast.position = Vector2(0,0)
 			raycast.target_position = Vector2(x, y)
 			raycast.enabled = true
 			raycast.set_collision_mask_value(1, true)
@@ -61,7 +63,7 @@ func init(_fov_degrees:float, _num_raycasts:int, _sight:float):
 				
 				raycast_visual.default_color = NO_COLLISION_COLOUR
 				raycast_visual.width = 3
-				raycast_visual.add_point(Vector2(x, 0))
+				raycast_visual.add_point(Vector2(0, 0))
 				raycast_visual.add_point(Vector2(x, y))
 				raycast.set_meta("visual", raycast_visual)
 				add_child(raycast_visual)
@@ -73,7 +75,7 @@ func init(_fov_degrees:float, _num_raycasts:int, _sight:float):
 		for i in range(0, num_raycasts+1):
 			var x:float = 40 + (i * spacing)
 			var raycast:RayCast2D = RayCast2D.new()
-			var y:float = 800.0
+			var y:float = 900.0
 			raycast.position = Vector2(x, 0)
 			raycast.target_position = Vector2(0, y)
 			if show_raycasts:
@@ -130,8 +132,8 @@ func get_input(_raycast: RayCast2D) -> RayCastInput:
 	else:
 		is_purin = false
 		var _pos:Vector2 = _raycast.target_position
-		_pos.x = clampf(_pos.x, 0, 800)
-		_pos.y = clampf(_pos.y, 0, 800)
+		_pos.x = clampf(_pos.x, 0, 900)
+		_pos.y = clampf(_pos.y, 0, 900)
 		x_pos = _pos.x
 		distance = sqrt((pow(_pos.x, 2) + pow(_pos.y, 2)))
 		if show_raycasts:
@@ -145,7 +147,7 @@ func get_input(_raycast: RayCast2D) -> RayCastInput:
 	_input.x_pos = x_pos
 	return _input
 	
-func get_inputs_from_raycasts(noir:NoiR, held_purin_level:int, next_purin_level:int) -> Array[Array]:
+func get_inputs_from_raycasts(held_purin_level:int, _next_purin_level:int, _left_edge:Node2D, _right_edge:Node2D) -> Array:
 	assert(raycasts.size() != 0, "Can not get inputs from RayCasts that are not set!")
 
 	var _input_array: Array[float] = []
@@ -153,29 +155,21 @@ func get_inputs_from_raycasts(noir:NoiR, held_purin_level:int, next_purin_level:
 	for ray in raycasts:
 		var _input:RayCastInput = get_input(ray)
 		if is_instance_valid(ray):
-			# level matches
-			if _input.is_purin:
-				# results are between 0 and 1, where 1 is a perfect match and a difference of 9 is ~0.07
-				var level_diff_score:float = clampf(exp(-pow(held_purin_level-_input.level, 2)/25.0), 0.0, 1.0)
-				_input_array.append(level_diff_score)
-				if level_diff_score == 1:
-					var xdiff:float =  noir.global_position.x - _input.x_pos
-					if abs(xdiff) < 40:
-						_basic_suggested_output.append(1)
-					elif xdiff > 0:
-						_basic_suggested_output.append(0)
-					elif xdiff < 0:
-						_basic_suggested_output.append(2)
-					
-			else:
-				_input_array.append(0)
-			# next purin level matches
-			if _input.is_purin:
-				_input_array.append(clampf(exp(-pow(next_purin_level-_input.level, 2)/25.0), 0.0, 1.0))
-			else:
-				_input_array.append(0)
-			# distance
+			# 1 distance
 			_input_array.append(clampf(_input.distance/sight, 0.0, 1.0))
 			
+			# 2 level matches
+			if _input.is_purin:
+				#_input_array.append(clampf((_input.level+1)/10.0, 0.0, 1.0))
+				# results are between 0 and 1, where 1 is a perfect match and a difference of 9 is ~0.07
+				#var level_diff_score:float = clampf(exp(-pow(held_purin_level-_input.level, 2)/25.0), 0.0, 1.0)
+				var level_diff_score = 0
+				if held_purin_level == _input.level:
+					level_diff_score = 1
+				_input_array.append(level_diff_score)
+			else:
+				#_input_array.append(0)
+				_input_array.append(0)
+			
 		_input.queue_free()
-	return [_input_array, _basic_suggested_output]
+	return _input_array

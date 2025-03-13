@@ -7,83 +7,112 @@ var value_network: NeuralNetwork
 var gamma: float
 var epsilon: float
 var learning_rate: float
+var lambda: float = 0.95 # For GAE
+var initial_learning_rate: float
+var current_learning_rate: float
+var metrics_avg_return: float = 0
+var metrics_avg_advantage: float = 0
+var metrics_policy_loss: float = 0
+var metrics_value_loss: float = 0
 
-func _init(p_input_size: int, p_hidden_layers: Array, p_output_size: int, p_gamma: float = 0.99, p_epsilon: float = 0.2, p_learning_rate: float = 0.001) -> void:
+func _init(p_input_size: int, p_hidden_layers: Array, p_output_size: int, p_gamma: float = 0.90, p_epsilon: float = 0.2, p_learning_rate: float = 0.00001) -> void:
 	policy_network = NeuralNetwork.new(p_input_size, p_hidden_layers, p_output_size)
 	value_network = NeuralNetwork.new(p_input_size, p_hidden_layers, 1)
 	gamma = p_gamma
 	epsilon = p_epsilon
 	learning_rate = p_learning_rate
+	initial_learning_rate = p_learning_rate
+	current_learning_rate = p_learning_rate
 
 # Batch training using arrays of states, actions, rewards, and next states.
-# Updated train function that reshapes flat state arrays into an array of samples.
 func train(states: Array, actions: Array, rewards: Array, next_states: Array) -> void:
-	# Retrieve input size from the network (first layer size).
-	var input_size: int = policy_network.layers[0]
-	var sample_states: Array = []
-	var sample_next_states: Array = []
-	
-	# If the states are flat so reshape them.
-	if states.size() % input_size != 0:
-		push_error("States array size (" + str(states.size()) + ") is not a multiple of input size (" + str(input_size) + ").")
-		return
-	# Split the flat array into chunks of size 'input_size'.
-	for i in range(0, states.size(), input_size):
-		var sample: Array = []
-		for j in range(input_size):
-			sample.append(states[i + j])
-		sample_states.append(sample)
-	
-	if next_states.size() % input_size != 0:
-		push_error("Next states array size (" + str(next_states.size()) + ") is not a multiple of input size (" + str(input_size) + ").")
-		return
-	for i in range(0, next_states.size(), input_size):
-		var sample: Array = []
-		for j in range(input_size):
-			sample.append(next_states[i + j])
-		sample_next_states.append(sample)
-	
+	var values: Array = []
+	var next_values: Array = []
 	var advantages: Array = []
 	var returns: Array = []
+	var normalized_rewards: Array = normalize_rewards(rewards)
 	
-	# Loop over each experience (now sample_states.size() should match actions.size() and rewards.size()).
-	for i in range(sample_states.size()):
-		var value: float = value_network.forward(sample_states[i])[0]
-		var next_value: float = value_network.forward(sample_next_states[i])[0]
-		var advantage: float = rewards[i] + gamma * next_value - value
-		advantages.append(advantage)
-		returns.append(rewards[i] + gamma * next_value)
+	# Compute values and next values
+	for i in range(states.size()):
+		values.append(value_network.forward(states[i])[0])
+		next_values.append(value_network.forward(next_states[i])[0])
 	
-	policy_network.backward(sample_states, actions, advantages, learning_rate)
-	value_network.backward(sample_states, [], returns, learning_rate)
-	print_metrics(returns, advantages)
+	# Compute advantages using GAE
+	advantages = compute_advantages(rewards, values, next_values, gamma, lambda)
+	advantages = normalize_advantages(advantages)
+	advantages = clip_advantages(advantages, 1)
+	
+	# Compute returns
+	for i in range(normalized_rewards.size()):
+		returns.append(normalized_rewards[i] + gamma * next_values[i])
+	
+	# Train policy and value networks
+	var policy_loss: float = policy_network.backward(states, actions, advantages, current_learning_rate, epsilon)
+	var value_loss: float = value_network.backward(states, [], returns, current_learning_rate, epsilon)
+	# train the value network more
+	for _d in range(4):
+		value_loss = value_network.backward(states, [], returns, current_learning_rate, epsilon)
+		
+	# Print metrics
+	print_metrics(returns, advantages, policy_loss, value_loss)
+
+# Generalized Advantage Estimation (GAE)
+func compute_advantages(rewards: Array, values: Array, next_values: Array, p_gamma: float, p_lambda: float) -> Array:
+	var advantages: Array = []
+	var gae: float = 0.0
+	for i in range(rewards.size() - 1, -1, -1):
+		var delta: float = rewards[i] + p_gamma * next_values[i] - values[i]
+		gae = delta + p_gamma * p_lambda * gae
+		advantages.insert(0, gae)
+	return advantages
+
+func normalize_rewards(rewards: Array) -> Array:
+	var mean: float = Tensor.mean(rewards)
+	var std: float = Tensor.std(rewards)
+	if std == 0:
+		std = 1 # Prevent divide by zero
+	return Tensor.scalar_divide(Tensor.vector_subtract_single_value(rewards, mean), std)
+
+func normalize_advantages(advantages: Array) -> Array:
+	var mean: float = Tensor.mean(advantages)
+	var std: float = Tensor.std(advantages)
+	if std == 0:
+		std = 1 # Prevent divide by zero
+	return Tensor.scalar_divide(Tensor.vector_subtract_single_value(advantages, mean), std)
+
+func clip_advantages(advantages: Array, clip_range: float = 2.0) -> Array:
+	return Tensor.clamp(advantages, -clip_range, clip_range)
 
 # Selects an action index based on the policy network's output probabilities for a given state.
-func select_action(state: Array, debug_label: RichTextLabel) -> int:
+func select_action(state: Array, temperature: float = 1.0) -> Array:
 	# Get probability distribution from policy network.
-	#print("state:", state)
 	var probs: Array = policy_network.forward(state)
-	var cumulative: float = 0.0
+	if temperature != 1.0:
+		probs = Tensor.scalar_divide(probs, temperature)
+		probs = Tensor.softmax(probs)
 	
+	var cumulative: float = 0.0
+	var best_prob: float = 0.0
 	var r: float = randf() # Generates a random float in [0,1)
-	#print("r: ", r)
-	# Sample from the probability distribution.
 	var best_action: int = -1
+	
+	# Sample from the probability distribution.
 	for i in range(probs.size()):
 		cumulative += probs[i]
 		if r < cumulative:
 			best_action = i
-			#print("best action found: ", i)
 			break
 	if best_action < 0:
-		# Fallback: return the last index if not selected earlier.
-		best_action = probs.size() - 1
-	if debug_label:
-		#print("Probabilities -> Action: %s -> %s" % [probs, best_action])
-		debug_label.text = "%s -> %s" % [probs, best_action]
-	return best_action
+		# Fallback: pick the action with highest probability
+		for i in range(probs.size()):
+			if probs[i] >= best_prob:
+				best_prob = probs[i]
+				best_action = i
+	return [best_action, probs]
 
-func print_metrics(returns: Array, advantages: Array) -> void:
+
+# Print training metrics
+func print_metrics(returns: Array, advantages: Array, policy_loss: float, value_loss: float) -> void:
 	var sum_return: float = 0.0
 	for r in returns:
 		sum_return += r
@@ -94,10 +123,20 @@ func print_metrics(returns: Array, advantages: Array) -> void:
 		sum_adv += a
 	var avg_advantage: float = sum_adv / advantages.size()
 	
-	print("Avg Return: ", avg_return)
-	print("Avg Advantage: ", avg_advantage)
+	metrics_avg_return = avg_return
+	metrics_avg_advantage = avg_advantage
+	metrics_policy_loss = policy_loss
+	metrics_value_loss = value_loss
+	print("[Metric] Avg Return: %s (Should increase until very high, GREEN)" % [metrics_avg_return])
+	print("[Metric] Avg Advantage: %s (Should increase until slightly positive, WHITE)" % [metrics_avg_advantage])
+	print("[Metric] Policy Loss: %s (Should decrease then stay low, RED)" % [metrics_policy_loss])
+	print("[Metric] Value Loss: %s (Should decrease then stay low, DARK RED)" % [metrics_value_loss])
 
-# Saves the entire PPO model (hyperparameters and network states) to a JSON file.
+# Update learning rate with linear decay
+func update_learning_rate(step: int, total_steps: int) -> void:
+	current_learning_rate = initial_learning_rate * (1.0 - float(step) / float(total_steps))
+
+# Save and load model (unchanged from your original implementation)
 func save_model(filepath: String) -> void:
 	var model_data: Dictionary = {
 		"gamma": gamma,
@@ -114,7 +153,6 @@ func save_model(filepath: String) -> void:
 	file.store_string(json_string)
 	file.close()
 
-# Loads the PPO model from a JSON file, restoring hyperparameters and network states.
 func load_model(filepath: String) -> void:
 	var file: FileAccess = FileAccess.open(filepath, FileAccess.READ)
 	if file == null:
@@ -123,7 +161,6 @@ func load_model(filepath: String) -> void:
 	var json_string: String = file.get_as_text()
 	file.close()
 	
-	# Create an instance of JSON and parse the JSON string.
 	var json := JSON.new()
 	var error_code: int = json.parse(json_string)
 	if error_code != OK:
@@ -131,11 +168,8 @@ func load_model(filepath: String) -> void:
 		return
 	
 	var model_data: Dictionary = json.get_data()
-	
 	gamma = model_data.get("gamma", 0.99)
 	epsilon = model_data.get("epsilon", 0.2)
 	learning_rate = model_data.get("learning_rate", 0.001)
-	
-	# Restore network states (requires NeuralNetwork.gd to implement get_state and load_state)
 	policy_network.load_state(model_data.get("policy_network", {}))
 	value_network.load_state(model_data.get("value_network", {}))

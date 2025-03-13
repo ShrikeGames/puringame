@@ -2,6 +2,7 @@ extends Node2D
 class_name NoiR
 @export var drop_line: Line2D
 @export var held_purin: PurinIndicator
+@export var eyes:Eyes
 
 var space_state
 var purin_collide_level:int = -1
@@ -19,7 +20,7 @@ func _process(_delta):
 	drop_line.set_point_position(0, to_local(global_position))
 	space_state = get_world_2d().direct_space_state
 	var query = PhysicsRayQueryParameters2D.create(
-		global_position, global_position + Vector2(0, 800)
+		global_position, global_position + Vector2(0, 900)
 	)
 	query.exclude = [self]
 	query.collision_mask = 1
@@ -35,6 +36,9 @@ func _process(_delta):
 		if is_instance_of(result.collider, Purin):
 			purin_collide_level = result.collider.get_meta("level", 0)
 			purin_collide_position = to_local(result.position)
+		else:
+			purin_collide_position = to_local(result.position)
+	
 
 func change_held_purin(purin_info:Dictionary):
 	

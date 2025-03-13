@@ -110,6 +110,15 @@ func number_possible_combines():
 			count += 1 - abs(level_diff*0.1)
 	return count
 	
+func is_covered():
+	var target_level = self.get_meta("level", 0)
+	for body in get_colliding_bodies():
+		if is_instance_valid(body) and is_instance_of(body, Purin) and body.position.y < self.position.y:
+			if body.get_meta("level", 0) > target_level:
+				return true
+	return false
+	
+	
 func number_matching_nearby(purin_list:Array, search_radius:float = 100):
 	var count:int = 0
 	for purin in purin_list:

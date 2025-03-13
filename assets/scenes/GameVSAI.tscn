@@ -87,7 +87,7 @@ scale = Vector2(0.5, 0.5)
 texture = ExtResource("11_i2u1v")
 
 [node name="AI" parent="." instance=ExtResource("13_3k2pk")]
-position = Vector2(1073, -2)
+position = Vector2(1073, 62)
 player_name = "ai"
 config_path = "user://ai_v2.json"
 default_config_path = "res://ai_v2.json"
@@ -96,7 +96,7 @@ vs_player = true
 debug = true
 
 [node name="Player" parent="." instance=ExtResource("13_3k2pk")]
-position = Vector2(47, -2)
+position = Vector2(47, 62)
 
 [node name="PurinBagAI" parent="." instance=ExtResource("14_gsn0q")]
 position = Vector2(1021, 82)

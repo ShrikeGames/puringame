@@ -67,17 +67,17 @@ const purin_file_path_root = "res://assets/images/game/"
 var ai_default_brain_path: String = "res://ai_brain_model.json"
 var ai_brain_path: String = "user://ai_brain_model.json"
 var best_brain: PPO
-var INPUT_NODES: int = 67
-var BRAIN_HIDDEN_LAYERS: Array[int] = [128, 64, 64, 32]
-var OUTPUT_NODES: int = 3
+var INPUT_NODES: int = 6 + (2 * 30) # 2*30 rays
+var BRAIN_HIDDEN_LAYERS: Array[int] = [128, 64]
+var OUTPUT_NODES: int = 5
 
 var experience_pool: ExperiencePool = ExperiencePool.new()
-var buffer_size = 1024
-var batch_size = 128
-var training_interval = 128
+var buffer_size = 2048 * 4
+var batch_size = 512
+var training_interval = 512
 var steps_since_training = 0
 var async_trainer: AsyncTrainer = AsyncTrainer.new()
-	
+
 func read_json(path: String) -> Dictionary:
 	if not FileAccess.file_exists(path):
 		return {}
@@ -140,12 +140,14 @@ func load_settings():
 	turn_based_mode = config_json.get("turn_based_mode", turn_based_mode)
 	
 	update_all_volumes()
-	
+	var gamma: float = 0.999
+	var epsilon: float = 1
+	var learning_rate: float = 0.01
 	if FileAccess.file_exists(ai_brain_path):
-		best_brain = PPO.new(INPUT_NODES, BRAIN_HIDDEN_LAYERS, OUTPUT_NODES)
+		best_brain = PPO.new(INPUT_NODES, BRAIN_HIDDEN_LAYERS, OUTPUT_NODES, gamma, epsilon, learning_rate)
 		best_brain.load_model(ai_brain_path)
 	elif FileAccess.file_exists(ai_default_brain_path):
-		best_brain = PPO.new(INPUT_NODES, BRAIN_HIDDEN_LAYERS, OUTPUT_NODES)
+		best_brain = PPO.new(INPUT_NODES, BRAIN_HIDDEN_LAYERS, OUTPUT_NODES, gamma, epsilon, learning_rate)
 		best_brain.load_model(ai_default_brain_path)
 	
 
@@ -235,3 +237,18 @@ func add_experience(experience: Dictionary):
 		experience_pool.buffer.pop_front()
 	
 	Global.steps_since_training += 1
+	#save_experience_log("user://experience_log.json", experience)
+
+func save_experience_log(filepath: String, experience: Dictionary) -> void:
+	var existing_experience_log: Dictionary = read_json(filepath)
+	if existing_experience_log.is_empty():
+		existing_experience_log = {"logs": []}
+
+	var json_string: String = JSON.stringify(experience)
+	existing_experience_log["logs"].append(JSON.parse_string(json_string))
+	var file: FileAccess = FileAccess.open(filepath, FileAccess.WRITE)
+	if file == null:
+		push_error("Could not open file for writing: " + filepath)
+		return
+	file.store_string(JSON.stringify(existing_experience_log))
+	file.close()

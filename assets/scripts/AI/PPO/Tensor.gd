@@ -1,6 +1,8 @@
 extends Object
 class_name Tensor
 
+const EPSILON: float = 1e-8
+
 # Multiply a matrix (Array of Arrays) by a vector.
 # Assumes:
 # - matrix is of dimensions [rows x cols]
@@ -32,6 +34,12 @@ static func vector_subtract(v1: Array, v2: Array) -> Array:
 	var result: Array = []
 	for i in range(v1.size()):
 		result.append(v1[i] - v2[i])
+	return result
+
+static func vector_subtract_single_value(v1: Array, v2: float) -> Array:
+	var result: Array = []
+	for i in range(v1.size()):
+		result.append(v1[i] - v2)
 	return result
 
 # Elementwise addition of two matrices.
@@ -172,3 +180,52 @@ static func elementwise_multiply(v1: Array, v2: Array) -> Array:
 	for i in range(v1.size()):
 		result.append(v1[i] * v2[i])
 	return result
+
+# Batch normalization
+static func batch_norm(vector: Array, params: Dictionary) -> Array:
+	var mean: float = params.get("mean", 0.0)
+	var variance: float = params.get("variance", 1.0)
+	var result: Array = []
+	for v in vector:
+		result.append((v - mean) / sqrt(variance + EPSILON))
+	return result
+
+static func sigmoid(vector: Array) -> Array:
+	var result: Array = []
+	for v in vector:
+		result.append(1.0 / (1.0 + exp(-v)))
+	return result
+
+static func clamp(vector: Array, min_val: float, max_val: float) -> Array:
+	var result: Array = []
+	for v in vector:
+		result.append(clampf(v, min_val, max_val))
+	return result
+
+static func mean(vector: Array) -> float:
+	"""
+	Calculates the mean (average) of a vector (1D array).
+	- vector: The input array of floats.
+	- Returns: The mean of the vector.
+	"""
+	if vector.size() == 0:
+		return 0.0  # Return 0 for an empty array to avoid division by zero
+	var sum: float = 0.0
+	for v in vector:
+		sum += v
+	return sum / vector.size()
+	
+static func std(vector: Array) -> float:
+	"""
+	Calculates the standard deviation of a vector (1D array).
+	- vector: The input array of floats.
+	- Returns: The standard deviation of the vector.
+	"""
+	if vector.size() == 0:
+		return 0.0  # Return 0 for an empty array to avoid division by zero
+	var mean_val: float = mean(vector)
+	var variance: float = 0.0
+	for v in vector:
+		variance += pow(v - mean_val, 2)
+		variance /= vector.size()
+	return sqrt(variance)

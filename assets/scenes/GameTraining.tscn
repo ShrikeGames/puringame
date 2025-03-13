@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://dsimdukn6dthe"]
+[gd_scene load_steps=20 format=3 uid="uid://dsimdukn6dthe"]
 
 [ext_resource type="Script" path="res://assets/scripts/AI/AIManager.gd" id="1_doc3l"]
 [ext_resource type="Texture2D" uid="uid://xt87hje080jt" path="res://assets/images/game/purin1.png" id="8_ysdtw"]
@@ -17,12 +17,14 @@
 [ext_resource type="Texture2D" uid="uid://bja3p1ji46rhl" path="res://assets/images/game/purin10.png" id="17_2odgw"]
 [ext_resource type="Texture2D" uid="uid://vp0gkwodowi5" path="res://assets/images/Menu/ArrowUpBlue.png" id="17_xf7pd"]
 [ext_resource type="Texture2D" uid="uid://dhwsqd50q7ot5" path="res://assets/images/Menu/ArrowDownBlue.png" id="18_o36fe"]
+[ext_resource type="Script" path="res://assets/scripts/AI/Graph.gd" id="19_i5gn4"]
 [ext_resource type="Script" path="res://assets/scripts/ToggleVisibilityButton.gd" id="19_pueu1"]
 
-[node name="Game" type="Node2D" node_paths=PackedStringArray("ai_games_node", "camera")]
+[node name="Game" type="Node2D" node_paths=PackedStringArray("ai_games_node", "camera", "graph")]
 script = ExtResource("1_doc3l")
 ai_games_node = NodePath("AIGames")
 camera = NodePath("Camera2D")
+graph = NodePath("Graph")
 
 [node name="ProgressionIndicator" type="Node2D" parent="."]
 position = Vector2(949, 25)
@@ -79,6 +81,7 @@ scale = Vector2(0.5, 0.5)
 texture = ExtResource("17_2odgw")
 
 [node name="AIGames" type="Node2D" parent="."]
+position = Vector2(0, 63)
 
 [node name="Camera2D" type="Camera2D" parent="." node_paths=PackedStringArray("ai_games_node")]
 position = Vector2(964.647, 538)
@@ -108,6 +111,10 @@ texture_pressed = ExtResource("17_xf7pd")
 texture_hover = ExtResource("18_o36fe")
 script = ExtResource("19_pueu1")
 object_to_toggle = NodePath("../PauseMenu")
+
+[node name="Graph" type="Node2D" parent="."]
+position = Vector2(0, 850)
+script = ExtResource("19_i5gn4")
 
 [connection signal="ready" from="." to="." method="_on_ready"]
 [connection signal="toggled" from="Camera2D/TogglePause" to="Camera2D/TogglePause" method="_on_toggled"]

@@ -1,5 +1,6 @@
 extends Node2D
 class_name PlayerController
+signal gameover
 # random number generator seed
 var initial_seed: String
 
@@ -13,20 +14,20 @@ var initial_seed: String
 @export var debug: bool = false
 
 @export_category("Brain")
-@export var fov_degrees: float = 120
+@export var eyes:Eyes
+@export var fov_degrees: float = 30
 # how many raycasts are done within the fov
-@export var num_raycasts: int = 40
+@export var num_raycasts: int = 30
 # distance raycasts will travel to look for collisions
-@export var sight: float = 800
+@export var sight: float = 900
 @export var predict_every_sec: float = 0.20
 @export var random_initial_board_state: bool = false
-
+var total_rewards:float = 0
 
 var time_since_last_prediction_sec: float = 0
 var time_since_last_score: float = 0
 
 @export_category("References")
-#@export var eyes:Eyes
 @export var leaderboard: Leaderboard
 @export var noir: NoiR
 @export var purin_bag: PurinBag
@@ -73,13 +74,14 @@ var board_value: float = 0
 var previous_board_value: float = 0
 var previous_state: Array = []
 var previous_action: int = -1
+var previous_previous_action: int = -1
 var previous_score: int = 0
 var waiting_for_action_resolution: bool = false
 var previous_purin_count: int = 0
-
+var previous_purin_level: int = 0
 var reward_mean: float = 0
 var reward_std: float = 0
-
+var highest_achieved_purin_level: int = 0
 func _on_ready():
 	if initial_seed:
 		seed(initial_seed.hash())
@@ -128,8 +130,10 @@ func get_configurations(key: String, default_default_value = {}, random: bool = 
 	return config_value
 
 func restart_game():
-	print("Restart game for ", player_name)
+	emit_signal("gameover", player_name, score, total_rewards)
+	print("Restart game for ", player_name, " who had score of ", score, " and rewards of ", total_rewards)
 	set_up_game()
+	gameover_screen.visible = false
 
 func set_up_game():
 	# clear the game of any dropped purin
@@ -142,9 +146,13 @@ func set_up_game():
 	time_since_last_score = 0
 	previous_state = []
 	previous_action = -1
+	previous_previous_action = -1
 	previous_score = 0
 	previous_purin_count = 0
 	previous_board_value = 0
+	previous_purin_level = 0
+	total_rewards = 0
+	highest_achieved_purin_level=0
 	waiting_for_action_resolution = false
 	dropped_purin_count = 0
 	time_since_last_prediction_sec = 0
@@ -171,11 +179,15 @@ func set_up_game():
 	last_dropped_purin = null
 	
 	if ai_controlled:
-		#if not eyes.initialized:
-		#	eyes.init(fov_degrees, num_raycasts, sight)
+		#if not noir.eyes.initialized:
+		#	noir.eyes.init(fov_degrees, num_raycasts, sight)
+		if not eyes.initialized:
+			eyes.init(fov_degrees, num_raycasts, sight)
 		if random_initial_board_state:
 			noir.position.x = randi_range(20, 780)
-			#spawn_purin(Vector2(randf_range(20,780), 780), {"level": 0, "evil": false})
+			# spawn a purin in a random spot for training
+			spawn_purin(Vector2(randf_range(20,780), 780), {"level": 0, "evil": false})
+			spawn_purin(Vector2(randf_range(20,780), 780), {"level": 1, "evil": false})
 			#last_dropped_purin = purin_node.get_child(0)
 		else:
 			noir.position.x = 400
@@ -245,6 +257,7 @@ func _process(delta: float) -> void:
 
 func check_game_over(delta):
 	if gameover_screen.visible == true:
+		
 		if Input.is_action_pressed("retry"):
 			#print("retry action pressed? ", Input.is_action_pressed("retry"))
 			#print("auto_retry? ", auto_retry)
@@ -265,8 +278,18 @@ func check_game_over(delta):
 		if (
 			purin.game_over_timer_sec >= Global.game_over_threshold_sec
 		):
-			if not ai_controlled:
-				print("GameOver %s" % [score])
+			print("GameOver %s" % [score])
+#			Global.add_experience({
+#				"state": previous_state,
+#				"action": previous_action,
+#				"reward": -10,
+#				"next_state": calculate_inputs(),
+#				"done": true
+#			})
+			if training:
+				restart_game()
+				return
+			
 			gameover_screen.visible = true
 			purin.game_over_timer_sec = Global.game_over_threshold_sec
 			
@@ -438,6 +461,8 @@ func combine_purin(purin1: Purin, purin2: Purin):
 	
 	# combined purin will be of 1 level higher up to the max
 	var new_level = purin1.get_meta("level") + 1
+	if new_level > highest_achieved_purin_level:
+		highest_achieved_purin_level = new_level
 	
 	if is_instance_valid(last_dropped_purin) and (last_dropped_purin == purin1 or last_dropped_purin == purin2):
 		last_dropped_purin_touched_something = true
@@ -493,13 +518,18 @@ func combine_purin(purin1: Purin, purin2: Purin):
 	# and give a multiplier that increases the more purin they have placed
 	# so the value goes up the longer they play giving it a non-linear curve
 	var score_increase = score_by_level(new_level)
-	var scoreorb: ScoreOrb = Global.score_orb_scene.instantiate()
-	scoreorb.score_worth = score_increase
-	scoreorb.position = Vector2(spawn_x, spawn_y)
-	scoreorb.target_position = scoreorb_target.position
-	scoreorb_node.add_child(scoreorb)
-	time_since_last_score = 0
-	scoreorb.connect("scored", gain_score)
+	if training:
+		# training just get the score instantly don't do the orb thing
+		gain_score(score_increase)
+		time_since_last_score = 0
+	else:
+		var scoreorb: ScoreOrb = Global.score_orb_scene.instantiate()
+		scoreorb.score_worth = score_increase
+		scoreorb.position = Vector2(spawn_x, spawn_y)
+		scoreorb.target_position = scoreorb_target.position
+		scoreorb_node.add_child(scoreorb)
+		time_since_last_score = 0
+		scoreorb.connect("scored", gain_score)
 	
 	if new_purin:
 		last_dropped_purin = new_purin
@@ -548,173 +578,70 @@ func purin_is_moving(purin: Purin) -> bool:
 	# Check both linear and angular movement
 	# Separate horizontal and vertical velocity checks
 	var is_moving = (
+		is_instance_valid(purin) and (
 		abs(purin.linear_velocity.x) > horizontal_velocity_threshold or
 		abs(purin.linear_velocity.y) > vertical_velocity_threshold or
 		abs(purin.angular_velocity) > angular_threshold or
-		not purin.get_contact_count() > 0
+		not purin.get_contact_count() > 0)
 	)
 	
 	return is_moving
 
-func calculate_current_board_value():
-	var total_reward: float = 0
-	# Get all purin on the board
-	var all_purin = purin_node.get_children()
-	if purin_node.get_child_count() <=0:
-		return 0
-	
-	# Track purin counts by level
-	var purin_counts = {}
-	var highest_level = 0
-	var highest_purin = null
-	var lowest_y_pos = 800 # Starting with max height
-	
-	for purin in all_purin:
-		if not is_instance_valid(purin):
-			continue
-			
-		var level = purin.get_meta("level", 0)
-		purin_counts[level] = purin_counts.get(level, 0) + 1
-		
-		# Track highest level purin
-		if level > highest_level:
-			highest_level = level
-			highest_purin = purin
-			
-		# Track height of pile
-		lowest_y_pos = min(lowest_y_pos, purin.position.y)
-	
-	# Reward for having higher level purins
-	total_reward += highest_level * 2.0
-	
-	# Penalty for having multiple copies of same level
-	for level in purin_counts:
-		if purin_counts[level] > 2:
-			total_reward -= (purin_counts[level] - 2) * 1.0
-	
-	# Reward for keeping pile low (lower y_pos means higher pile)
-	var height_factor = (800 - lowest_y_pos) / 800.0 # Normalize to 0-1
-	total_reward += (1.0 - height_factor) * 3.0
-	
-	# Reward for having highest level purin near corners
-	if highest_purin:
-		var distance_to_left = abs(highest_purin.position.x - left_edge.position.x)
-		var distance_to_right = abs(highest_purin.position.x - right_edge.position.x)
-		var closest_corner = min(distance_to_left, distance_to_right)
-		var corner_factor = closest_corner / (right_edge.position.x - left_edge.position.x)
-		total_reward += (1.0 - corner_factor) * 2.0
-	
-	# Penalty for having too many purin
-	var count_penalty = max(0, all_purin.size() - 10) * 0.5
-	total_reward -= count_penalty
-	return total_reward
-
-func calculate_board_state_reward() -> float:
-	var total_reward: float = 0
-	if purin_node.get_child_count() <=0:
-		return -10
-	# Bigger rewards for score changes
-	total_reward += clampf((score - previous_score) * 0.1, -1.0, 1.0)
-	
-	# Reward for board state improvements
-	var board_value_change = clampf(board_value - previous_board_value, -1.0, 1.0)
-	total_reward += board_value_change
-	
-	# Penalize danger heavily
-	var current_state = calculate_inputs()
-	var danger_value = clampf(current_state[-1], 0, 1.0)
-	total_reward -= danger_value
-	
-	# Strong penalty for game over
-	if gameover_screen.visible:
-		total_reward -= 10
-	
-	# Penalty for dropping without effect
-	if not last_dropped_purin_touched_something and previous_action == 1: # drop action
-		total_reward -= 10
-	
-	#print("[Metrics] total reward: ", total_reward)
-	return clampf(total_reward, -10.0, 10.0)
-
-func normalize_reward(reward: float) -> float:
-	const RUNNING_MEAN_DECAY = 0.99
-	const REWARD_SCALE = 1.0
-
-	# Update running statistics
-	reward_mean = reward_mean * RUNNING_MEAN_DECAY + reward * (1.0 - RUNNING_MEAN_DECAY)
-	reward_std = reward_std * RUNNING_MEAN_DECAY + abs(reward - reward_mean) * (1.0 - RUNNING_MEAN_DECAY)
-
-	# Normalize reward
-	if reward_std > 0.0:
-		return REWARD_SCALE * (reward - reward_mean) / reward_std
-	return 0.0
-
-func calculate_inputs() -> Array[float]:
+func calculate_inputs(x:float=-1) -> Array[float]:
+	if x < 0:
+		x = noir.position.x
 	var inputs: Array[float] = []
 	
-	# 1. Noir (player) position normalized (0-1)
-	var noir_pos_normalized = clampf((noir.position.x - left_edge.position.x) / (right_edge.position.x - left_edge.position.x), 0.0, 1.0)
+	# 1
+	# Noir (player) position normalized (0-1)
+	var noir_pos_normalized = clampf((x - left_edge.position.x) / (right_edge.position.x - left_edge.position.x), 0.0, 1.0)
 	inputs.append(noir_pos_normalized)
 
+	# 2
 	# can drop purin
-	if time_since_last_dropped_purin_sec >= drop_purin_cooldown_sec and (not is_instance_valid(last_dropped_purin) or not purin_is_moving(last_dropped_purin)):
-		inputs.append(1.0)
-	else:
-		inputs.append(0.0)
+	#if time_since_last_dropped_purin_sec >= drop_purin_cooldown_sec or not is_instance_valid(last_dropped_purin):
+	#	inputs.append(1.0)
+	#else:
+	#	inputs.append(0.0)
 	
-	# 2. Current and next purin level normalized (0-1)
-	var current_level_normalized = clampf(float(noir.held_purin.level + 1) / (Global.highest_possible_purin_level + 1), 0.0, 1.0)
-	var next_level_normalized = clampf(float(purin_bag.get_next_purin_level() + 1) / (Global.highest_possible_purin_level + 1), 0.0, 1.0)
-	inputs.append(current_level_normalized)
-	inputs.append(next_level_normalized)
+	
+	# Current and next purin level normalized (0-1)
+	#var current_level_normalized = clampf(float(noir.held_purin.level + 1) / (Global.highest_possible_purin_level + 1), 0.0, 1.0)
+	#var next_level_normalized = clampf(float(purin_bag.get_next_purin_level() + 1) / (Global.highest_possible_purin_level + 1), 0.0, 1.0)
+	# 3
+	#inputs.append(current_level_normalized)
+	# 4
+	#inputs.append(next_level_normalized)
 
 	
-	# 3. Board state information
+	# 5. Board state information
 	var all_purin = purin_node.get_children()
 	
-	# Initialize arrays for purin data
-	var max_tracked_purin = 15 # Track up to 15 closest purin
-	var purin_data = []
+	# 6
+	inputs.append(clampf(noir.purin_collide_position.y/800.0, 0.0, 1.0))
+	# 7
+	#inputs.append(clampf((noir.purin_collide_level+1)/10.0, 0.0, 1.0))
+	#var level_diff_score:float = clampf(exp(-pow(noir.held_purin.level-noir.purin_collide_level, 2)/25.0), 0.0, 1.0)
+	var level_diff_score = 0
+	if noir.held_purin.level==noir.purin_collide_level:
+		level_diff_score = 1
+	# 8
+	inputs.append(level_diff_score)
 	
-	# Collect data for each purin
-	for purin in all_purin:
-		if not is_instance_valid(purin):
-			continue
-		
-		# Create purin info dictionary
-		var purin_info = {
-			"y_pos": purin.position.y,
-			"x_pos": purin.position.x,
-			"level": purin.get_meta("level", 0) + 1,
-			"dist_to_noir": abs(purin.position.x - noir.position.x)
-		}
-		purin_data.append(purin_info)
+	# (num rays+1) * 3= 6*3 = 18
+	#var eyes_inputs:Array = noir.eyes.get_inputs_from_raycasts(noir.held_purin.level, purin_bag.get_next_purin_level(), left_edge, right_edge)
+	var eyes_inputs:Array = eyes.get_inputs_from_raycasts(noir.held_purin.level, purin_bag.get_next_purin_level(), left_edge, right_edge)
 	
-	# Sort purin by distance to noir
-	purin_data.sort_custom(func(a, b): return a["dist_to_noir"] < b["dist_to_noir"])
-	
-	# For each of the closest purin, add normalized data
-	for i in range(max_tracked_purin):
-		if i < purin_data.size():
-			var purin = purin_data[i]
-			# X position normalized
-			inputs.append(clampf((purin["x_pos"] - left_edge.position.x) / (right_edge.position.x - left_edge.position.x), 0.0, 1.0))
-			# Y position normalized (assuming 800 is max height)
-			inputs.append(clampf(purin["y_pos"] / 800.0, 0.0, 1.0))
-			# Level normalized
-			inputs.append(clampf(float(purin["level"]) / (Global.highest_possible_purin_level + 1), 0.0, 1.0))
-			# Distance to noir normalized
-			inputs.append(clampf(purin["dist_to_noir"] / (right_edge.position.x - left_edge.position.x), 0.0, 1.0))
-		else:
-			# Pad with zeros if fewer than max_tracked_purin
-			inputs.append_array([0.0, 0.0, 0.0, 0.0])
+	inputs.append_array(eyes_inputs)
 	
 	# Add global state information
 	# Total purin count normalized (assuming max 60 purin)
+	# 9
 	inputs.append(clampf(float(all_purin.size()) / 60.0, 0.0, 1.0))
 	
-	# Current score normalized (assuming max score 1000000)
-	inputs.append(clampf(float(score) / 1000000.0, 0.0, 1.0))
+	# 10
+	# Current score normalized (assuming max score 500000)
+	inputs.append(clampf(float(score) / 500000.0, 0.0, 1.0))
 	
 	# Check if any purin is in danger zone and calculate how close to game over we are
 	var max_danger = 0.0
@@ -730,10 +657,23 @@ func calculate_inputs() -> Array[float]:
 			if purin.position.y + purin.get_meta("radius") < 0:
 				danger = 1.0
 			max_danger = max(max_danger, danger)
-
+	# 11
 	inputs.append(max_danger)
-	
 	return inputs
+
+func early_termination():
+	# not merging well enough
+#	var total_purin:int = purin_node.get_child_count()
+#	if highest_achieved_purin_level == 4 and total_purin > 9:
+#		return true
+#	if highest_achieved_purin_level == 5 and total_purin > 10:
+#		return true
+#	if highest_achieved_purin_level == 6 and total_purin > 11:
+#		return true
+#	if highest_achieved_purin_level == 7 and total_purin > 12:
+#		return true
+	
+	return false
 
 func process_ai(delta):
 	time_since_last_prediction_sec += delta
@@ -741,35 +681,45 @@ func process_ai(delta):
 	if gameover_screen.visible or not Global.best_brain:
 		return
 	
+	if early_termination():
+#		Global.add_experience({
+#			"state": previous_state,
+#			"action": previous_action,
+#			"reward": -10,
+#			"next_state": calculate_inputs(),
+#			"done": true
+#		})
+		gameover_screen.visible = true
+		return
+	
 	# If we're waiting for action resolution
 	if waiting_for_action_resolution:
-		waiting_for_action_resolution = false
-		
-		# Get current state after action resolved
-		#var results = 
-		var current_state_inputs: Array[float] = calculate_inputs()
-		
-		board_value = calculate_current_board_value()
-		
-		# Calculate reward based on the action's outcome
-		var reward = calculate_board_state_reward()
-		debug_label.text += "\nReward: %s" % [reward]
-		
-		# Store experience only if we have a previous state
-		if previous_state != null and previous_action != -1:
-			Global.add_experience({
-				"state": previous_state,
-				"action": previous_action,
-				"reward": reward,
-				"next_state": current_state_inputs
-			})
-			# Train on batch if enough steps have passed
-			if Global.steps_since_training >= Global.training_interval:
-				train_on_batch()
-				#Global.experience_buffer.clear()
+		if not is_instance_valid(last_dropped_purin) or not purin_is_moving(last_dropped_purin) or time_since_last_dropped_purin_sec > drop_purin_cooldown_sec * 10:
+			waiting_for_action_resolution = false
+			
+			# Get current state after action resolved
+			#var results = 
+			var current_state_inputs: Array[float] = calculate_inputs()
+			
+			# Calculate reward based on the action's outcome
+			#var reward = calculate_board_state_reward()
+			var reward = calculate_reward(previous_score, score, previous_state, current_state_inputs, previous_previous_action, previous_action, Global.purin_sizes, 60)
+			total_rewards += reward
+			
+			# Store experience only if we have a previous state and it was a purin drop
+			if previous_state != null and previous_action == 1:
+				Global.add_experience({
+					"state": previous_state,
+					"action": previous_action,
+					"reward": reward,
+					"next_state": current_state_inputs,
+					"done": false
+				})
 
 	# Only take new action if we're not waiting for resolution and enough time has passed
 	elif time_since_last_prediction_sec >= predict_every_sec:
+		# Execute action
+	
 		# Get current state
 		var state_inputs: Array[float] = calculate_inputs()
 		
@@ -778,20 +728,38 @@ func process_ai(delta):
 		previous_score = score
 		previous_purin_count = purin_node.get_child_count()
 		previous_board_value = board_value
-		
+		previous_purin_level = noir.held_purin.level
 		# Get action from policy
-		var action = Global.best_brain.select_action(state_inputs, debug_label)
-		previous_action = action
+		var temperature = 1
+		var result = Global.best_brain.select_action(state_inputs, temperature)
+		var action = result[0]
+		var probs = result[1]
+		debug_label.text = "%s -> %s\nTotal Rewards: %s\n%s"%[probs, action, total_rewards, state_inputs]
 		
-		# Execute action
-		if action == 0:
-			noir.position.x = valid_x_pos(noir.position.x - (move_speed * delta))
-		elif time_since_last_dropped_purin_sec >= drop_purin_cooldown_sec and action == 1:
+		previous_previous_action = previous_action
+		previous_action = action
+		if Global.OUTPUT_NODES == 3:
+			if action == 0:
+				noir.position.x = valid_x_pos(noir.position.x - (move_speed * delta))
+			elif time_since_last_dropped_purin_sec >= drop_purin_cooldown_sec and action == 1:
+				drop_purin()
+			elif action == 2:
+				noir.position.x = valid_x_pos(noir.position.x + (move_speed * delta))
+		elif Global.OUTPUT_NODES == 5:
+			if action == 0:
+				noir.position.x = valid_x_pos(noir.position.x - (move_speed * delta))
+			elif time_since_last_dropped_purin_sec >= drop_purin_cooldown_sec and action == 1:
+				drop_purin()
+			elif action == 2:
+				noir.position.x = valid_x_pos(noir.position.x + (move_speed * delta))
+			elif action == 3:
+				noir.position.x = valid_x_pos(noir.position.x - (3 * move_speed * delta))
+			elif action == 4:
+				noir.position.x = valid_x_pos(noir.position.x + (3 * move_speed * delta))
+			
+		else:
+			noir.position.x = valid_x_pos(action)
 			drop_purin()
-		elif action == 2:
-			noir.position.x = valid_x_pos(noir.position.x + (move_speed * delta))
-		#noir.position.x = valid_x_pos(action)
-		#drop_purin()
 		
 		# Start waiting for action resolution
 		waiting_for_action_resolution = true
@@ -814,51 +782,106 @@ func is_bad_state(game: PlayerController) -> bool:
 			return true
 	return false
 
-func train_on_batch():
-	print("Experience buffer size: ", Global.experience_pool.get_buffer_size())
+func calculate_reward(p_previous_score: float, p_current_score: float, _previous_board_state: Array, _current_board_state: Array, previous_action:int, current_action: int, _purin_sizes: Array, max_purin_count: int) -> float:
+	var reward: float = 0.0
 	
-	# Ensure we have enough experiences
-	if Global.experience_pool.get_buffer_size() < Global.batch_size:
-		print("not enough experiences in buffer")
-		return
-	var batch_size: int = min(Global.batch_size, Global.experience_pool.get_buffer_size())
-	print("Training on batch of size: ", batch_size)
-	# Sample random experiences from buffer
-	var batch = Global.experience_pool.sample_batch(batch_size)
+	# 1. Score Increase Reward
+	var score_increase: float = p_current_score - p_previous_score
+	if score_increase> 0:
+		reward += 20 * (previous_purin_level+1)
 	
-	# Prepare batch
-	var states_data: Array = []
-	var actions_data: Array = []
-	var rewards_data: Array= []
-	var next_states_data: Array = []
+	# 2. Purin Combo Reward
+#	var combo_reward: float = 0.0
+#	for purin in purin_node.get_children():
+#		if purin.get_meta("combined", false):  # Assuming purin has a flag for just combined
+#			var level: int = purin.level
+#			combo_reward += pow(level + 1, 2)  # Reward larger combos more
+#	reward += combo_reward * 0.2  # Scale combo reward
+#
+	# 3. could've merged but didn't
+	if previous_action == 1 and _previous_board_state[2] == 1 and previous_purin_count < purin_node.get_child_count():
+		reward -= 50 * (previous_purin_level+1)
 	
-	# Collect batch data
-	for experience in batch:
-		# Each state has input_nodes elements
-		for i in range(Global.INPUT_NODES):
-			if i < experience["state"].size():
-				states_data.append(experience["state"][i])
-			else:
-				states_data.append(0.0)
-				
-		actions_data.append(experience["action"])
-		rewards_data.append(experience["reward"])
+	# 5. Penalize Invalid Actions
+#	if not is_valid_action(current_action):
+#		reward -= 20.0  # Heavy penalty for invalid actions
+	
+	# exploration reward but only if you keep going in the direction you were going
+#	if previous_action != 1:
+#		# 0 left, 1 drop, 2 right, 3 big left, 4 big right
+#		if (previous_action == 0 or previous_action == 3 ) and (current_action == 0 or current_action == 3 ):
+#			reward += 1
+#		elif (previous_action == 2 or previous_action == 4 ) and (current_action == 2 or current_action == 4 ):
+#			reward += 1
+#		else:
+#			reward -= 2
+	if previous_action != 1:
+		reward +=1
+
+	return reward
+
+func is_valid_action(action: int) -> bool:
+	# Check if the action is valid (e.g., not dropping outside the box)
+	if action == 0 and noir.position.x > left_edge.position.x + 20:
+		return true
+	if action == 2 and noir.position.x < right_edge.position.x - 20:
+		return true
+	if action == 3 and noir.position.x > left_edge.position.x + 20:
+		return true
+	if action == 4 and noir.position.x < right_edge.position.x- 20:
+		return true
+	if action == 1:
+		# we are only letting it predict when it's allowed to do this right now
+		return true
 		
-		# Each next_state has input_nodes elements
-		for i in range(Global.INPUT_NODES):
-			if i < experience["next_state"].size():
-				next_states_data.append(experience["next_state"][i])
-			else:
-				next_states_data.append(0.0)
-				
+	return false
 	
-	# save current best brain
-	#Global.best_brain.save_model(Global.ai_brain_path)
-	# load it as a new brain to avoid conflicts
-	#var new_brain:PPO = PPO.new(Global.INPUT_NODES, Global.BRAIN_HIDDEN_LAYERS, Global.OUTPUT_NODES)
-	#new_brain.load_model(Global.ai_brain_path)
-	# Train on batch
-	Global.async_trainer.enqueue_training(states_data, actions_data, rewards_data, next_states_data)
-	#Global.best_brain.train(states_data, actions_data, rewards_data, next_states_data)
-	Global.steps_since_training = 0
-	Global.experience_pool.buffer.clear()
+# Helper Functions
+func get_held_purin_level() -> int:
+	# Return the level of the currently held purin
+	return noir.held_purin.level
+
+func get_collision_info() -> Dictionary:
+	# Return information about where the purin landed (e.g., level of collided purin)
+	return {}
+
+func get_max_purin_level() -> int:
+	# Return the highest level of purin on the board
+	var max_level: int = 0
+	for purin in purin_node.get_children():
+		if purin.get_meta("level") > max_level:
+			max_level = purin.get_meta("level")
+	return max_level
+
+func is_purin_covered(purin: Purin, all_purin: Array) -> bool:
+	# Purin properties
+	var purin_x: float = purin.position.x
+	var purin_y: float = purin.position.y
+	var purin_radius: float = purin.get_meta("radius")
+
+	# Sort purin by y position (ascending order)
+	all_purin.sort_custom(func(a, b): return a.position.y < b.position.y)
+
+	# Check all purin above this one
+	for other_purin in all_purin:
+		if other_purin == purin:
+			continue  # Skip the same purin
+
+		var other_x: float = other_purin.position.x
+		var other_y: float = other_purin.position.y
+		var other_radius: float = other_purin.get_meta("radius")
+
+		# Stop checking if the other purin is below this one
+		if other_y > purin_y:
+			break
+
+		# Check if the horizontal positions overlap
+		var x_distance: float = abs(other_x - purin_x)
+		var max_x_distance: float = other_radius + purin_radius
+
+		if x_distance < max_x_distance:
+			# The other purin is above and overlapping horizontally
+			return true
+
+	# No purin is covering this one
+	return false

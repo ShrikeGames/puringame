@@ -36,7 +36,7 @@ func _daemon_loop() -> void:
 			var success = _try_train(training_data)
 			print("Training result: ", success)
 			if success:
-				print("_notify_training_completed")
+				call_deferred("_notify_training_completed")
 		else:
 			# No work to do, sleep briefly
 			OS.delay_msec(100)
@@ -47,14 +47,8 @@ func _get_next_training_item() -> Array:
 		return training_queue.pop_front()
 	return []
 
-func _verify_training_data(data: Array) -> bool:
-	return (data != null and data.size() == 4)
-
 func _try_train(local_data: Array) -> bool:
 	print("try train")
-	if not _verify_training_data(local_data):
-		print("Invalid training data")
-		return false
 	print("Before train function")
 	Global.best_brain.train(local_data[0], local_data[1], local_data[2], local_data[3])
 	print("After train function")
@@ -62,11 +56,19 @@ func _try_train(local_data: Array) -> bool:
 	print("After save function")
 	return true
 
-func enqueue_training(states_data:Array, actions_data:Array, rewards_data:Array, next_states_data:Array) -> void:
+func enqueue_training(states_data:Array, actions_data:Array, rewards_data:Array, next_states_data:Array, dones:Array) -> void:
 	print("enqueue_training data")
 	queue_mutex.lock()
-	training_queue.append([states_data, actions_data, rewards_data, next_states_data])
+	training_queue.append([states_data, actions_data, rewards_data, next_states_data, dones])
+	if training_queue.size() >= 5:
+		training_queue.pop_front()
 	queue_mutex.unlock()
+#	if training_queue.size() >= 10 and Global.batch_size < 1024:
+#		Global.training_interval *= 1.5
+#		Global.batch_size *= 2
+#	elif training_queue.size() >= 2 and Global.batch_size > 64:
+#		Global.training_interval *= 0.5
+#		Global.batch_size *= 0.5
 	print("training_queue size:", training_queue.size())
 
 func _notify_training_started() -> void:
