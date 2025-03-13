@@ -1,25 +1,30 @@
 extends TestBase
-class_name TestPPO
+class_name TestPPORPS
 
 var ppo: PPO
 func setup():
 	# Initialize PPO with a small network
 	# advantages
 	var gamma: float = 0.99 # also affects rewards
-	var lambda: float = 0.99
+	var lambda: float = 0.95
 	var clip_range: float = 0.1
 
 	# value
-	var epsilon: float = 1
+	var epsilon: float = 0.01
 	# Average gradients and update parameters
-	var learning_rate: float = 0.003
+	var learning_rate: float = 0.0001
 	
-	var INPUT_NODES: int = 11 + (5 * 31) # 5*31 rays
-	var BRAIN_HIDDEN_LAYERS: Array[int] = [256, 64, 4]
-	var OUTPUT_NODES: int = 5
+	var INPUT_NODES: int = 10
+	var BRAIN_HIDDEN_LAYERS: Array[int] = [64, 32, 3]
+	var OUTPUT_NODES: int = 3
 	var ENTROPY_COEFF: float = 0.01
 	print("gamma: %f, epsilon: %f, learning_rate: %f, lambda: %f, clip_range: %f, ENTROPY_COEFF: %f" % [gamma, epsilon, learning_rate, lambda, clip_range, ENTROPY_COEFF])
 	ppo = PPO.new(INPUT_NODES, BRAIN_HIDDEN_LAYERS, OUTPUT_NODES, gamma, epsilon, learning_rate, lambda, clip_range)
+	print(ppo.enable_normalize_advantages)
+	ppo.enable_normalize_advantages = true
+	ppo.enable_clip_advantages = true
+	ppo.enable_normalized_rewards = true
+	ppo.extra_value_loss_training = 4
 
 	ppo.value_network.ENTROPY_COEFF = ENTROPY_COEFF
 	ppo.policy_network.ENTROPY_COEFF = ENTROPY_COEFF
@@ -46,14 +51,14 @@ func test_ppo_training():
 	var dones: Array = []
 	print("Read experiences to use as test data")
 	# load experience logs to use in unit test "user://experience_log.json"
-	var experiences: Dictionary = read_json("user://experience_log.json")
+	var experiences: Dictionary = read_json("user://experience_log_rps.json")
 	var i: int = 0
 	# Train the agent multiple times, between each episode marked by done
 	var initial_avg_return: float = 0.0
 	var initial_avg_advantage: float = 0.0
 	var initial_policy_loss: float = 0.0
 	var initial_value_loss: float = 0.0
-
+	print(experiences)
 	for _log in experiences["logs"]:
 		states.append(_log["state"])
 		actions.append(_log["action"])
@@ -62,7 +67,9 @@ func test_ppo_training():
 		dones.append(_log["done"])
 		if _log["done"]:
 			print("End of episode found. Start step: %s" % [i])
-			ppo.train(states, actions, rewards, next_states, dones)
+			for _epoch in range(10):
+				print("Epoch ", _epoch)
+				ppo.train(states, actions, rewards, next_states, dones)
 			# Store initial metrics
 			if i == 0:
 				initial_avg_return = ppo.metrics_avg_return
@@ -86,21 +93,5 @@ func test_ppo_training():
 	assert_true(ppo.metrics_avg_advantage > initial_avg_advantage, "Avg Advantage should increase")
 	assert_true(ppo.metrics_policy_loss < initial_policy_loss, "Policy Loss should decrease")
 	assert_true(ppo.metrics_value_loss < initial_value_loss, "Value Loss should decrease")
-	var temperature: float = 1
-	var test_state: Array[float] = [0.5, 0.1, 0, 0, 0, 0, 1.0, 0]
-	# empty board
-	for j in range(31):
-		test_state.append(1.0)
-		test_state.append(0.0)
-		test_state.append(0.0)
-		test_state.append(0.0)
-		test_state.append(0.0)
-	test_state.append(0.0)
-	test_state.append(0.0)
-	test_state.append(0.0)
-	print("Input size:", test_state.size())
-	print("Test State (empty board): ", test_state)
-	var action = ppo.select_action(test_state, temperature)
-	print("Action: ", action)
 
 	ppo.save_model("user://ppo_model.json")

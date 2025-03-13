@@ -20,6 +20,7 @@ func init_ai_players():
 	for i in range(0, num_ai):
 		var game:PlayerController = play_package.instantiate()
 		game.ai_controlled = true
+		game.training = false
 		game.mute_sound = true
 		game.debug = true
 		var player_name = "ai%s"%(i)

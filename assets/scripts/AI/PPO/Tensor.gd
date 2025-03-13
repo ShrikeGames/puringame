@@ -117,7 +117,7 @@ static func softmax(vector: Array) -> Array:
 		sum_exp += exp_val
 	var result: Array = []
 	for val in exps:
-		result.append(val / sum_exp)
+		result.append(val / (sum_exp + EPSILON))
 	return result
 
 # Returns a vector (Array) of zeros of the given size.
@@ -209,23 +209,31 @@ static func mean(vector: Array) -> float:
 	- Returns: The mean of the vector.
 	"""
 	if vector.size() == 0:
-		return 0.0  # Return 0 for an empty array to avoid division by zero
+		return 0.0 # Return 0 for an empty array to avoid division by zero
 	var sum: float = 0.0
 	for v in vector:
 		sum += v
 	return sum / vector.size()
 	
 static func std(vector: Array) -> float:
-	"""
-	Calculates the standard deviation of a vector (1D array).
-	- vector: The input array of floats.
-	- Returns: The standard deviation of the vector.
-	"""
 	if vector.size() == 0:
-		return 0.0  # Return 0 for an empty array to avoid division by zero
+		return 0.0
 	var mean_val: float = mean(vector)
 	var variance: float = 0.0
 	for v in vector:
 		variance += pow(v - mean_val, 2)
-		variance /= vector.size()
+	variance /= vector.size()
 	return sqrt(variance)
+
+# Computes the L2 norm (Euclidean norm) of a matrix or vector.
+static func norm(matrix_or_vector: Array) -> float:
+	var sum: float = 0.0
+	for row in matrix_or_vector:
+		if row is Array:
+			# If it's a matrix (2D array), sum the squares of all elements.
+			for val in row:
+				sum += val * val
+		else:
+			# If it's a vector (1D array), sum the squares of its elements.
+			sum += row * row
+	return sqrt(sum)

@@ -50,7 +50,7 @@ func _get_next_training_item() -> Array:
 func _try_train(local_data: Array) -> bool:
 	print("try train")
 	print("Before train function")
-	Global.best_brain.train(local_data[0], local_data[1], local_data[2], local_data[3])
+	Global.best_brain.train(local_data[0], local_data[1], local_data[2], local_data[3], local_data[4])
 	print("After train function")
 	Global.best_brain.save_model(Global.ai_brain_path)
 	print("After save function")
@@ -60,7 +60,7 @@ func enqueue_training(states_data:Array, actions_data:Array, rewards_data:Array,
 	print("enqueue_training data")
 	queue_mutex.lock()
 	training_queue.append([states_data, actions_data, rewards_data, next_states_data, dones])
-	if training_queue.size() >= 5:
+	if training_queue.size() >= 30:
 		training_queue.pop_front()
 	queue_mutex.unlock()
 #	if training_queue.size() >= 10 and Global.batch_size < 1024:

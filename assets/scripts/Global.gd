@@ -67,15 +67,19 @@ const purin_file_path_root = "res://assets/images/game/"
 var ai_default_brain_path: String = "res://ai_brain_model.json"
 var ai_brain_path: String = "user://ai_brain_model.json"
 var best_brain: PPO
-var INPUT_NODES: int = 6 + (2 * 30) # 2*30 rays
-var BRAIN_HIDDEN_LAYERS: Array[int] = [128, 64]
+var INPUT_NODES: int = 12 + (5 * 30) # 5*30 rays
+var BRAIN_HIDDEN_LAYERS: Array[int] = [256, 128, 64, 16]
 var OUTPUT_NODES: int = 5
 
-var experience_pool: ExperiencePool = ExperiencePool.new()
-var buffer_size = 2048 * 4
+var gamma: float = 0.99
+var lambda: float = 0.99
+var epsilon: float = 0.01
+var learning_rate: float = 0.00001
+
+var buffer_size = 512 * 4
 var batch_size = 512
 var training_interval = 512
-var steps_since_training = 0
+
 var async_trainer: AsyncTrainer = AsyncTrainer.new()
 
 func read_json(path: String) -> Dictionary:
@@ -140,10 +144,6 @@ func load_settings():
 	turn_based_mode = config_json.get("turn_based_mode", turn_based_mode)
 	
 	update_all_volumes()
-	var gamma: float = 0.99
-	var lambda: float = 0.99
-	var epsilon: float = 1
-	var learning_rate: float = 0.01
 	if FileAccess.file_exists(ai_brain_path):
 		best_brain = PPO.new(INPUT_NODES, BRAIN_HIDDEN_LAYERS, OUTPUT_NODES, gamma, epsilon, learning_rate, lambda)
 		best_brain.load_model(ai_brain_path)
@@ -230,15 +230,6 @@ func load_purin():
 		purin_textures.append(load(image_path))
 		var evil_image_path = "%spurin%d_evil.png" % [purin_file_path_root, i]
 		evil_purin_textures.append(load(evil_image_path))
-
-func add_experience(experience: Dictionary):
-	experience_pool.add_experience(experience)
-	# Trim buffer if too large
-	if experience_pool.buffer.size() > buffer_size:
-		experience_pool.buffer.pop_front()
-	
-	Global.steps_since_training += 1
-	#save_experience_log("user://experience_log.json", experience)
 
 func save_experience_log(filepath: String, experience: Dictionary) -> void:
 	var existing_experience_log: Dictionary = read_json(filepath)

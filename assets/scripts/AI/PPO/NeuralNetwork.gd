@@ -26,12 +26,16 @@ func forward(inputs: Array, training: bool = true) -> Array:
 	for i in range(weights.size()):
 		current_output = Tensor.vector_add(Tensor.matrix_vector_mul(weights[i], current_output), biases[i])
 		if training:
+			# Update batch norm params (mean and variance) during training
+			var batch_mean = Tensor.mean(current_output)
+			var batch_variance = Tensor.std(current_output) ** 2
+			batch_norm_params[i]["mean"] = 0.9 * batch_norm_params[i]["mean"] + 0.1 * batch_mean
+			batch_norm_params[i]["variance"] = 0.9 * batch_norm_params[i]["variance"] + 0.1 * batch_variance
 			current_output = Tensor.batch_norm(current_output, batch_norm_params[i])
 		if i == weights.size() - 1:
 			if layers[layers.size() - 1] > 1:
 				current_output = Tensor.softmax(current_output)
 			else:
-				# only one output so use sigmoid instead
 				current_output = Tensor.sigmoid(current_output)
 				current_output = Tensor.clamp(current_output, EPSILON, 1.0 - EPSILON)
 		else:
@@ -39,7 +43,7 @@ func forward(inputs: Array, training: bool = true) -> Array:
 	return current_output
 
 # Backward pass with clipped value loss
-func backward(states: Array, actions: Array, targets: Array, learning_rate: float, epsilon: float = 0.1) -> float:
+func backward(states: Array, actions: Array, targets: Array, learning_rate: float, _epsilon: float = 0.1) -> float:
 	var batch_size: int = states.size()
 	var grad_weights: Array = []
 	var grad_biases: Array = []
@@ -76,21 +80,22 @@ func backward(states: Array, actions: Array, targets: Array, learning_rate: floa
 			var probs: Array = activations[activations.size() - 1]
 			var action: int = int(actions[sample_idx])
 			var advantage: float = targets[sample_idx]
+			var old_prob: float = probs[action] # Old probability (before update)
+			var new_prob: float = old_prob # Placeholder for new probability (after update)
+			var ratio: float = new_prob / old_prob
+			var clipped_ratio: float = clamp(ratio, 1.0 - _epsilon, 1.0 + _epsilon)
+			var policy_loss_term: float = - min(ratio * advantage, clipped_ratio * advantage)
+			policy_loss += policy_loss_term
 			delta.resize(probs.size())
 			for j in range(probs.size()):
 				var indicator: float = 1.0 if j == action else 0.0
-				delta[j] = (probs[j] - indicator) * advantage + ENTROPY_COEFF * (log(probs[j] + EPSILON) + 1.0)
-			policy_loss += -log(probs[action] + EPSILON) * advantage
-			# Debug: Print policy loss components
-			#print("Probs: ", probs, " | Action: ", action, " | Advantage: ", advantage, " | Policy Loss: ", -log(probs[action] + EPSILON) * advantage)
+				delta[j] = (probs[j] - indicator) * advantage - ENTROPY_COEFF * (log(probs[j] + EPSILON) + 1.0)
 		else:
 			var prediction: float = activations[activations.size() - 1][0]
 			var target: float = targets[sample_idx]
 			var value_diff: float = prediction - target
-			#var clipped_value: float = clamp(value_diff, -epsilon, epsilon)
 			delta.append(value_diff)
 			value_loss += 0.5 * pow(value_diff, 2)
-			#print("Prediction: ", prediction, " | Target: ", target, " | Value Diff: ", value_diff, " | Clipped Value: ", clipped_value, " | Value loss: ", 0.5 * pow(value_diff, 2))
 		
 		# Backpropagate
 		for layer_idx in range(weights.size() - 1, -1, -1):
@@ -106,11 +111,22 @@ func backward(states: Array, actions: Array, targets: Array, learning_rate: floa
 				delta = Tensor.elementwise_multiply(delta_prev, relu_deriv)
 	
 	# Average gradients and update parameters
+	var grad_norms: Array = []
 	for i in range(weights.size()):
 		grad_weights[i] = Tensor.scalar_divide(grad_weights[i], float(batch_size))
 		grad_biases[i] = Tensor.vector_divide(grad_biases[i], float(batch_size))
+		
+		# Compute gradient norms
+		var weight_grad_norm: float = Tensor.norm(grad_weights[i])
+		var bias_grad_norm: float = Tensor.norm(grad_biases[i])
+		grad_norms.append({"weight_grad_norm": weight_grad_norm, "bias_grad_norm": bias_grad_norm})
+		
+		# Update weights and biases
 		weights[i] = Tensor.matrix_subtract(weights[i], Tensor.matrix_scalar_multiply(grad_weights[i], learning_rate))
 		biases[i] = Tensor.vector_subtract(biases[i], Tensor.vector_scalar_multiply(grad_biases[i], learning_rate))
+	
+	# Log gradient norms
+	print("Gradient Norms: ", grad_norms)
 	
 	if actions.size() > 0:
 		return policy_loss / batch_size

@@ -15,6 +15,11 @@ var metrics_avg_advantage: float = 0
 var metrics_policy_loss: float = 0
 var metrics_value_loss: float = 0
 var clip_range: float = 0.2
+var enable_normalize_advantages: bool = true
+var enable_clip_advantages: bool = true
+var enable_normalized_rewards: bool = true
+var extra_value_loss_training: int = 0
+
 func _init(p_input_size: int, p_hidden_layers: Array, p_output_size: int, p_gamma: float = 0.90, p_epsilon: float = 0.2, p_learning_rate: float = 0.00001, p_lambda: float = 0.95, p_clip_range: float = 0.02) -> void:
 	policy_network = NeuralNetwork.new(p_input_size, p_hidden_layers, p_output_size)
 	value_network = NeuralNetwork.new(p_input_size, p_hidden_layers, 1)
@@ -26,44 +31,57 @@ func _init(p_input_size: int, p_hidden_layers: Array, p_output_size: int, p_gamm
 	lambda = p_lambda
 	clip_range = p_clip_range
 
-# Batch training using arrays of states, actions, rewards, and next states.
-func train(states: Array, actions: Array, rewards: Array, next_states: Array) -> void:
+# Batch training using arrays of states, actions, rewards, next states, and dones.
+func train(states: Array, actions: Array, rewards: Array, next_states: Array, dones: Array) -> void:
 	var values: Array = []
 	var next_values: Array = []
 	var advantages: Array = []
 	var returns: Array = []
-	var normalized_rewards: Array = rewards # normalize_rewards(rewards)
+	var normalized_rewards: Array = rewards
+	if enable_normalized_rewards:
+		normalized_rewards = normalize_rewards(rewards)
 	
 	# Compute values and next values
 	for i in range(states.size()):
 		values.append(value_network.forward(states[i])[0])
-		next_values.append(value_network.forward(next_states[i])[0])
+		# If the episode is done, the next value is 0 (no future reward)
+		if dones[i]:
+			next_values.append(0.0)
+		else:
+			next_values.append(value_network.forward(next_states[i])[0])
 	
 	# Compute advantages using GAE
-	advantages = compute_advantages(rewards, values, next_values, gamma, lambda)
-	advantages = normalize_advantages(advantages)
-	advantages = clip_advantages(advantages, clip_range)
+	advantages = compute_advantages(rewards, values, next_values, dones, gamma, lambda)
+	if enable_normalize_advantages:
+		advantages = normalize_advantages(advantages)
+	if enable_clip_advantages:
+		advantages = clip_advantages(advantages, clip_range)
 	
 	# Compute returns
 	for i in range(normalized_rewards.size()):
 		returns.append(normalized_rewards[i] + gamma * next_values[i])
 	
+	var normalized_returns: Array = normalize_returns(returns)
+
 	# Train policy and value networks
 	var policy_loss: float = policy_network.backward(states, actions, advantages, current_learning_rate, epsilon)
-	var value_loss: float = value_network.backward(states, [], returns, current_learning_rate, epsilon)
+	var value_loss: float = value_network.backward(states, [], normalized_returns, current_learning_rate, epsilon)
 	# train the value network more
-	for _d in range(4):
-		value_loss = value_network.backward(states, [], returns, current_learning_rate, epsilon)
-		
+	if extra_value_loss_training > 0:
+		for _d in range(extra_value_loss_training):
+			value_loss = value_network.backward(states, [], normalized_returns, current_learning_rate, epsilon)
+			
 	# Print metrics
 	print_metrics(returns, advantages, policy_loss, value_loss)
 
-# Generalized Advantage Estimation (GAE)
-func compute_advantages(rewards: Array, values: Array, next_values: Array, p_gamma: float, p_lambda: float) -> Array:
+# Generalized Advantage Estimation (GAE) with dones support
+func compute_advantages(rewards: Array, values: Array, next_values: Array, dones: Array, p_gamma: float, p_lambda: float) -> Array:
 	var advantages: Array = []
 	var gae: float = 0.0
 	for i in range(rewards.size() - 1, -1, -1):
-		var delta: float = rewards[i] + p_gamma * next_values[i] - values[i]
+		# If the episode is done, the next value is 0 (no future reward)
+		var next_value: float = 0.0 if dones[i] else next_values[i]
+		var delta: float = rewards[i] + p_gamma * next_value - values[i]
 		gae = delta + p_gamma * p_lambda * gae
 		advantages.insert(0, gae)
 	return advantages
@@ -74,6 +92,13 @@ func normalize_rewards(rewards: Array) -> Array:
 	if std == 0:
 		std = 1 # Prevent divide by zero
 	return Tensor.scalar_divide(Tensor.vector_subtract_single_value(rewards, mean), std)
+
+func normalize_returns(returns: Array) -> Array:
+	var mean: float = Tensor.mean(returns)
+	var std: float = Tensor.std(returns)
+	if std == 0:
+		std = 1 # Prevent divide by zero
+	return Tensor.scalar_divide(Tensor.vector_subtract_single_value(returns, mean), std)
 
 func normalize_advantages(advantages: Array) -> Array:
 	var mean: float = Tensor.mean(advantages)
@@ -125,14 +150,19 @@ func print_metrics(returns: Array, advantages: Array, policy_loss: float, value_
 		sum_adv += a
 	var avg_advantage: float = sum_adv / advantages.size()
 	
+	print("[Metric] Avg Return diff: %f (Should increase until very high, GREEN)" % [avg_return - metrics_avg_return])
+	print("[Metric] Avg Advantage diff: %f (Should increase until slightly positive, WHITE)" % [avg_advantage - metrics_avg_advantage])
+	print("[Metric] Policy Loss diff: %f (Should decrease then stay low, RED)" % [policy_loss - metrics_policy_loss])
+	print("[Metric] Value Loss diff: %f (Should decrease then stay low, DARK RED)" % [value_loss - metrics_value_loss])
+	
 	metrics_avg_return = avg_return
 	metrics_avg_advantage = avg_advantage
 	metrics_policy_loss = policy_loss
 	metrics_value_loss = value_loss
-	print("[Metric] Avg Return: %s (Should increase until very high, GREEN)" % [metrics_avg_return])
-	print("[Metric] Avg Advantage: %s (Should increase until slightly positive, WHITE)" % [metrics_avg_advantage])
-	print("[Metric] Policy Loss: %s (Should decrease then stay low, RED)" % [metrics_policy_loss])
-	print("[Metric] Value Loss: %s (Should decrease then stay low, DARK RED)" % [metrics_value_loss])
+	print("[Metric] Avg Return: %f" % [metrics_avg_return])
+	print("[Metric] Avg Advantage: %f" % [metrics_avg_advantage])
+	print("[Metric] Policy Loss: %f" % [metrics_policy_loss])
+	print("[Metric] Value Loss: %f" % [metrics_value_loss])
 
 # Update learning rate with linear decay
 func update_learning_rate(step: int, total_steps: int) -> void:
@@ -141,9 +171,6 @@ func update_learning_rate(step: int, total_steps: int) -> void:
 # Save and load model (unchanged from your original implementation)
 func save_model(filepath: String) -> void:
 	var model_data: Dictionary = {
-		"gamma": gamma,
-		"epsilon": epsilon,
-		"learning_rate": learning_rate,
 		"policy_network": policy_network.get_state(),
 		"value_network": value_network.get_state()
 	}
@@ -170,8 +197,5 @@ func load_model(filepath: String) -> void:
 		return
 	
 	var model_data: Dictionary = json.get_data()
-	gamma = model_data.get("gamma", 0.99)
-	epsilon = model_data.get("epsilon", 0.2)
-	learning_rate = model_data.get("learning_rate", 0.001)
 	policy_network.load_state(model_data.get("policy_network", {}))
 	value_network.load_state(model_data.get("value_network", {}))

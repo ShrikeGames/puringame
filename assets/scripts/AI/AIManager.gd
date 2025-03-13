@@ -1,6 +1,6 @@
 extends Node2D
 
-@export var num_ai: int = 1
+@export var num_ai: int = 8
 var play_package: Resource = load("res://assets/scenes/PlayAreaBowl.tscn")
 @export var ai_games_node: Node2D
 @export var time_scale: float = 2
@@ -32,12 +32,14 @@ func init_ai_players():
 	for i in range(0, num_ai):
 		var game:PlayerController = play_package.instantiate()
 		game.ai_controlled = true
+		game.temperature = max(0.4, (i+1) / float(num_ai))
+		game.training = true
 		game.mute_sound = true
 		game.debug = true
 		var player_name = "ai%s"%(i)
 		game.player_name = player_name
 		game.position = Vector2(x_pos, y_pos)
-		game.random_initial_board_state = true
+		game.random_initial_board_state = false
 		
 		x_pos += 1056
 		if i >0 and (i+1) % 2 == 0:
@@ -45,6 +47,7 @@ func init_ai_players():
 			y_pos += 1080
 		ai_games_node.add_child(game)
 		game.connect("gameover", game_died)
+		game.connect("train", train)
 	
 	Global.async_trainer.connect("training_completed", training_completed)
 
@@ -54,33 +57,33 @@ func training_completed():
 	graph.add_point("policy", Global.best_brain.metrics_policy_loss)
 	graph.add_point("value", Global.best_brain.metrics_value_loss)
 
-func game_died(player_name:String, score:float, total_rewards:float):
+
+func train(experience_pool:ExperiencePool):
+	# train on whatever is there
+	var batch_size: int = experience_pool.get_buffer_size()
+	train_on_batch(experience_pool, batch_size)
+	
+func game_died(experience_pool:ExperiencePool, player_name:String, score:float, total_rewards:float):
 	total_score += score
 	graph.add_point("score", score)
 	graph.add_point("rewards", total_rewards)
 	game_count += 1
 	if score > best_score:
 		best_score = score
-		print("New best score of %s from %s"%[best_score, player_name])
-		Global.best_brain.save_model(Global.ai_brain_path)
+		print("[Metric] New best score of %s from %s"%[best_score, player_name])
 	else:
-		print("Score of %s from %s"%[score, player_name])
+		print("[Metric] Score of %s from %s"%[score, player_name])
 	print("[Metric] Average Score: %s from %s games"%[total_score/float(game_count), game_count])
+	
+	# train on whatever is there
+	var batch_size: int = experience_pool.get_buffer_size()
+	train_on_batch(experience_pool, batch_size)
 
-func _process(_delta: float) -> void:
-	# Train on batch if enough steps have passed
-	if Global.steps_since_training >= Global.training_interval:
-		# train on whatever is there
-		var batch_size: int = Global.experience_pool.get_buffer_size()
-		train_on_batch(batch_size)
-		Global.experience_pool.buffer.clear()
-		Global.steps_since_training = 0
-		
-func train_on_batch(batch_size:int):
+func train_on_batch(experience_pool:ExperiencePool, batch_size:int):
 	# Ensure we have enough experience
 	print("Training on batch of size: ", batch_size)
 	# Sample random experiences from buffer
-	var batch = Global.experience_pool.sample_batch(batch_size)
+	var batch = experience_pool.sample_batch(batch_size)
 	
 	# Prepare batch
 	var states_data: Array = []
@@ -96,13 +99,13 @@ func train_on_batch(batch_size:int):
 		rewards_data.append(experience["reward"])
 		next_states_data.append(experience["next_state"])
 		dones_data.append(experience["done"])
-	
+	experience_pool.buffer.clear()
 	# Train on batch
 	if multi_thread_training:
 		Global.async_trainer.enqueue_training(states_data, actions_data, rewards_data, next_states_data, dones_data)
 	else:
 		print("Before train function")
-		Global.best_brain.train(states_data, actions_data, rewards_data, next_states_data)
+		Global.best_brain.train(states_data, actions_data, rewards_data, next_states_data, dones_data)
 		print("After train function")
 		Global.best_brain.save_model(Global.ai_brain_path)
 		print("After save function")
