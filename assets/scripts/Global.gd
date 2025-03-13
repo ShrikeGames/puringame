@@ -140,14 +140,15 @@ func load_settings():
 	turn_based_mode = config_json.get("turn_based_mode", turn_based_mode)
 	
 	update_all_volumes()
-	var gamma: float = 0.999
+	var gamma: float = 0.99
+	var lambda: float = 0.99
 	var epsilon: float = 1
 	var learning_rate: float = 0.01
 	if FileAccess.file_exists(ai_brain_path):
-		best_brain = PPO.new(INPUT_NODES, BRAIN_HIDDEN_LAYERS, OUTPUT_NODES, gamma, epsilon, learning_rate)
+		best_brain = PPO.new(INPUT_NODES, BRAIN_HIDDEN_LAYERS, OUTPUT_NODES, gamma, epsilon, learning_rate, lambda)
 		best_brain.load_model(ai_brain_path)
 	elif FileAccess.file_exists(ai_default_brain_path):
-		best_brain = PPO.new(INPUT_NODES, BRAIN_HIDDEN_LAYERS, OUTPUT_NODES, gamma, epsilon, learning_rate)
+		best_brain = PPO.new(INPUT_NODES, BRAIN_HIDDEN_LAYERS, OUTPUT_NODES, gamma, epsilon, learning_rate, lambda)
 		best_brain.load_model(ai_default_brain_path)
 	
 

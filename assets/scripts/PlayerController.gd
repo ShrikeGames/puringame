@@ -707,7 +707,7 @@ func process_ai(delta):
 			total_rewards += reward
 			
 			# Store experience only if we have a previous state and it was a purin drop
-			if previous_state != null and previous_action == 1:
+			if previous_state != null and previous_action != -1:
 				Global.add_experience({
 					"state": previous_state,
 					"action": previous_action,

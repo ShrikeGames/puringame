@@ -6,8 +6,8 @@ var weights: Array = [] # Array of 2D arrays (each is Array[Array[float]])
 var biases: Array = [] # Array of vectors (each is Array[float]])
 var batch_norm_params: Array = [] # For batch normalization
 
-const ENTROPY_COEFF: float = 0.01
-const EPSILON: float = 1e-7
+var ENTROPY_COEFF: float = 0.01
+var EPSILON: float = 1e-7
 
 func _init(input_size: int, hidden_layers: Array, output_size: int) -> void:
 	layers.append(input_size)
@@ -87,10 +87,10 @@ func backward(states: Array, actions: Array, targets: Array, learning_rate: floa
 			var prediction: float = activations[activations.size() - 1][0]
 			var target: float = targets[sample_idx]
 			var value_diff: float = prediction - target
-			var clipped_value: float = clamp(value_diff, -epsilon, epsilon)
-			delta.append(clipped_value)
-			value_loss += 0.5 * pow(clipped_value, 2)
-			#print("Prediction: ", prediction, " | Target: ", target, " | Value Diff: ", value_diff, " | Clipped Value: ", clipped_value, " | Value loss: ", 0.5 * pow(clipped_value, 2))
+			#var clipped_value: float = clamp(value_diff, -epsilon, epsilon)
+			delta.append(value_diff)
+			value_loss += 0.5 * pow(value_diff, 2)
+			#print("Prediction: ", prediction, " | Target: ", target, " | Value Diff: ", value_diff, " | Clipped Value: ", clipped_value, " | Value loss: ", 0.5 * pow(value_diff, 2))
 		
 		# Backpropagate
 		for layer_idx in range(weights.size() - 1, -1, -1):

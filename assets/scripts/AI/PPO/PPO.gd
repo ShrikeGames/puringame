@@ -14,8 +14,8 @@ var metrics_avg_return: float = 0
 var metrics_avg_advantage: float = 0
 var metrics_policy_loss: float = 0
 var metrics_value_loss: float = 0
-
-func _init(p_input_size: int, p_hidden_layers: Array, p_output_size: int, p_gamma: float = 0.90, p_epsilon: float = 0.2, p_learning_rate: float = 0.00001) -> void:
+var clip_range: float = 0.2
+func _init(p_input_size: int, p_hidden_layers: Array, p_output_size: int, p_gamma: float = 0.90, p_epsilon: float = 0.2, p_learning_rate: float = 0.00001, p_lambda: float = 0.95, p_clip_range: float = 0.02) -> void:
 	policy_network = NeuralNetwork.new(p_input_size, p_hidden_layers, p_output_size)
 	value_network = NeuralNetwork.new(p_input_size, p_hidden_layers, 1)
 	gamma = p_gamma
@@ -23,6 +23,8 @@ func _init(p_input_size: int, p_hidden_layers: Array, p_output_size: int, p_gamm
 	learning_rate = p_learning_rate
 	initial_learning_rate = p_learning_rate
 	current_learning_rate = p_learning_rate
+	lambda = p_lambda
+	clip_range = p_clip_range
 
 # Batch training using arrays of states, actions, rewards, and next states.
 func train(states: Array, actions: Array, rewards: Array, next_states: Array) -> void:
@@ -30,7 +32,7 @@ func train(states: Array, actions: Array, rewards: Array, next_states: Array) ->
 	var next_values: Array = []
 	var advantages: Array = []
 	var returns: Array = []
-	var normalized_rewards: Array = normalize_rewards(rewards)
+	var normalized_rewards: Array = rewards # normalize_rewards(rewards)
 	
 	# Compute values and next values
 	for i in range(states.size()):
@@ -40,7 +42,7 @@ func train(states: Array, actions: Array, rewards: Array, next_states: Array) ->
 	# Compute advantages using GAE
 	advantages = compute_advantages(rewards, values, next_values, gamma, lambda)
 	advantages = normalize_advantages(advantages)
-	advantages = clip_advantages(advantages, 1)
+	advantages = clip_advantages(advantages, clip_range)
 	
 	# Compute returns
 	for i in range(normalized_rewards.size()):
@@ -80,8 +82,8 @@ func normalize_advantages(advantages: Array) -> Array:
 		std = 1 # Prevent divide by zero
 	return Tensor.scalar_divide(Tensor.vector_subtract_single_value(advantages, mean), std)
 
-func clip_advantages(advantages: Array, clip_range: float = 2.0) -> Array:
-	return Tensor.clamp(advantages, -clip_range, clip_range)
+func clip_advantages(advantages: Array, p_clip_range: float = 2.0) -> Array:
+	return Tensor.clamp(advantages, -p_clip_range, p_clip_range)
 
 # Selects an action index based on the policy network's output probabilities for a given state.
 func select_action(state: Array, temperature: float = 1.0) -> Array:
